@@ -24,7 +24,7 @@
     "command-center:build": "pnpm --filter @null-city/command-center build",
     "command-center:test": "pnpm --filter @null-city/command-center test",
     "command-center:e2e": "pnpm --filter @null-city/command-center e2e",
-    "verify": "pnpm lint && pnpm typecheck && pnpm build && pnpm -r test && pnpm verify:determinism && pnpm verify:server && pnpm verify:receipt-slice && pnpm verify:package-smoke && pnpm verify:tarball-smoke && pnpm verify:player-cli && pnpm verify:scenarios && pnpm verify:golden-receipts && pnpm verify:replay-lab && pnpm verify:artifact-cli && pnpm verify:command-center && pnpm verify:sdk && pnpm verify:benchmark && pnpm verify:mcp && pnpm verify:markdown-links && pnpm verify:no-external-workpack && pnpm verify:release-archive && pnpm verify:audit-repro && pnpm verify:adversarial",
+    "verify": "pnpm lint && pnpm build && pnpm typecheck && pnpm -r test && pnpm verify:determinism && pnpm verify:server && pnpm verify:receipt-slice && pnpm verify:package-smoke && pnpm verify:tarball-smoke && pnpm verify:player-cli && pnpm verify:scenarios && pnpm verify:golden-receipts && pnpm verify:replay-lab && pnpm verify:artifact-cli && pnpm verify:command-center && pnpm verify:sdk && pnpm verify:benchmark && pnpm verify:mcp && pnpm verify:markdown-links && pnpm verify:no-external-workpack && pnpm verify:release-archive && pnpm verify:audit-repro && pnpm verify:adversarial",
     "verify:markdown-links": "node scripts/verify-markdown-links.mjs",
     "verify:no-external-workpack": "node scripts/verify-no-external-workpack.mjs",
     "verify:adversarial": "node scripts/adversarial/run-all.mjs",
