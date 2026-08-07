@@ -104,6 +104,45 @@ describe("M10.1.1 fail-closed parsing", () => {
     expect(() => parseReplayArtifact(JSON.stringify(artifact))).toThrow(/SystemStateChanged|invalid_payload/);
   });
 
+  it("rejects fully resealed malformed SystemStateChanged teams and routes before projection", () => {
+    for (const mutate of [
+      (artifact: ReplayArtifact) => {
+        for (const event of artifact.truth.events) {
+          if (event.kind === "SystemStateChanged") event.payload.teams = [{}, {}];
+        }
+      },
+      (artifact: ReplayArtifact) => {
+        for (const event of artifact.truth.events) {
+          if (event.kind === "SystemStateChanged") event.payload.routes = { forged: null };
+        }
+      },
+    ]) {
+      const artifact = parseReplayArtifact(FIXTURE_RAW);
+      mutate(artifact);
+      resealAll(artifact);
+      expect(() => parseReplayArtifact(JSON.stringify(artifact))).toThrow(/SystemStateChanged\.(teams|routes)/);
+    }
+  });
+
+  it("rejects nested truth/player values that only satisfy the outer container shape", () => {
+    const districtForgery = parseReplayArtifact(FIXTURE_RAW);
+    districtForgery.truth.events[0]!.payload.districts = [{}];
+    resealAll(districtForgery);
+    expect(() => parseReplayArtifact(JSON.stringify(districtForgery))).toThrow(/ScenarioStarted\.districts/);
+
+    const scoreForgery = parseReplayArtifact(FIXTURE_RAW);
+    const completed = scoreForgery.truth.events.at(-1)!;
+    (completed.payload.finalScore as { breakdown: unknown[] }).breakdown = [{}];
+    resealAll(scoreForgery);
+    expect(() => parseReplayArtifact(JSON.stringify(scoreForgery))).toThrow(/finalScore\.breakdown/);
+
+    const claimForgery = parseReplayArtifact(FIXTURE_RAW);
+    const claimUpdated = claimForgery.player.events.find((event) => event.kind === "ClaimUpdated")!;
+    ((claimUpdated.payload as { claim: { evidenceIds: unknown[] } }).claim.evidenceIds) = [{}];
+    resealAll(claimForgery);
+    expect(() => parseReplayArtifact(JSON.stringify(claimForgery))).toThrow(/evidenceIds/);
+  });
+
   it("rejects TrueIncidentOccurred with incomplete payload", () => {
     const artifact = parseReplayArtifact(FIXTURE_RAW);
     const idx = artifact.truth.events.findIndex((e) => e.kind === "TrueIncidentOccurred");

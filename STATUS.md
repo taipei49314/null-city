@@ -1,24 +1,22 @@
-# STATUS — NullCity M10.1.1 Final Pre-Push Closure
+# STATUS — NullCity M10.1.2 Projection-Safe Parser Closure
 
 ## Overall
 
-Status: IMPLEMENTED (local + fresh-clone green)  
+Status: IMPLEMENTED (local + fresh-clone pending fill)  
 Release decision: **HOLD for public main/tags** until remote CI + Docker smoke are green  
-Honesty: Remote CI / Docker / push remain **BLOCKED** (no git remote).
+Honesty: Remote CI / Docker / push remain **BLOCKED** while no git remote is configured.
 
-Verified source commit: `e22d31a87751404ccaa0b73347d94ea3761c31f2`  
-Tree: `38de8f623e5035369e964a56f09d15491bbe9234`
+Prior: M0–M10.1.1
 
-Prior: M0–M10.1
-
-## M10.1.1 shipped
+## M10.1.2 shipped
 
 | Workstream | Status | Notes |
 |---|---|---|
-| P0-A fixture self-containment | PASS | Tracked fixture; `verify:no-external-workpack`; archive packs test+fixture |
-| P0-B fail-closed parsing | PASS | Per-kind validation; depth bounds; loader never projects FAIL |
-| P1 semantic precision | PASS | 1:1:1 commands; session bind; derived summaries; named NOT_CHECKED scopes |
-| P1 exact-tree evidence | PASS (local/fresh-clone) | See `EVIDENCE.md`; remote still BLOCKED |
+| Nested `SystemStateChanged` teams/routes validation | PASS | Clean-room parity with contracts truth schemas; rejected at parse |
+| Adjacent nested schema parity | PASS | districts, evidenceIds, score raw/breakdown, enums, nullable ticks, [0,1] assessments |
+| Visible projection fatal | PASS | Projector exceptions route to “Artifact rejected during projection” + Load another run |
+| Fully resealed regressions | PASS | `replay-verify-m10.1.1.test.ts` covers teams/routes/districts/breakdown/evidenceIds |
+| Exact-tree evidence | IN PROGRESS | See `EVIDENCE.md` |
 
 ## Still blocked
 
@@ -30,6 +28,5 @@ Prior: M0–M10.1
 
 ```bash
 pnpm demo
-# Replay Lab: load data/m4-run-a.artifact.json → PARTIAL + named NOT_CHECKED scopes
-node packages/simulation/dist/cli/run.js verify --artifact data/m4-run-a.artifact.json
+# Hostile nested SystemStateChanged teams/routes must fail at load, never blank Replay Lab
 ```

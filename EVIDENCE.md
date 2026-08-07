@@ -1,70 +1,62 @@
-# EVIDENCE — NullCity M10.1.1 Final Pre-Push Closure
+# EVIDENCE — NullCity M10.1.2 Projection-Safe Parser Closure
 
 ## Environment
 
 - OS: Microsoft Windows 11 (win32 10.0.26200)
-- pnpm 10.33.0 / Node workspace engines ≥20
+- pnpm 10.33.0
 - Date: 2026-08-07
-- Audit pack: `_audit/m10.1.1/` (from `nullcity-cursor-m10.1.1-final-closure-pack-v2`)
+- Audit pack: `_audit/m10.1.2/` (from `nullcity-cursor-m10.1.2-projection-safe-pack`)
 
-## Exact commit (verified source)
-
-| Field | Value |
-|---|---|
-| `git rev-parse HEAD` | `e22d31a87751404ccaa0b73347d94ea3761c31f2` |
-| `git rev-parse 'HEAD^{tree}'` | `38de8f623e5035369e964a56f09d15491bbe9234` |
-| `git status --short` at gate time | clean before evidence/report refresh commit |
-
-## Local gates (on `e22d31a`)
-
-| # | Command | Exit | Result |
-|---:|---|---:|---|
-| 1 | `pnpm install --frozen-lockfile` | **0** | Lockfile up to date |
-| 2 | `pnpm verify` | **0** | Full gate green incl. no-external-workpack + release-archive + adversarial |
-| 3 | `pnpm command-center:e2e` | **0** | Smoke PASS |
-| 4 | `pnpm verify:markdown-links` | **0** | (inside #2) |
-| 5 | `pnpm verify:release-archive` | **0** | (inside #2) test+fixture packaged; no `_audit/` |
-
-## Fresh clone (on `e22d31a`, `_audit/` deleted)
-
-| # | Command | Exit | Result |
-|---:|---|---:|---|
-| 1 | `git clone` exact commit → empty temp dir | **0** | |
-| 2 | `Remove-Item -Recurse _audit` | **0** | `has_audit=False` |
-| 3 | `pnpm install --frozen-lockfile` | **0** | |
-| 4 | `pnpm verify` | **0** | Self-contained; M10.1 fixtures load without `_audit/` |
-| 5 | `pnpm command-center:e2e` | **0** | |
-
-## Adversarial before → after (browser)
-
-| Case | Before (M10.1 audit) | After (M10.1.1) |
-|---|---|---|
-| Resealed `CommandResult` state rewrite | semantic green / UI PASS risk | `status=FAIL` |
-| Delete one / all player `CommandResult` | semantic green | `status=FAIL` |
-| Duplicate player `CommandResult` | semantic green | `status=FAIL` |
-| Foreign player session ID | semantic green | `status=FAIL` |
-| Forged `activeIncidents` | semantic green | `status=FAIL` |
-| Forged `RunCompleted` counts | semantic green | `status=FAIL` |
-| Erased ledger / forged protocol / scenario digest | implied by broad semantic PASS | scopes explicitly `NOT_CHECKED` |
-| `EvidenceRecorded` `{}` | PARTIAL then provenance crash | parse reject / never projected |
-| Deep nested payload | stack overflow | controlled depth error |
-
-Regression file: `apps/command-center/test/replay-verify-m10.1.1.test.ts`
-
-## Release archive / Desktop zip
+## Exact commit (filled after freeze)
 
 | Field | Value |
 |---|---|
-| Archive | `null-city-m10.1.1-final-closure.zip` |
-| Desktop | `C:\Users\G713RW\Desktop\null-city-m10.1.1-final-closure.zip` |
-| SHA-256 | `41abb500f828a456dab72ee491689f53980965b061b9a03ff6cffb9eed2d1cc1` |
-| File count | 383 (git allowlist) |
-| M10.1 test + fixture packaged | yes |
-| `_audit/` in archive | no |
+| `git rev-parse HEAD` | _pending_ |
+| `git rev-parse 'HEAD^{tree}'` | _pending_ |
+| `git status --short` | _pending_ |
+
+## Local gates
+
+| # | Command | Exit | Result |
+|---:|---|---:|---|
+| 1 | `pnpm install --frozen-lockfile` | pending | |
+| 2 | `pnpm verify` | pending | |
+| 3 | `pnpm command-center:e2e` | pending | |
+| 4 | `pnpm verify:markdown-links` | pending | |
+| 5 | `pnpm verify:no-external-workpack` | pending | |
+| 6 | `pnpm verify:release-archive` | pending | |
+
+## Fresh clone
+
+| # | Command | Exit | Result |
+|---:|---|---:|---|
+| 1 | clone exact commit; delete `_audit/` | pending | |
+| 2 | `pnpm install --frozen-lockfile` | pending | |
+| 3 | `pnpm verify` | pending | |
+| 4 | `pnpm command-center:e2e` | pending | |
+| 5 | `pnpm verify:release-archive` | pending | |
+
+## Finding → test mapping
+
+| Finding | Regression |
+|---|---|
+| Resealed `SystemStateChanged.teams = [{}, {}]` | `rejects fully resealed malformed SystemStateChanged teams and routes before projection` |
+| Resealed `SystemStateChanged.routes = { forged: null }` | same |
+| `ScenarioStarted.districts = [{}]` | `rejects nested truth/player values that only satisfy the outer container shape` |
+| `ScenarioCompleted.finalScore.breakdown = [{}]` | same |
+| `ClaimUpdated.claim.evidenceIds = [{}]` | same |
+| Projector throw → blank page | `ReplayLabPage` `projectionFailure` fatal UI |
+
+## Release archive
+
+| Field | Value |
+|---|---|
+| SHA-256 | pending |
+| Entry count | pending |
 
 ## Remote gates
 
 | Gate | Status |
 |---|---|
-| Push / GitHub Actions verify | **BLOCKED** — no `git remote` configured |
-| Docker smoke workflow | **BLOCKED** — requires push to GitHub Actions |
+| GitHub Actions verify | **BLOCKED** (no remote) |
+| Docker smoke | **BLOCKED** (no remote) |
