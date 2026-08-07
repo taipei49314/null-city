@@ -1,6 +1,6 @@
 # NullCity Benchmark Report
 
-Generated: 2026-08-07T11:05:15.514Z
+Generated: 2026-08-07T11:12:24.771Z
 Runs: 15
 
 All metrics are computed from each run's hash-chain-verified public player event log only. No policy or metric in this report ever received truth.
@@ -53,7 +53,7 @@ All metrics are computed from each run's hash-chain-verified public player event
 ### black-river / seed 49314 / reactive-greedy
 
 - Session: `bench-black-river-49314-reactive-greedy`
-- Player log: `ebf1c81ddd42208ed2c563a47e3fc41668f5cf580290b011c0a9a85d208a6612` (428 events, chain valid: true)
+- Player log: `513ae5e70e449ec4be92b2cafb35b0982017a30017dd607558586d91ddfc62d2` (428 events, chain valid: true)
 - Phase: completed, final tick: 540
 - Score total: -143.61
   - population risk contribution: -15.00, infrastructure contribution: 22.39
@@ -66,7 +66,7 @@ All metrics are computed from each run's hash-chain-verified public player event
 ### black-river / seed 49314 / verification-first
 
 - Session: `bench-black-river-49314-verification-first`
-- Player log: `e739fcebb87cfde44123faf622d11a9e41ee23f763f438228fdd5e719d44bf3b` (494 events, chain valid: true)
+- Player log: `9815b490b2f60c1607b70a4a7a45b445076433d86b3b183e0bb18950507381c7` (494 events, chain valid: true)
 - Phase: completed, final tick: 540
 - Score total: -144.76
   - population risk contribution: -15.00, infrastructure contribution: 21.24
@@ -92,7 +92,7 @@ All metrics are computed from each run's hash-chain-verified public player event
 ### glass-harbor / seed 49314 / reactive-greedy
 
 - Session: `bench-glass-harbor-49314-reactive-greedy`
-- Player log: `e3da749e51cee9867df97cb54992d1825ea01ab6c0d776a9f11da38a3da0dd87` (240 events, chain valid: true)
+- Player log: `00ac573f2e07b36ef11b461e202e660c3452921a36f37bbca8ff3dc2e2f23f50` (240 events, chain valid: true)
 - Phase: completed, final tick: 480
 - Score total: -40.66
   - population risk contribution: -4.80, infrastructure contribution: 22.14
@@ -105,7 +105,7 @@ All metrics are computed from each run's hash-chain-verified public player event
 ### glass-harbor / seed 49314 / verification-first
 
 - Session: `bench-glass-harbor-49314-verification-first`
-- Player log: `e1f25b6a17c78e44c5e9f6c7789ea94365e8d8556187beedffd3952316573548` (257 events, chain valid: true)
+- Player log: `3a7e19aada07b3c7e486e9acc5fa93f997a0b0aaa47534b71dd07e8cfba3e303` (257 events, chain valid: true)
 - Phase: completed, final tick: 480
 - Score total: -15.49
   - population risk contribution: -5.40, infrastructure contribution: 22.91
@@ -131,7 +131,7 @@ All metrics are computed from each run's hash-chain-verified public player event
 ### signal-zero / seed 49314 / reactive-greedy
 
 - Session: `bench-signal-zero-49314-reactive-greedy`
-- Player log: `941d33c59f1cac414997314ffb1815e659fb8e1827df1dcc2263b64264be5ca4` (352 events, chain valid: true)
+- Player log: `cec7cbafdfe68918dd5cb9c425c7aa304f1c5948483779135e901484c0cf50d0` (352 events, chain valid: true)
 - Phase: completed, final tick: 450
 - Score total: -69.43
   - population risk contribution: -4.68, infrastructure contribution: 22.25
@@ -144,7 +144,7 @@ All metrics are computed from each run's hash-chain-verified public player event
 ### signal-zero / seed 49314 / verification-first
 
 - Session: `bench-signal-zero-49314-verification-first`
-- Player log: `ebc172befb64d1ebde826cf169eb263508b95dcf824f18a99762727285d64df1` (291 events, chain valid: true)
+- Player log: `a130b874361eee4c2989360bcfc3f440dd7fc37bd7b476aa22382d9b3443350d` (291 events, chain valid: true)
 - Phase: completed, final tick: 450
 - Score total: -49.16
   - population risk contribution: -9.48, infrastructure contribution: 22.32
@@ -170,7 +170,7 @@ All metrics are computed from each run's hash-chain-verified public player event
 ### mirror-district / seed 49314 / reactive-greedy
 
 - Session: `bench-mirror-district-49314-reactive-greedy`
-- Player log: `fb1a956babd34cb0538dbe5cb4c59a12fbf6abec4db6047fa1c6cdc8ac78c487` (342 events, chain valid: true)
+- Player log: `54ee00f965d751755136eaf7f0d5f6a7137a78025a2bfcb33500834798227fd5` (342 events, chain valid: true)
 - Phase: completed, final tick: 420
 - Score total: -110.58
   - population risk contribution: -13.92, infrastructure contribution: 21.34
@@ -183,7 +183,7 @@ All metrics are computed from each run's hash-chain-verified public player event
 ### mirror-district / seed 49314 / verification-first
 
 - Session: `bench-mirror-district-49314-verification-first`
-- Player log: `4e99017813c73eef63be978a9a2d86845363f17d135412bff44399c71e213275` (353 events, chain valid: true)
+- Player log: `ab8816e12a1698dee07cd1c85ae1fb1ff5962f35dcab05dfe6b0ada5a6fbda18` (353 events, chain valid: true)
 - Phase: completed, final tick: 420
 - Score total: -49.76
   - population risk contribution: -17.76, infrastructure contribution: 22.00
@@ -209,7 +209,7 @@ All metrics are computed from each run's hash-chain-verified public player event
 ### red-ledger / seed 49314 / reactive-greedy
 
 - Session: `bench-red-ledger-49314-reactive-greedy`
-- Player log: `e5fb75405961d1694b40d5d6071520b29f77f49967085ce4f493b47d84ed7f34` (329 events, chain valid: true)
+- Player log: `be2abca8e81ecbdbdf0e51beb305a2250567b9271f4a1c9946dfca841e156d08` (329 events, chain valid: true)
 - Phase: completed, final tick: 450
 - Score total: -120.85
   - population risk contribution: -13.92, infrastructure contribution: 22.07
@@ -222,7 +222,7 @@ All metrics are computed from each run's hash-chain-verified public player event
 ### red-ledger / seed 49314 / verification-first
 
 - Session: `bench-red-ledger-49314-verification-first`
-- Player log: `95286ab33bde2278bdebbfcd9088a7234b156236d371e0b84d0219eeca6756d5` (370 events, chain valid: true)
+- Player log: `31a4a45603292c4b1c57d4e46af1105dce81d0ed2509889074260bd225504fa3` (370 events, chain valid: true)
 - Phase: completed, final tick: 450
 - Score total: -73.55
   - population risk contribution: -17.28, infrastructure contribution: 22.73
