@@ -117,6 +117,23 @@ try {
     fail("archive is missing package.json, so the exclusion result is not meaningful");
   }
 
+  // M10.1.1 P0-A: browser verifier tests and fixtures must ship together.
+  const normalized = entries.map((entry) => entry.replace(/^\.\//, ""));
+  const requiredPairs = [
+    "apps/command-center/test/replay-verify-m10.1.test.ts",
+    "apps/command-center/test/replay-verify-m10.1.1.test.ts",
+    "apps/command-center/test/fixtures/minimal-semantic-forgery.artifact.json",
+    "apps/command-center/test/fixtures/sample-run.artifact.json",
+  ];
+  for (const required of requiredPairs) {
+    if (!normalized.includes(required) && !files.includes(required)) {
+      fail(`release archive / selection missing required self-contained test asset: ${required}`);
+    }
+  }
+  if (normalized.some((entry) => entry.startsWith("_audit/")) || files.some((file) => file.startsWith("_audit/"))) {
+    fail("release selection must not include _audit/");
+  }
+
   process.stdout.write(
     `PASS release-archive-canary: ${planted.length} canary file(s) planted, ` +
       `${entries.length} archive entries checked, ${excluded.length} candidate(s) denied by policy ` +

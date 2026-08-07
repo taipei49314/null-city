@@ -57,7 +57,7 @@ describe("replay/schema parseReplayArtifact", () => {
   it("rejects a truth event with a non-object payload", () => {
     const parsed = JSON.parse(FIXTURE_RAW);
     parsed.truth.events[0].payload = "not-an-object";
-    expect(() => parseReplayArtifact(JSON.stringify(parsed))).toThrow(/payload must be an object/);
+    expect(() => parseReplayArtifact(JSON.stringify(parsed))).toThrow(/payload must be a non-array object/);
   });
 
   it("rejects a player event whose stream is not \"player\"", () => {

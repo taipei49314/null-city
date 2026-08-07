@@ -10,10 +10,7 @@ import { buildMarkdownReport } from "../src/replay/report";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const FIXTURE_RAW = readFileSync(join(HERE, "fixtures", "sample-run.artifact.json"), "utf8");
-const MINIMAL_FORGERY_RAW = readFileSync(
-  join(HERE, "../../../_audit/m10.1/reproduction/minimal-semantic-forgery.artifact.json"),
-  "utf8",
-);
+const MINIMAL_FORGERY_RAW = readFileSync(join(HERE, "fixtures", "minimal-semantic-forgery.artifact.json"), "utf8");
 
 function playerEventHash(
   event: Pick<PlayerEventEnvelope, "sessionId" | "sequence" | "tick" | "kind" | "payload" | "previousHash">,
@@ -61,8 +58,9 @@ describe("M10.1 browser verifier honesty", () => {
 
     const report = buildMarkdownReport(artifact, result, []);
     expect(report).toMatch(/Browser verification status: \*\*PARTIAL\*\*/);
-    expect(report).toMatch(/Truth replay: \*\*NOT RUN\*\*/);
-    expect(report).toMatch(/Player projection replay: \*\*NOT RUN\*\*/);
+    expect(report).toMatch(/Truth replay: \*\*NOT_CHECKED\*\*/);
+    expect(report).toMatch(/Player projection replay: \*\*NOT_CHECKED\*\*/);
+    expect(report).toMatch(/publicActionLedger: \*\*NOT_CHECKED\*\*/);
     expect(report).not.toMatch(/Independent client-side verification: \*\*PASS\*\*/);
     expect(report).toMatch(/null-city-run verify/);
   });

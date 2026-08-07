@@ -1,64 +1,66 @@
-# EVIDENCE — NullCity M10.1 Pre-Push Closure
+# EVIDENCE — NullCity M10.1.1 Final Pre-Push Closure
 
 ## Environment
 
 - OS: Microsoft Windows 11 (win32 10.0.26200)
-- pnpm 10.33.0 / Node (workspace `engines.node` ≥20)
+- pnpm 10.33.0 / Node workspace engines ≥20
 - Date: 2026-08-07
-- Audit pack: `_audit/m10.1/` (from `nullcity-cursor-m10.1-prepush-fix-pack`)
+- Audit pack: `_audit/m10.1.1/` (from `nullcity-cursor-m10.1.1-final-closure-pack-v2`)
 
-## Freeze commands (local)
+## Exact commit (product freeze)
+
+| Field | Value |
+|---|---|
+| `git rev-parse HEAD` | _filled after freeze commit_ |
+| `git rev-parse 'HEAD^{tree}'` | _filled after freeze commit_ |
+| `git status --short` | _must be clean_ |
+
+## Local gates
 
 | # | Command | Exit | Result |
 |---:|---|---:|---|
-| 1 | `pnpm install --frozen-lockfile` | **0** | Lockfile up to date |
-| 2 | `pnpm verify` | **0** | Full gate green, incl. `verify:markdown-links` + release-archive canary + M10 audit-repro + 91-attack adversarial |
-| 3 | `pnpm command-center:e2e` | **0** | Smoke flow PASS; artifact blocked pre-completion; released post-completion |
-| 4 | `pnpm verify:benchmark` (inside #2) | 0 | 15 runs (5 scenarios × 3 policies) → `data/benchmark-smoke/report.md` |
-| 5 | Adversarial suite (inside #2) | 0 | 91 attacks, 89 defended, 0 vulnerable, 2 accepted limitations |
+| 1 | `pnpm install --frozen-lockfile` | pending | |
+| 2 | `pnpm verify` | pending | includes markdown-links, no-external-workpack, release-archive, adversarial |
+| 3 | `pnpm command-center:e2e` | pending | |
+| 4 | `pnpm verify:markdown-links` | pending | |
+| 5 | `pnpm verify:release-archive` | pending | |
 
-## Browser verifier (M10.1 P0)
+## Fresh clone (no `_audit/` required)
 
-| Check | Result |
-|---|---|
-| Honest sample fixture | `status=PARTIAL`, integrity+semantics PASS; truth/player replay NOT RUN |
-| Resealed player `CommandResult` rewrite | semantic FAIL (`test/replay-verify-m10.1.test.ts`) |
-| Minimal forgery fixture (`_audit/m10.1/reproduction/…`) | rejected (parse or verify FAIL) |
-| UI / Markdown report | PARTIAL badge; Integrity / Semantic bindings lines; no unqualified full PASS |
+| # | Command | Exit | Result |
+|---:|---|---:|---|
+| 1 | clone exact commit → empty dir | pending | |
+| 2 | delete `_audit/` if present | pending | |
+| 3 | `pnpm install --frozen-lockfile` | pending | |
+| 4 | `pnpm verify` | pending | |
+| 5 | `pnpm command-center:e2e` | pending | |
 
-## Exact commit
+## Adversarial before → after (browser)
+
+| Case | Before (M10.1 audit) | After (M10.1.1) |
+|---|---|---|
+| Resealed `CommandResult` state rewrite | semantic green / UI PASS risk | `status=FAIL`, semantic FAIL |
+| Delete one / all player `CommandResult` | semantic green | `status=FAIL` |
+| Duplicate player `CommandResult` | semantic green | `status=FAIL` |
+| Foreign player session ID | semantic green | `status=FAIL` |
+| Forged `activeIncidents` | semantic green | `status=FAIL` |
+| Forged `RunCompleted` counts | semantic green | `status=FAIL` |
+| Erased ledger / forged protocol / scenario digest | implied by broad semantic PASS | scopes explicitly `NOT_CHECKED` |
+| `EvidenceRecorded` `{}` | PARTIAL then provenance crash | parse reject / never projected |
+| Deep nested payload | stack overflow | controlled depth error |
+
+## Release archive
 
 | Field | Value |
 |---|---|
-| `git rev-parse HEAD` | `ce9a013522107880b735e896eaf4a3ac69a8cba2` |
-| `git rev-parse 'HEAD^{tree}'` | `ce6c0611091d6f5edb3c84613cae64de87b134ef` |
-| `git status --short` (at evidence freeze) | clean (empty) |
+| Selection includes M10.1 test + fixture | pending |
+| No `_audit/` in archive | pending |
+| SHA-256 | pending |
+| File count | pending |
 
-Note: this EVIDENCE SHA table documents the initial product commit above. A follow-up commit may only refresh this evidence file.
-
-## Not executed / BLOCKED
+## Remote gates
 
 | Gate | Status |
 |---|---|
-| Docker compose loopback smoke | **BLOCKED** (not run this round) |
-| Push to remote | **BLOCKED** (no remote / not requested) |
-| Remote CI | **BLOCKED** (requires push) |
-| Fresh clone from remote | **BLOCKED** (requires push) |
-
-## Packaging note
-
-Release allowlist now ships selected public `data/` assets (`data/evidence/**`, benchmark-smoke reports, `data/m4-run-*.artifact.json`) and root governance files (`02_MILESTONE_ROADMAP.md`, `CODE_OF_CONDUCT.md`, `CITATION.cff`). `data/release/**` remains denied.
-
-### Desktop / local allowlist zip (not pushed)
-
-| Field | Value |
-|---|---|
-| Archive | `null-city-m10.1-prepush-closure.zip` |
-| Desktop copy | `C:\Users\G713RW\Desktop\null-city-m10.1-prepush-closure.zip` |
-| SHA-256 | `e758fbf87f99ca929e3db73d5c9642d396e5b3b1920030fff76bff7224c2c41e` |
-| Selection | 378 files via git allowlist (includes evidence PNGs + governance roots; excludes `data/release/**`) |
-
-## Prior ADR / matrix
-
-- `docs/decisions/2026-08-07-m10-integrity-closure.md`
-- `docs/audits/2026-08-07-m10-findings-matrix.md`
+| Push / GitHub Actions verify | **BLOCKED** (no git remote) |
+| Docker smoke workflow | **BLOCKED** (no git remote) |

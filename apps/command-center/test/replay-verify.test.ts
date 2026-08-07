@@ -17,10 +17,14 @@ describe("replay/verify verifyReplayArtifact", () => {
     const artifact = freshArtifact();
     const result = verifyReplayArtifact(artifact);
     expect(result.reasons).toEqual([]);
-    expect(result.ok).toBe(true);
     expect(result.status).toBe("PARTIAL");
+    expect(result.integrityOk).toBe(true);
+    expect(result.semanticBindingsOk).toBe(true);
     expect(result.truthReplayChecked).toBe(false);
     expect(result.playerReplayChecked).toBe(false);
+    expect(result.scopes.truthReplay).toBe("NOT_CHECKED");
+    expect(result.scopes.publicActionLedger).toBe("NOT_CHECKED");
+    expect(result.scopes.scenarioContentDigest).toBe("NOT_CHECKED");
   });
 
   it("re-derives the command trace from the truth log and it matches exactly (terminal equality)", () => {
@@ -40,7 +44,7 @@ describe("replay/verify verifyReplayArtifact", () => {
     const idx = artifact.truth.events.findIndex((e) => e.kind === "ActionApplied");
     artifact.truth.events[idx]!.payload = { ...artifact.truth.events[idx]!.payload, tampered: true };
     const result = verifyReplayArtifact(artifact);
-    expect(result.ok).toBe(false);
+    expect(result.status).toBe("FAIL");
     expect(result.reasons.some((r) => r.includes("truth stream invalid") || r.includes("artifactHash"))).toBe(true);
   });
 
@@ -50,14 +54,14 @@ describe("replay/verify verifyReplayArtifact", () => {
     expect(idx).toBeGreaterThanOrEqual(0);
     artifact.player.events[idx]!.payload = { ...(artifact.player.events[idx]!.payload as object), tampered: true };
     const result = verifyReplayArtifact(artifact);
-    expect(result.ok).toBe(false);
+    expect(result.status).toBe("FAIL");
   });
 
   it("rejects a tampered score total that leaves the event logs untouched", () => {
     const artifact = freshArtifact();
     const tampered = { ...artifact, scoreTotal: artifact.scoreTotal + 999 };
     const result = verifyReplayArtifact(tampered);
-    expect(result.ok).toBe(false);
+    expect(result.status).toBe("FAIL");
     expect(result.reasons).toContain("artifactHash mismatch");
   });
 
@@ -65,7 +69,7 @@ describe("replay/verify verifyReplayArtifact", () => {
     const artifact = freshArtifact();
     artifact.commandTrace[0]!.outcome = artifact.commandTrace[0]!.outcome === "accepted" ? "rejected" : "accepted";
     const result = verifyReplayArtifact(artifact);
-    expect(result.ok).toBe(false);
+    expect(result.status).toBe("FAIL");
     expect(result.reasons.some((r) => r.includes("commandTrace") || r.includes("artifactHash"))).toBe(true);
   });
 

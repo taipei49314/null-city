@@ -28,7 +28,23 @@ export function ArtifactLoader({ title, description, onLoaded, defaultSessionId 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   function finish(artifact: ReplayArtifact) {
-    const verify = verifyReplayArtifact(artifact);
+    let verify: ReplayVerifyResult;
+    try {
+      verify = verifyReplayArtifact(artifact);
+    } catch (error) {
+      setStatus({
+        kind: "error",
+        message: `rejected: verification aborted — ${error instanceof Error ? error.message : "unknown error"}`,
+      });
+      return;
+    }
+    if (verify.status !== "PARTIAL") {
+      setStatus({
+        kind: "error",
+        message: `rejected: browser verify ${verify.status} — ${verify.reasons.join("; ") || "integrity/semantic bindings failed"}`,
+      });
+      return;
+    }
     setStatus({ kind: "idle" });
     onLoaded(artifact, verify);
   }

@@ -42,9 +42,30 @@ export function ReplayLabPage() {
       .artifactRaw(sessionId)
       .then((envelopeText) => {
         if (cancelled) return;
-        const artifact = parseReplayArtifact(unwrapArtifactEnvelope(envelopeText));
-        setPrimary({ artifact, verify: verifyReplayArtifact(artifact) });
-        setAutoLoad({ kind: "idle" });
+        try {
+          const artifact = parseReplayArtifact(unwrapArtifactEnvelope(envelopeText));
+          const verify = verifyReplayArtifact(artifact);
+          if (verify.status !== "PARTIAL") {
+            setPrimary(null);
+            setAutoLoad({
+              kind: "error",
+              message: `artifact rejected: browser verify ${verify.status} — ${verify.reasons.join("; ")}`,
+            });
+            return;
+          }
+          setPrimary({ artifact, verify });
+          setAutoLoad({ kind: "idle" });
+        } catch (error) {
+          setPrimary(null);
+          if (error instanceof ReplayArtifactParseError) {
+            setAutoLoad({ kind: "error", message: `artifact rejected: ${error.message}` });
+          } else {
+            setAutoLoad({
+              kind: "error",
+              message: `artifact rejected: ${error instanceof Error ? error.message : "unexpected verification failure"}`,
+            });
+          }
+        }
       })
       .catch((error: unknown) => {
         if (cancelled) return;
@@ -64,31 +85,54 @@ export function ReplayLabPage() {
   }, [sessionId]);
 
   const derived = useMemo(() => {
-    if (!primary) {
+    if (!primary || primary.verify.status !== "PARTIAL") {
       return null;
     }
-    const { artifact } = primary;
-    const evidenceProvenance = buildEvidenceProvenance(artifact);
-    const actionTimeline = buildActionTimeline(artifact);
-    const scoreSeries = buildScoreSeries(artifact);
-    const marks: TimelineMark[] = [
-      ...scoreSeries.map((p) => ({ tick: p.tick, label: `${p.category} ${p.delta >= 0 ? "+" : ""}${p.delta.toFixed(1)}`, kind: "score" as const })),
-      ...evidenceProvenance.map((e) => ({ tick: e.deliveredTick, label: e.evidenceId, kind: "evidence" as const })),
-      ...artifact.commandTrace.map((c) => ({ tick: c.issuedTick, label: c.commandName, kind: "command" as const })),
-    ];
-    return { evidenceProvenance, actionTimeline, scoreSeries, marks };
+    try {
+      const { artifact } = primary;
+      const evidenceProvenance = buildEvidenceProvenance(artifact);
+      const actionTimeline = buildActionTimeline(artifact);
+      const scoreSeries = buildScoreSeries(artifact);
+      const marks: TimelineMark[] = [
+        ...scoreSeries.map((p) => ({ tick: p.tick, label: `${p.category} ${p.delta >= 0 ? "+" : ""}${p.delta.toFixed(1)}`, kind: "score" as const })),
+        ...evidenceProvenance.map((e) => ({ tick: e.deliveredTick, label: e.evidenceId, kind: "evidence" as const })),
+        ...artifact.commandTrace.map((c) => ({ tick: c.issuedTick, label: c.commandName, kind: "command" as const })),
+      ];
+      return { evidenceProvenance, actionTimeline, scoreSeries, marks };
+    } catch (error) {
+      return {
+        fatal: error instanceof Error ? error.message : "projection failed",
+      } as const;
+    }
   }, [primary]);
 
-  const playerProjection = useMemo(
-    () => (primary ? projectPlayerAtTick(primary.artifact.player.events, tick) : null),
-    [primary, tick],
-  );
-  const truthProjection = useMemo(
-    () => (primary ? projectTruthAtTick(primary.artifact.truth.events, tick) : null),
-    [primary, tick],
-  );
+  const playerProjection = useMemo(() => {
+    if (!primary || primary.verify.status !== "PARTIAL") return null;
+    try {
+      return projectPlayerAtTick(primary.artifact.player.events, tick);
+    } catch {
+      return null;
+    }
+  }, [primary, tick]);
+  const truthProjection = useMemo(() => {
+    if (!primary || primary.verify.status !== "PARTIAL") return null;
+    try {
+      return projectTruthAtTick(primary.artifact.truth.events, tick);
+    } catch {
+      return null;
+    }
+  }, [primary, tick]);
 
   function handleLoaded(artifact: ReplayArtifact, verify: ReplayVerifyResult): void {
+    // ArtifactLoader already refuses FAIL; defend in depth.
+    if (verify.status !== "PARTIAL") {
+      setPrimary(null);
+      setAutoLoad({
+        kind: "error",
+        message: `artifact rejected: browser verify ${verify.status} — ${verify.reasons.join("; ")}`,
+      });
+      return;
+    }
     setPrimary({ artifact, verify });
     setTick(0);
     setSecondary(null);
@@ -106,13 +150,13 @@ export function ReplayLabPage() {
   }
 
   function handleExportReport(): void {
-    if (!primary || !derived) return;
+    if (!primary || !derived || "fatal" in derived) return;
     const markdown = buildMarkdownReport(primary.artifact, primary.verify, derived.evidenceProvenance, secondary?.artifact);
     downloadMarkdown(markdown, `replay-report-${primary.artifact.identity.sessionId}.md`);
   }
 
   function handleExportDebrief(): void {
-    if (!primary || !derived) return;
+    if (!primary || !derived || "fatal" in derived) return;
     const markdown = buildDebriefMarkdown(primary.artifact, derived.evidenceProvenance, locale);
     downloadMarkdown(markdown, `debrief-${primary.artifact.identity.sessionId}.md`);
   }
@@ -152,7 +196,16 @@ export function ReplayLabPage() {
         />
       )}
 
-      {primary && derived && playerProjection && truthProjection && (
+      {primary && derived && "fatal" in derived && (
+        <p className="replay-body" role="alert">
+          Artifact rejected during projection: {derived.fatal}
+          <button type="button" className="nc-btn" onClick={() => setPrimary(null)}>
+            Load another run
+          </button>
+        </p>
+      )}
+
+      {primary && derived && !("fatal" in derived) && playerProjection && truthProjection && (
         <div className="replay-lab-content">
           <div className="replay-lab-toolbar">
             <IdentitySummary artifact={primary.artifact} verify={primary.verify} />
@@ -187,7 +240,12 @@ export function ReplayLabPage() {
           <CompareRunsPanel
             primary={primary.artifact}
             secondary={secondary}
-            onLoadSecondary={(artifact, verify) => setSecondary({ artifact, verify })}
+            onLoadSecondary={(artifact, verify) => {
+              if (verify.status !== "PARTIAL") {
+                return;
+              }
+              setSecondary({ artifact, verify });
+            }}
             onClearSecondary={() => setSecondary(null)}
           />
         </div>
@@ -205,10 +263,15 @@ function IdentitySummary({ artifact, verify }: { artifact: ReplayArtifact; verif
         browser verify: {verify.status}
         {verify.status === "PARTIAL" ? " (integrity+semantics)" : ""}
       </span>
-      <span className="nc-tag">Integrity: {verify.integrityOk ? "PASS" : "FAIL"}</span>
-      <span className="nc-tag">Semantic bindings: {verify.semanticBindingsOk ? "PASS" : "FAIL"}</span>
-      <span className="nc-tag">Truth replay: NOT RUN</span>
-      <span className="nc-tag">Player replay: NOT RUN</span>
+      <span className="nc-tag">Integrity: {verify.scopes.integrity}</span>
+      <span className="nc-tag">Semantic bindings: {verify.scopes.semanticBindings}</span>
+      <span className="nc-tag">Truth replay: {verify.scopes.truthReplay}</span>
+      <span className="nc-tag">Player replay: {verify.scopes.playerReplay}</span>
+      <span className="nc-tag">stateDigest: {verify.scopes.stateDigest}</span>
+      <span className="nc-tag">scenarioDigest: {verify.scopes.scenarioContentDigest}</span>
+      <span className="nc-tag">protocol: {verify.scopes.engineProtocolCompatibility}</span>
+      <span className="nc-tag">publicActionLedger: {verify.scopes.publicActionLedger}</span>
+      <span className="nc-tag">authenticity: {verify.scopes.authenticity}</span>
       <span className="replay-mono">{artifact.identity.sessionId}</span>
       <span>{artifact.identity.scenarioId}</span>
       <span>seed {artifact.identity.seed}</span>

@@ -1,39 +1,32 @@
-# STATUS — NullCity M10.1 Pre-Push Closure
+# STATUS — NullCity M10.1.1 Final Pre-Push Closure
 
 ## Overall
 
-Status: IMPLEMENTED (local gates)  
-Release decision: **NOT READY TO TAG / NOT READY TO PUSH** until remote exists and CI/Docker are green  
-Honesty: Remote CI / Docker daemon / fresh-clone-from-remote remain **BLOCKED** (no push). Exact-commit recorded in `EVIDENCE.md` (`ce9a013…` / tree `ce6c061…`).
+Status: IMPLEMENTED (local + fresh-clone pending evidence fill)  
+Release decision: **HOLD for public main/tags until remote CI + Docker smoke are green**  
+Honesty: Remote CI / Docker / push remain **BLOCKED** while no git remote is configured.
 
-Prior: M0–M10 Integrity Closure
+Prior: M0–M10.1
 
-## M10.1 shipped
+## M10.1.1 shipped
 
 | Workstream | Status | Notes |
 |---|---|---|
-| A browser verifier honesty | PASS | `status` FAIL\|PARTIAL; integrity + semantic bindings; resealed CommandResult forge → semantic FAIL; UI/report never unqualified full PASS |
-| B public package completeness | PASS | release allowlist includes selected `data/**` + governance roots; `pnpm verify:markdown-links` in `pnpm verify` |
-| C README truthfulness | PASS | five scenarios; active-run truth boundary; browser = partial / CLI = authoritative |
-| D local exact-commit gates | PASS (local) | frozen install, `pnpm verify`, e2e, release-archive; see `EVIDENCE.md` for SHA/tree |
+| P0-A fixture self-containment | PASS | Tracked `test/fixtures/minimal-semantic-forgery.artifact.json`; `verify:no-external-workpack`; release archive requires test+fixture |
+| P0-B fail-closed parsing | PASS | Per-kind payload validation; depth bounds; ArtifactLoader never `onLoaded` on FAIL; Replay Lab guards projections |
+| P1 semantic precision | PASS | Exact 1:1:1 command binding; session binding; derived active/handled/terminal counts; named NOT_CHECKED scopes; removed deprecated `ok` |
+| P1 exact-tree evidence | IN PROGRESS | Local verify/e2e/fresh-clone recorded in `EVIDENCE.md` |
 
-## Full verify
+## Still blocked
 
-`pnpm install --frozen-lockfile` — exit 0  
-`pnpm verify` — **exit 0** (includes markdown-links + release-archive + audit-repro + adversarial)  
-`pnpm command-center:e2e` — **exit 0**
-
-## Still blocked for public push / tag
-
-1. Live Docker daemon smoke  
-2. Remote CI on a real runner  
-3. Fresh clone from a pushed remote commit  
-4. Independent second reviewer re-run of M10.1 reproductions  
+1. Git remote + push  
+2. GitHub Actions `verify` + required Docker smoke  
+3. Tag / public main promotion  
 
 ## How to demo
 
 ```bash
 pnpm demo
-# Browser Replay Lab: load data/m4-run-a.artifact.json → expect PARTIAL, not full PASS
+# Replay Lab: load data/m4-run-a.artifact.json → PARTIAL with named NOT_CHECKED scopes
 node packages/simulation/dist/cli/run.js verify --artifact data/m4-run-a.artifact.json
 ```

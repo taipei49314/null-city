@@ -9,19 +9,32 @@
  * reimplements both from scratch. `canonicalJsonReplay` intentionally
  * matches `packages/contracts/src/canonical.ts`'s `sortDeep` + `JSON.stringify`
  * behavior exactly, byte for byte, so hashes computed here match the ones
- * embedded in a genuine artifact.
+ * embedded in a genuine artifact — except depth is hard-bounded so hostile
+ * nesting becomes a controlled error instead of a stack overflow.
  */
 
-/** Deep, recursive key-sort so logically equal objects always serialize identically. */
-function sortDeep(value: unknown): unknown {
+import { ArtifactBoundsError, MAX_NESTING_DEPTH } from "./bounds";
+
+export class CanonicalJsonDepthError extends ArtifactBoundsError {
+  constructor(message: string) {
+    super(message);
+    this.name = "CanonicalJsonDepthError";
+  }
+}
+
+/** Deep, iterative-safe key-sort so logically equal objects always serialize identically. */
+function sortDeep(value: unknown, depth: number): unknown {
+  if (depth > MAX_NESTING_DEPTH) {
+    throw new CanonicalJsonDepthError(`canonical JSON nesting exceeds maximum depth ${MAX_NESTING_DEPTH}`);
+  }
   if (Array.isArray(value)) {
-    return value.map(sortDeep);
+    return value.map((item) => sortDeep(item, depth + 1));
   }
   if (value !== null && typeof value === "object") {
     const record = value as Record<string, unknown>;
     const out: Record<string, unknown> = {};
     for (const key of Object.keys(record).sort()) {
-      out[key] = sortDeep(record[key]);
+      out[key] = sortDeep(record[key], depth + 1);
     }
     return out;
   }
@@ -29,7 +42,7 @@ function sortDeep(value: unknown): unknown {
 }
 
 export function canonicalJsonReplay(value: unknown): string {
-  return JSON.stringify(sortDeep(value));
+  return JSON.stringify(sortDeep(value, 0));
 }
 
 const K = new Uint32Array([

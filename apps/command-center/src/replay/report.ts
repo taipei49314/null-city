@@ -26,12 +26,15 @@ export function buildMarkdownReport(
   lines.push(`- Commands issued: ${artifact.commandTrace.length} · Assessments submitted: ${artifact.assessmentTrace.length}`);
   lines.push(`- Artifact hash: \`${artifact.artifactHash}\``);
   lines.push(`- Browser verification status: **${verify.status}** (never full PASS)`);
-  lines.push(`- Integrity: **${verify.integrityOk ? "PASS" : "FAIL"}**`);
-  lines.push(`- Semantic bindings: **${verify.semanticBindingsOk ? "PASS" : "FAIL"}**`);
-  lines.push(`- Truth replay: **NOT RUN**`);
-  lines.push(`- Player projection replay: **NOT RUN**`);
-  lines.push(`- stateDigest: **${verify.stateDigestStatus}**`);
-  lines.push(`- Authenticity: **${verify.authenticity}**`);
+  lines.push(`- Integrity: **${verify.scopes.integrity}**`);
+  lines.push(`- Semantic bindings: **${verify.scopes.semanticBindings}**`);
+  lines.push(`- Truth replay: **${verify.scopes.truthReplay}**`);
+  lines.push(`- Player projection replay: **${verify.scopes.playerReplay}**`);
+  lines.push(`- stateDigest: **${verify.scopes.stateDigest}**`);
+  lines.push(`- scenarioContentDigest: **${verify.scopes.scenarioContentDigest}**`);
+  lines.push(`- engineProtocolCompatibility: **${verify.scopes.engineProtocolCompatibility}**`);
+  lines.push(`- publicActionLedger: **${verify.scopes.publicActionLedger}**`);
+  lines.push(`- authenticity: **${verify.scopes.authenticity}**`);
   if (verify.reasons.length > 0) {
     lines.push(`- Reasons: ${verify.reasons.join("; ")}`);
   }

@@ -1,13 +1,13 @@
 /**
- * Browser-side Replay Lab verification (M10.1).
+ * Browser-side Replay Lab verification (M10.1.1).
  *
  * This is intentionally *not* the same scope as `null-city-run verify`:
  * the browser never loads the compiled scenario or rebuilds the player
- * projection. It may report integrity + semantic bindings only, always with
- * `truthReplayChecked: false` and `playerReplayChecked: false`.
+ * projection. It may report integrity + semantic bindings only. Named scopes
+ * that the browser cannot check are always `NOT_CHECKED`.
  */
 import type { PlayerEventEnvelope } from "@null-city/contracts";
-import { canonicalJsonReplay, sha256Hex } from "./hash";
+import { CanonicalJsonDepthError, canonicalJsonReplay, sha256Hex } from "./hash";
 import type { ReplayArtifact, ReplayCommandTraceEntry, ReplayAssessmentTraceEntry, ReplayTruthEvent } from "./schema";
 
 const GENESIS_PREVIOUS_HASH = "";
@@ -56,6 +56,19 @@ export interface ChainVerifyResult {
 }
 
 export type ReplayVerificationStatus = "FAIL" | "PARTIAL";
+export type CheckStatus = "PASS" | "FAIL" | "NOT_CHECKED";
+
+export interface ReplayVerifyScopes {
+  integrity: CheckStatus;
+  semanticBindings: CheckStatus;
+  truthReplay: "NOT_CHECKED";
+  playerReplay: "NOT_CHECKED";
+  stateDigest: "NOT_CHECKED";
+  scenarioContentDigest: "NOT_CHECKED";
+  engineProtocolCompatibility: "NOT_CHECKED";
+  publicActionLedger: "NOT_CHECKED";
+  authenticity: "NOT_CHECKED";
+}
 
 export interface ReplayVerifyResult {
   /** Never "PASS full"; browser scope is FAIL or PARTIAL only. */
@@ -66,13 +79,11 @@ export interface ReplayVerifyResult {
   playerReplayChecked: false;
   authenticity: "none";
   reasons: string[];
-  /**
-   * @deprecated Use `status === "PARTIAL" && integrityOk && semanticBindingsOk`.
-   * Kept so older call sites that checked `ok` do not silently treat PARTIAL as full PASS.
-   * True only when integrity+semantics pass (still PARTIAL scope).
-   */
-  ok: boolean;
+  scopes: ReplayVerifyScopes;
   stateDigestStatus: "NOT_CHECKED";
+  scenarioContentDigestStatus: "NOT_CHECKED";
+  engineProtocolCompatibilityStatus: "NOT_CHECKED";
+  publicActionLedgerStatus: "NOT_CHECKED";
 }
 
 function eventHash(event: Pick<ReplayTruthEvent, "sessionId" | "sequence" | "tick" | "kind" | "payload" | "previousHash">): string {
@@ -301,8 +312,37 @@ function checkSingletonTerminal(
   }
 }
 
+function deriveActiveIncidents(truthEvents: readonly ReplayTruthEvent[]): string[] {
+  const active = new Set<string>();
+  for (const event of truthEvents) {
+    if (event.kind === "TrueIncidentOccurred" || event.kind === "IncidentChained") {
+      active.add((event.payload as { incidentId: string }).incidentId);
+    } else if (event.kind === "IncidentResolved") {
+      active.delete((event.payload as { incidentId: string }).incidentId);
+    }
+  }
+  return [...active].sort();
+}
+
+function derivePlayerTerminalCounts(playerEvents: readonly PlayerEventEnvelope[]): {
+  claimCount: number;
+  evidenceCount: number;
+} {
+  const claimIds = new Set<string>();
+  let evidenceCount = 0;
+  for (const event of playerEvents) {
+    if (event.kind === "ClaimUpdated") {
+      claimIds.add((event.payload as { claim: { id: string } }).claim.id);
+    } else if (event.kind === "EvidenceRecorded") {
+      evidenceCount += 1;
+    }
+  }
+  return { claimCount: claimIds.size, evidenceCount };
+}
+
 function collectSemanticReasons(artifact: ReplayArtifact): string[] {
   const reasons: string[] = [];
+  const sessionId = artifact.identity.sessionId;
   const truthKinds = artifact.truth.events.map((e) => e.kind);
   const playerKinds = artifact.player.events.map((e) => e.kind);
 
@@ -315,16 +355,16 @@ function collectSemanticReasons(artifact: ReplayArtifact): string[] {
     if (!ALLOWED_TRUTH_KINDS.has(event.kind)) {
       reasons.push(`truth stream: disallowed kind ${event.kind}`);
     }
-    if (event.payload === null || typeof event.payload !== "object" || Array.isArray(event.payload)) {
-      reasons.push(`truth seq ${event.sequence}: payload must be a plain object`);
+    if (event.sessionId !== sessionId) {
+      reasons.push(`truth seq ${event.sequence}: sessionId does not match identity.sessionId`);
     }
   }
   for (const event of artifact.player.events) {
     if (!ALLOWED_PLAYER_KINDS.has(event.kind)) {
       reasons.push(`player stream: disallowed kind ${event.kind}`);
     }
-    if (event.payload === null || typeof event.payload !== "object" || Array.isArray(event.payload)) {
-      reasons.push(`player seq ${event.sequence}: payload must be a plain object`);
+    if (event.sessionId !== sessionId) {
+      reasons.push(`player seq ${event.sequence}: sessionId does not match identity.sessionId`);
     }
   }
 
@@ -334,8 +374,9 @@ function collectSemanticReasons(artifact: ReplayArtifact): string[] {
   if (!SHA256_HEX.test(artifact.stateDigest)) {
     reasons.push("stateDigest is not a sha256 hex digest");
   }
-  // Browser never recomputes stateDigest against a live scenario.
-  void artifact.stateDigest;
+  if (!Number.isInteger(artifact.identity.engineProtocolVersion) || artifact.identity.engineProtocolVersion < 0) {
+    reasons.push("identity.engineProtocolVersion must be a non-negative integer");
+  }
 
   const started = artifact.truth.events[0];
   if (started?.kind === "ScenarioStarted") {
@@ -349,9 +390,6 @@ function collectSemanticReasons(artifact: ReplayArtifact): string[] {
     if (payload.totalTicks !== artifact.identity.totalTicks) {
       reasons.push("identity.totalTicks does not match ScenarioStarted.totalTicks");
     }
-  }
-  if (started && started.sessionId !== artifact.identity.sessionId) {
-    reasons.push("identity.sessionId does not match the truth genesis event");
   }
 
   const playerStarted = artifact.player.events[0];
@@ -396,37 +434,63 @@ function collectSemanticReasons(artifact: ReplayArtifact): string[] {
     if (payload.scoreTotal !== artifact.scoreTotal) {
       reasons.push("RunCompleted.scoreTotal does not match artifact scoreTotal");
     }
+    const derived = derivePlayerTerminalCounts(artifact.player.events);
+    if (payload.claimCount !== derived.claimCount) {
+      reasons.push(
+        `RunCompleted.claimCount ${String(payload.claimCount)} does not match derived claim count ${derived.claimCount}`,
+      );
+    }
+    if (payload.evidenceCount !== derived.evidenceCount) {
+      reasons.push(
+        `RunCompleted.evidenceCount ${String(payload.evidenceCount)} does not match derived evidence count ${derived.evidenceCount}`,
+      );
+    }
   }
 
-  // Cross-bind every player CommandResult to exactly one truth outcome.
-  const outcomes = new Map<string, { state: "accepted" | "rejected"; idempotencyKey?: string }>();
-  const issuedKeys = new Map<string, string>();
-  const seenCommandIds = new Set<string>();
+  // Exact 1:1:1 — CommandIssued ↔ truth outcome ↔ player CommandResult.
+  type Outcome = { state: "accepted" | "rejected"; idempotencyKey: string; sessionId: string };
+  const issued = new Map<string, { idempotencyKey: string; sessionId: string }>();
+  const outcomes = new Map<string, Outcome>();
+  const playerResults = new Map<string, { state: "accepted" | "rejected"; idempotencyKey: string; sessionId: string; count: number }>();
   const seenIdempotency = new Set<string>();
 
   for (const event of artifact.truth.events) {
     if (event.kind === "CommandIssued") {
       const payload = event.payload as { commandId: string; idempotencyKey: string };
-      if (seenCommandIds.has(payload.commandId)) {
+      if (issued.has(payload.commandId)) {
         reasons.push(`duplicate CommandIssued commandId ${payload.commandId}`);
       }
-      seenCommandIds.add(payload.commandId);
       if (seenIdempotency.has(payload.idempotencyKey)) {
         reasons.push(`duplicate CommandIssued idempotencyKey ${payload.idempotencyKey}`);
       }
       seenIdempotency.add(payload.idempotencyKey);
-      issuedKeys.set(payload.commandId, payload.idempotencyKey);
+      issued.set(payload.commandId, { idempotencyKey: payload.idempotencyKey, sessionId: event.sessionId });
     }
     if (event.kind === "CommandAccepted" || event.kind === "CommandRejected") {
-      const commandId = (event.payload as { commandId: string }).commandId;
+      const payload = event.payload as { commandId: string; idempotencyKey?: string };
       const state = event.kind === "CommandAccepted" ? "accepted" : "rejected";
-      if (outcomes.has(commandId)) {
-        reasons.push(`truth has duplicate outcomes for commandId ${commandId}`);
+      if (outcomes.has(payload.commandId)) {
+        reasons.push(`truth has duplicate outcomes for commandId ${payload.commandId}`);
       }
-      outcomes.set(commandId, {
-        state,
-        idempotencyKey: issuedKeys.get(commandId),
-      });
+      const issuedMeta = issued.get(payload.commandId);
+      const idempotencyKey =
+        typeof payload.idempotencyKey === "string" ? payload.idempotencyKey : issuedMeta?.idempotencyKey;
+      if (!issuedMeta) {
+        reasons.push(`truth outcome for unknown commandId ${payload.commandId}`);
+      } else if (!idempotencyKey) {
+        reasons.push(`truth outcome missing idempotencyKey for commandId ${payload.commandId}`);
+      } else {
+        if (idempotencyKey !== issuedMeta.idempotencyKey) {
+          reasons.push(`truth outcome idempotencyKey does not match CommandIssued for ${payload.commandId}`);
+        }
+        outcomes.set(payload.commandId, { state, idempotencyKey, sessionId: event.sessionId });
+      }
+    }
+  }
+
+  for (const commandId of issued.keys()) {
+    if (!outcomes.has(commandId)) {
+      reasons.push(`CommandIssued ${commandId} has no truth terminal outcome`);
     }
   }
 
@@ -439,18 +503,42 @@ function collectSemanticReasons(artifact: ReplayArtifact): string[] {
       state: "accepted" | "rejected";
       idempotencyKey: string;
     };
-    const truth = outcomes.get(payload.commandId);
-    if (!truth) {
-      reasons.push(`player CommandResult for unknown commandId ${payload.commandId}`);
+    const existing = playerResults.get(payload.commandId);
+    if (existing) {
+      existing.count += 1;
+      reasons.push(`duplicate player CommandResult for commandId ${payload.commandId}`);
       continue;
     }
-    if (truth.state !== payload.state) {
+    playerResults.set(payload.commandId, {
+      state: payload.state,
+      idempotencyKey: payload.idempotencyKey,
+      sessionId: event.sessionId,
+      count: 1,
+    });
+  }
+
+  for (const [commandId, outcome] of outcomes) {
+    const player = playerResults.get(commandId);
+    if (!player) {
+      reasons.push(`truth outcome for commandId ${commandId} has no matching player CommandResult`);
+      continue;
+    }
+    if (player.state !== outcome.state) {
       reasons.push(
-        `player CommandResult state ${payload.state} contradicts truth outcome ${truth.state} for commandId ${payload.commandId}`,
+        `player CommandResult state ${player.state} contradicts truth outcome ${outcome.state} for commandId ${commandId}`,
       );
     }
-    if (truth.idempotencyKey !== undefined && truth.idempotencyKey !== payload.idempotencyKey) {
-      reasons.push(`player CommandResult idempotencyKey does not match CommandIssued for ${payload.commandId}`);
+    if (player.idempotencyKey !== outcome.idempotencyKey) {
+      reasons.push(`player CommandResult idempotencyKey does not match truth for ${commandId}`);
+    }
+    if (player.sessionId !== sessionId || outcome.sessionId !== sessionId) {
+      reasons.push(`command ${commandId} sessionId does not match identity.sessionId`);
+    }
+  }
+
+  for (const commandId of playerResults.keys()) {
+    if (!outcomes.has(commandId)) {
+      reasons.push(`player CommandResult for unknown commandId ${commandId}`);
     }
   }
 
@@ -459,6 +547,11 @@ function collectSemanticReasons(artifact: ReplayArtifact): string[] {
     .map((event) => (event.payload as { incidentId: string }).incidentId);
   if (canonicalJsonReplay([...handledFromLog].sort()) !== canonicalJsonReplay([...artifact.handledIncidents].sort())) {
     reasons.push("handledIncidents does not match IncidentResolved events in the truth log");
+  }
+
+  const activeFromLog = deriveActiveIncidents(artifact.truth.events);
+  if (canonicalJsonReplay(activeFromLog) !== canonicalJsonReplay([...artifact.activeIncidents].sort())) {
+    reasons.push("activeIncidents does not match derived truth incident lifecycle");
   }
 
   return reasons;
@@ -479,9 +572,17 @@ export function verifyReplayArtifact(artifact: ReplayArtifact): ReplayVerifyResu
     integrityReasons.push(`unsupported version ${String(artifact.version)}`);
   }
 
-  const expectedHash = sha256Hex(canonicalJsonReplay(withoutArtifactHash(artifact)));
-  if (artifact.artifactHash !== expectedHash) {
-    integrityReasons.push("artifactHash mismatch");
+  try {
+    const expectedHash = sha256Hex(canonicalJsonReplay(withoutArtifactHash(artifact)));
+    if (artifact.artifactHash !== expectedHash) {
+      integrityReasons.push("artifactHash mismatch");
+    }
+  } catch (error) {
+    if (error instanceof CanonicalJsonDepthError) {
+      integrityReasons.push(error.message);
+    } else {
+      throw error;
+    }
   }
 
   const truthChain = verifyTruthChain(artifact.truth.events, artifact.truthLogHash);
@@ -508,8 +609,16 @@ export function verifyReplayArtifact(artifact: ReplayArtifact): ReplayVerifyResu
     if (!payload.finalScore) {
       integrityReasons.push("ScenarioCompleted missing finalScore");
     } else {
-      if (sha256Hex(canonicalJsonReplay(payload.finalScore)) !== artifact.scoreDigest) {
-        integrityReasons.push("scoreDigest mismatch vs ScenarioCompleted");
+      try {
+        if (sha256Hex(canonicalJsonReplay(payload.finalScore)) !== artifact.scoreDigest) {
+          integrityReasons.push("scoreDigest mismatch vs ScenarioCompleted");
+        }
+      } catch (error) {
+        if (error instanceof CanonicalJsonDepthError) {
+          integrityReasons.push(error.message);
+        } else {
+          throw error;
+        }
       }
       if (payload.finalScore.total !== artifact.scoreTotal) {
         integrityReasons.push("scoreTotal mismatch vs ScenarioCompleted");
@@ -520,17 +629,34 @@ export function verifyReplayArtifact(artifact: ReplayArtifact): ReplayVerifyResu
     }
   }
 
-  const rebuiltCommandTrace = deriveCommandTrace(artifact.truth.events);
-  if (canonicalJsonReplay(rebuiltCommandTrace) !== canonicalJsonReplay(artifact.commandTrace)) {
-    integrityReasons.push("commandTrace does not match truth log");
+  try {
+    const rebuiltCommandTrace = deriveCommandTrace(artifact.truth.events);
+    if (canonicalJsonReplay(rebuiltCommandTrace) !== canonicalJsonReplay(artifact.commandTrace)) {
+      integrityReasons.push("commandTrace does not match truth log");
+    }
+
+    const rebuiltAssessments = deriveAssessmentTrace(artifact.player.events);
+    if (canonicalJsonReplay(rebuiltAssessments) !== canonicalJsonReplay(artifact.assessmentTrace)) {
+      integrityReasons.push("assessmentTrace does not match player log");
+    }
+  } catch (error) {
+    if (error instanceof CanonicalJsonDepthError) {
+      integrityReasons.push(error.message);
+    } else {
+      throw error;
+    }
   }
 
-  const rebuiltAssessments = deriveAssessmentTrace(artifact.player.events);
-  if (canonicalJsonReplay(rebuiltAssessments) !== canonicalJsonReplay(artifact.assessmentTrace)) {
-    integrityReasons.push("assessmentTrace does not match player log");
+  let semanticReasons: string[] = [];
+  try {
+    semanticReasons = collectSemanticReasons(artifact);
+  } catch (error) {
+    if (error instanceof CanonicalJsonDepthError) {
+      semanticReasons = [error.message];
+    } else {
+      throw error;
+    }
   }
-
-  const semanticReasons = collectSemanticReasons(artifact);
   const reasons = [...integrityReasons, ...semanticReasons];
   const integrityOk = integrityReasons.length === 0;
   const semanticBindingsOk = semanticReasons.length === 0;
@@ -544,8 +670,21 @@ export function verifyReplayArtifact(artifact: ReplayArtifact): ReplayVerifyResu
     playerReplayChecked: false,
     authenticity: "none",
     reasons,
-    ok: status === "PARTIAL",
+    scopes: {
+      integrity: integrityOk ? "PASS" : "FAIL",
+      semanticBindings: semanticBindingsOk ? "PASS" : "FAIL",
+      truthReplay: "NOT_CHECKED",
+      playerReplay: "NOT_CHECKED",
+      stateDigest: "NOT_CHECKED",
+      scenarioContentDigest: "NOT_CHECKED",
+      engineProtocolCompatibility: "NOT_CHECKED",
+      publicActionLedger: "NOT_CHECKED",
+      authenticity: "NOT_CHECKED",
+    },
     stateDigestStatus: "NOT_CHECKED",
+    scenarioContentDigestStatus: "NOT_CHECKED",
+    engineProtocolCompatibilityStatus: "NOT_CHECKED",
+    publicActionLedgerStatus: "NOT_CHECKED",
   };
 }
 

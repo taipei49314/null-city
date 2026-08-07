@@ -33,6 +33,8 @@ import type {
   RunCompletedPayload,
   SessionStartedPayload,
 } from "@null-city/contracts";
+import { assertWithinDepth, ArtifactBoundsError, MAX_EVENT_COUNT, MAX_STRING_LENGTH } from "./bounds";
+import { validateReplayPlayerPayload, validateReplayTruthPayload } from "./event-payloads";
 
 export const RUN_ARTIFACT_FORMAT = "null-city-run-artifact";
 export const RUN_ARTIFACT_VERSION = 2;
@@ -150,6 +152,41 @@ export type { Assessment, Claim, Evidence, KnownRouteState, OwnTeamState, Public
 
 export class ReplayArtifactParseError extends Error {}
 
+const ALLOWED_TRUTH_KINDS = new Set<string>([
+  "ScenarioStarted",
+  "TrueIncidentOccurred",
+  "IncidentChained",
+  "IncidentResolved",
+  "ObservationCreated",
+  "ObservationDelayed",
+  "ObservationCorrupted",
+  "ObservationLost",
+  "ObservationDelivered",
+  "CommandIssued",
+  "CommandRejected",
+  "CommandAccepted",
+  "TeamDispatched",
+  "TeamArrived",
+  "ActionApplied",
+  "SystemStateChanged",
+  "ScoreChanged",
+  "ScenarioCompleted",
+]);
+
+const ALLOWED_PLAYER_KINDS = new Set<string>([
+  "SessionStarted",
+  "EvidenceRecorded",
+  "ClaimUpdated",
+  "AssessmentSubmitted",
+  "OwnTeamUpdated",
+  "KnownRouteUpdated",
+  "PublicScoreChanged",
+  "ResourcesChanged",
+  "CommandResult",
+  "VerificationResolved",
+  "RunCompleted",
+]);
+
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
@@ -159,6 +196,9 @@ function requireString(obj: Record<string, unknown>, key: string, where: string)
   if (typeof value !== "string") {
     throw new ReplayArtifactParseError(`${where}.${key} must be a string`);
   }
+  if (value.length > MAX_STRING_LENGTH) {
+    throw new ReplayArtifactParseError(`${where}.${key} exceeds maximum string length`);
+  }
   return value;
 }
 
@@ -166,6 +206,14 @@ function requireNumber(obj: Record<string, unknown>, key: string, where: string)
   const value = obj[key];
   if (typeof value !== "number" || !Number.isFinite(value)) {
     throw new ReplayArtifactParseError(`${where}.${key} must be a finite number`);
+  }
+  return value;
+}
+
+function requireNonNegativeInt(obj: Record<string, unknown>, key: string, where: string): number {
+  const value = requireNumber(obj, key, where);
+  if (!Number.isInteger(value) || value < 0) {
+    throw new ReplayArtifactParseError(`${where}.${key} must be a non-negative integer`);
   }
   return value;
 }
@@ -184,14 +232,22 @@ function validateTruthEvent(raw: unknown, index: number): ReplayTruthEvent {
     throw new ReplayArtifactParseError(`${where} must be an object`);
   }
   const sessionId = requireString(raw, "sessionId", where);
-  const sequence = requireNumber(raw, "sequence", where);
-  const tick = requireNumber(raw, "tick", where);
+  const sequence = requireNonNegativeInt(raw, "sequence", where);
+  const tick = requireNonNegativeInt(raw, "tick", where);
   const kind = requireString(raw, "kind", where);
+  if (!ALLOWED_TRUTH_KINDS.has(kind)) {
+    throw new ReplayArtifactParseError(`${where}.kind is not a supported truth kind`);
+  }
   const previousHash = requireString(raw, "previousHash", where);
   const hash = requireString(raw, "hash", where);
   const payload = raw["payload"];
   if (!isPlainObject(payload)) {
-    throw new ReplayArtifactParseError(`${where}.payload must be an object`);
+    throw new ReplayArtifactParseError(`${where}.payload must be a non-array object`);
+  }
+  assertWithinDepth(payload, `${where}.payload`);
+  const payloadReason = validateReplayTruthPayload(kind, payload);
+  if (payloadReason) {
+    throw new ReplayArtifactParseError(`${where}.payload rejected: ${payloadReason}`);
   }
   return {
     sessionId,
@@ -213,13 +269,21 @@ function validatePlayerEvent(raw: unknown, index: number): PlayerEventEnvelope {
     throw new ReplayArtifactParseError(`${where}.stream must be "player"`);
   }
   requireString(raw, "sessionId", where);
-  requireNumber(raw, "sequence", where);
-  requireNumber(raw, "tick", where);
-  requireString(raw, "kind", where);
+  requireNonNegativeInt(raw, "sequence", where);
+  requireNonNegativeInt(raw, "tick", where);
+  const kind = requireString(raw, "kind", where);
+  if (!ALLOWED_PLAYER_KINDS.has(kind)) {
+    throw new ReplayArtifactParseError(`${where}.kind is not a supported player kind`);
+  }
   requireString(raw, "previousHash", where);
   requireString(raw, "hash", where);
-  if (raw["payload"] === null || typeof raw["payload"] !== "object") {
-    throw new ReplayArtifactParseError(`${where}.payload must be an object`);
+  if (raw["payload"] === null || typeof raw["payload"] !== "object" || Array.isArray(raw["payload"])) {
+    throw new ReplayArtifactParseError(`${where}.payload must be a non-array object`);
+  }
+  assertWithinDepth(raw["payload"], `${where}.payload`);
+  const payloadReason = validateReplayPlayerPayload(kind, raw["payload"]);
+  if (payloadReason) {
+    throw new ReplayArtifactParseError(`${where}.payload rejected: ${payloadReason}`);
   }
   return raw as unknown as PlayerEventEnvelope;
 }
@@ -372,14 +436,45 @@ export function parseReplayArtifact(raw: string, maxBytes: number = MAX_ARTIFACT
     throw new ReplayArtifactParseError("artifact missing truth object");
   }
   const truthEventsRaw = requireArray(truthContainer, "events", "truth");
-  const truthEvents = truthEventsRaw.map((event, index) => validateTruthEvent(event, index));
+  if (truthEventsRaw.length > MAX_EVENT_COUNT) {
+    throw new ReplayArtifactParseError(`truth.events exceeds maximum of ${MAX_EVENT_COUNT}`);
+  }
+  let truthEvents: ReplayTruthEvent[];
+  try {
+    truthEvents = truthEventsRaw.map((event, index) => validateTruthEvent(event, index));
+  } catch (error) {
+    if (error instanceof ArtifactBoundsError) {
+      throw new ReplayArtifactParseError(error.message);
+    }
+    throw error;
+  }
 
   const playerContainer = parsed["player"];
   if (!isPlainObject(playerContainer)) {
     throw new ReplayArtifactParseError("artifact missing player object");
   }
   const playerEventsRaw = requireArray(playerContainer, "events", "player");
-  const playerEvents = playerEventsRaw.map((event, index) => validatePlayerEvent(event, index));
+  if (playerEventsRaw.length > MAX_EVENT_COUNT) {
+    throw new ReplayArtifactParseError(`player.events exceeds maximum of ${MAX_EVENT_COUNT}`);
+  }
+  let playerEvents: PlayerEventEnvelope[];
+  try {
+    playerEvents = playerEventsRaw.map((event, index) => validatePlayerEvent(event, index));
+  } catch (error) {
+    if (error instanceof ArtifactBoundsError) {
+      throw new ReplayArtifactParseError(error.message);
+    }
+    throw error;
+  }
+
+  try {
+    assertWithinDepth(parsed, "artifact");
+  } catch (error) {
+    if (error instanceof ArtifactBoundsError) {
+      throw new ReplayArtifactParseError(error.message);
+    }
+    throw error;
+  }
 
   const commandTraceRaw = requireArray(parsed, "commandTrace", "artifact");
   const commandTrace = commandTraceRaw.map((entry, index) => validateCommandTraceEntry(entry, index));

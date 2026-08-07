@@ -1,0 +1,84 @@
+{
+  "auditDate": "2026-08-07",
+  "artifact": {
+    "name": "null-city-m10.1-prepush-closure.zip",
+    "sizeBytes": 2248204,
+    "sha256": "e758fbf87f99ca929e3db73d5c9642d396e5b3b1920030fff76bff7224c2c41e",
+    "zipEntries": 378
+  },
+  "decision": {
+    "publishExactZipAsPublicMain": "NO_GO",
+    "alphaTagFromExactZip": "NO_GO",
+    "afterM10_1_1Patch": "GO_TO_BRANCH_AND_PULL_REQUEST",
+    "mergeMain": "GO_AFTER_EXACT_COMMIT_VERIFY_AND_DOCKER_GREEN",
+    "alphaTag": "GO_AFTER_REMOTE_GATES",
+    "rcTagNow": "NO_GO",
+    "stableTagNow": "NO_GO"
+  },
+  "closedPreviousBlocker": {
+    "honestBrowserStatus": "PARTIAL",
+    "truthReplayChecked": false,
+    "playerReplayChecked": false,
+    "resealedAcceptedRejectedContradiction": "FAIL",
+    "formerUnqualifiedBrowserPass": "CLOSED"
+  },
+  "blockers": [
+    {
+      "id": "P0-01",
+      "title": "Tracked test reads omitted _audit fixture",
+      "test": "apps/command-center/test/replay-verify-m10.1.test.ts",
+      "missingPath": "_audit/m10.1/reproduction/minimal-semantic-forgery.artifact.json",
+      "sourceZipContainsFixture": false,
+      "releaseArchiveContainsTest": true,
+      "releaseArchiveContainsFixture": false,
+      "directResult": "ENOENT",
+      "impact": "fresh checkout and CI cannot load the test module"
+    },
+    {
+      "id": "P0-02",
+      "title": "Malformed artifact can pass browser checks and crash Replay Lab",
+      "malformedCase": "EvidenceRecorded payload replaced with empty object and artifact fully resealed",
+      "browserStatus": "PARTIAL",
+      "integrityOk": true,
+      "semanticBindingsOk": true,
+      "projectionResult": "TypeError reading evidence.id",
+      "deepPayloadResult": "RangeError maximum call stack size exceeded",
+      "impact": "untrusted file-drop artifact is not rejected fail-closed"
+    }
+  ],
+  "semanticBindingGaps": [
+    "missing player CommandResult",
+    "duplicate player CommandResult",
+    "foreign player stream sessionId",
+    "forged activeIncidents",
+    "erased publicActionLedger",
+    "forged RunCompleted claim/evidence counts",
+    "resealed protocol version and valid-shape scenario digest"
+  ],
+  "evidenceFreshness": {
+    "currentTranscriptContainsMarkdownLinksStage": false,
+    "currentTranscriptContainsAuditReproStage": false,
+    "currentTranscriptContainsM10_1Test": false,
+    "claimedTree": "ce6c0611091d6f5edb3c84613cae64de87b134ef",
+    "treeConstructedFromDeliveredArchive": "5c5f510b31ffbb707b3e7ff8714d75388e2f870e",
+    "treeMatches": false
+  },
+  "independentChecks": {
+    "typescriptSyntax": {"files": 202, "errors": 0},
+    "javascriptSyntax": {"files": 28, "errors": 0},
+    "jsonParse": {"files": 51, "errors": 0},
+    "packageManifests": {"count": 11, "uniqueNames": 11, "missingWorkspaceDependencies": 0},
+    "lockfile": {"importers": 11, "errors": 0},
+    "markdownLinks": {"files": 56, "missingTargets": 0},
+    "releaseAllowlist": {"selectedFiles": 378, "result": "PASS"},
+    "releaseCanary": {"planted": 5, "archiveEntries": 378, "result": "PASS"},
+    "requiredPublicFilesMissing": 0,
+    "credentialPatternHits": 0
+  },
+  "notIndependentlyExecuted": [
+    "pnpm verify",
+    "command-center E2E",
+    "Docker compose smoke"
+  ],
+  "requiredClosure": "M10.1.1 fresh-clone and fail-closed closure; no new product scope"
+}
