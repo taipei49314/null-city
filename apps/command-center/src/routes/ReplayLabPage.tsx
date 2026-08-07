@@ -106,22 +106,26 @@ export function ReplayLabPage() {
     }
   }, [primary]);
 
-  const playerProjection = useMemo(() => {
+  const projections = useMemo(() => {
     if (!primary || primary.verify.status !== "PARTIAL") return null;
     try {
-      return projectPlayerAtTick(primary.artifact.player.events, tick);
-    } catch {
-      return null;
+      return {
+        player: projectPlayerAtTick(primary.artifact.player.events, tick),
+        truth: projectTruthAtTick(primary.artifact.truth.events, tick),
+      };
+    } catch (error) {
+      return {
+        fatal: error instanceof Error ? error.message : "state projection failed",
+      } as const;
     }
   }, [primary, tick]);
-  const truthProjection = useMemo(() => {
-    if (!primary || primary.verify.status !== "PARTIAL") return null;
-    try {
-      return projectTruthAtTick(primary.artifact.truth.events, tick);
-    } catch {
-      return null;
-    }
-  }, [primary, tick]);
+
+  const projectionFailure =
+    derived && "fatal" in derived
+      ? derived.fatal
+      : projections && "fatal" in projections
+        ? projections.fatal
+        : null;
 
   function handleLoaded(artifact: ReplayArtifact, verify: ReplayVerifyResult): void {
     // ArtifactLoader already refuses FAIL; defend in depth.
@@ -196,16 +200,21 @@ export function ReplayLabPage() {
         />
       )}
 
-      {primary && derived && "fatal" in derived && (
+      {primary && projectionFailure && (
         <p className="replay-body" role="alert">
-          Artifact rejected during projection: {derived.fatal}
+          Artifact rejected during projection: {projectionFailure}
           <button type="button" className="nc-btn" onClick={() => setPrimary(null)}>
             Load another run
           </button>
         </p>
       )}
 
-      {primary && derived && !("fatal" in derived) && playerProjection && truthProjection && (
+      {primary &&
+        derived &&
+        !("fatal" in derived) &&
+        projections &&
+        !("fatal" in projections) &&
+        (
         <div className="replay-lab-content">
           <div className="replay-lab-toolbar">
             <IdentitySummary artifact={primary.artifact} verify={primary.verify} />
@@ -224,7 +233,7 @@ export function ReplayLabPage() {
 
           <TimelineScrubber tick={tick} maxTick={primary.artifact.finalTick} marks={derived.marks} onChange={setTick} />
 
-          <DualStatePanel player={playerProjection} truth={truthProjection} />
+          <DualStatePanel player={projections.player} truth={projections.truth} />
 
           <EvidenceProvenancePanel
             entries={derived.evidenceProvenance.filter((e) => e.deliveredTick <= tick)}

@@ -96,9 +96,29 @@ function requireEnum(obj: Record<string, unknown>, key: string, where: string, v
   return null;
 }
 
+function validateNullableTick(value: unknown, where: string): string | null {
+  if (value === null) return null;
+  if (typeof value !== "number" || !Number.isInteger(value) || value < 0) {
+    return fail(`${where}: expected integer >= 0|null`);
+  }
+  return null;
+}
+
+function validateStringArray(raw: unknown, where: string, minLength = 0): string | null {
+  if (!Array.isArray(raw)) return fail(`${where}: expected array`);
+  if (raw.length < minLength) return fail(`${where}: expected at least ${minLength} item(s)`);
+  if (raw.length > MAX_ARRAY_LENGTH) return fail(`${where}: array exceeds ${MAX_ARRAY_LENGTH}`);
+  for (const [index, value] of raw.entries()) {
+    if (typeof value !== "string") return fail(`${where}[${index}]: expected string`);
+    if (value.length === 0) return fail(`${where}[${index}]: expected non-empty string`);
+    if (value.length > MAX_STRING_LENGTH) return fail(`${where}[${index}]: string exceeds ${MAX_STRING_LENGTH} chars`);
+  }
+  return null;
+}
+
 function validateScoreState(raw: unknown, where: string): string | null {
   if (!isPlainObject(raw)) return fail(`${where}: expected object`);
-  return firstError(
+  const base = firstError(
     requireFiniteNumber(raw, "total", where),
     requireFiniteNumber(raw, "finalPopulationRisk", where),
     requireFiniteNumber(raw, "infrastructureAvailability", where),
@@ -112,6 +132,37 @@ function validateScoreState(raw: unknown, where: string): string | null {
     requirePlainObject(raw, "raw", where),
     requireArray(raw, "breakdown", where),
   );
+  if (base) return base;
+
+  const rawScore = raw["raw"] as Record<string, unknown>;
+  const rawError = firstError(
+    requireInt(rawScore, "incidentsHandled", `${where}.raw`, 0),
+    requireInt(rawScore, "incidentsMissed", `${where}.raw`, 0),
+    requireInt(rawScore, "chainedIncidents", `${where}.raw`, 0),
+    requireInt(rawScore, "wastedDispatchTicks", `${where}.raw`, 0),
+    requireFiniteNumber(rawScore, "decisionDelayTicks", `${where}.raw`),
+    requireInt(rawScore, "incidentsWithoutAction", `${where}.raw`, 0),
+    requireInt(rawScore, "remainingBackupGenerators", `${where}.raw`, 0),
+    requireInt(rawScore, "remainingAdvisories", `${where}.raw`, 0),
+  );
+  if (rawError) return rawError;
+  if ((rawScore["decisionDelayTicks"] as number) < 0) {
+    return fail(`${where}.raw.decisionDelayTicks: expected number >= 0`);
+  }
+
+  for (const [index, item] of (raw["breakdown"] as unknown[]).entries()) {
+    const itemWhere = `${where}.breakdown[${index}]`;
+    if (!isPlainObject(item)) return fail(`${itemWhere}: expected object`);
+    const itemError = firstError(
+      requireNonEmptyString(item, "id", itemWhere),
+      requireString(item, "label", itemWhere),
+      requireFiniteNumber(item, "delta", itemWhere),
+      requireInt(item, "tick", itemWhere, 0),
+      requireString(item, "reason", itemWhere),
+    );
+    if (itemError) return itemError;
+  }
+  return null;
 }
 
 function validateDistrictState(raw: unknown, where: string): string | null {
@@ -128,6 +179,27 @@ function validateDistrictState(raw: unknown, where: string): string | null {
   );
 }
 
+function validateTruthTeam(raw: unknown, where: string): string | null {
+  if (!isPlainObject(raw)) return fail(`${where}: expected object`);
+  const base = firstError(
+    requireNonEmptyString(raw, "teamId", where),
+    requireNonEmptyString(raw, "status", where),
+    requireNonEmptyString(raw, "location", where),
+    validateNullableTick(raw["etaTick"], `${where}.etaTick`),
+  );
+  if (base) return base;
+  if (raw["order"] !== null) {
+    if (!isPlainObject(raw["order"])) return fail(`${where}.order: expected object|null`);
+    if (Object.keys(raw["order"] as object).length > MAX_OBJECT_KEYS) return fail(`${where}.order: too many keys`);
+  }
+  return null;
+}
+
+function validateTruthRoute(raw: unknown, where: string): string | null {
+  if (!isPlainObject(raw)) return fail(`${where}: expected object`);
+  return requireBoolean(raw, "closed", where);
+}
+
 function validateOwnTeam(raw: unknown, where: string): string | null {
   if (!isPlainObject(raw)) return fail(`${where}: expected object`);
   return firstError(
@@ -135,9 +207,7 @@ function validateOwnTeam(raw: unknown, where: string): string | null {
     requireNonEmptyString(raw, "type", where),
     requireNonEmptyString(raw, "location", where),
     requireNonEmptyString(raw, "status", where),
-    raw["etaTick"] !== null && (typeof raw["etaTick"] !== "number" || !Number.isInteger(raw["etaTick"] as number))
-      ? `${where}.etaTick: expected integer|null`
-      : null,
+    validateNullableTick(raw["etaTick"], `${where}.etaTick`),
     raw["orderTarget"] !== null && typeof raw["orderTarget"] !== "string" ? `${where}.orderTarget: expected string|null` : null,
     raw["orderTask"] !== null && typeof raw["orderTask"] !== "string" ? `${where}.orderTask: expected string|null` : null,
   );
@@ -148,10 +218,7 @@ function validateKnownRoute(raw: unknown, where: string): string | null {
   return firstError(
     requireNonEmptyString(raw, "id", where),
     requireBoolean(raw, "closed", where),
-    raw["knownClosedAtTick"] !== null &&
-      (typeof raw["knownClosedAtTick"] !== "number" || !Number.isInteger(raw["knownClosedAtTick"] as number))
-      ? `${where}.knownClosedAtTick: expected integer|null`
-      : null,
+    validateNullableTick(raw["knownClosedAtTick"], `${where}.knownClosedAtTick`),
   );
 }
 
@@ -172,7 +239,7 @@ function validateEvidence(raw: unknown, where: string): string | null {
 
 function validateClaim(raw: unknown, where: string): string | null {
   if (!isPlainObject(raw)) return fail(`${where}: expected object`);
-  return firstError(
+  const base = firstError(
     requireNonEmptyString(raw, "id", where),
     requireString(raw, "subject", where),
     requireString(raw, "predicate", where),
@@ -182,28 +249,39 @@ function validateClaim(raw: unknown, where: string): string | null {
     requireArray(raw, "evidenceIds", where),
     requireInt(raw, "asOfTick", where, 0),
   );
+  if (base) return base;
+  return validateStringArray(raw["evidenceIds"], `${where}.evidenceIds`);
 }
 
 function validateAssessment(raw: unknown, where: string): string | null {
   if (!isPlainObject(raw)) return fail(`${where}: expected object`);
-  return firstError(
+  const base = firstError(
     requireNonEmptyString(raw, "id", where),
     requireNonEmptyString(raw, "claimId", where),
     requireFiniteNumber(raw, "probability", where),
     requireFiniteNumber(raw, "confidence", where),
     requireInt(raw, "submittedTick", where, 0),
   );
+  if (base) return base;
+  for (const key of ["probability", "confidence"] as const) {
+    const value = raw[key] as number;
+    if (value < 0 || value > 1) return fail(`${where}.${key}: expected number between 0 and 1`);
+  }
+  return null;
 }
 
 const TRUTH_KIND_VALIDATORS: Record<string, (payload: Record<string, unknown>) => string | null> = {
-  ScenarioStarted: (p) =>
-    firstError(
+  ScenarioStarted: (p) => {
+    const base = firstError(
       requireNonEmptyString(p, "scenarioId", "ScenarioStarted"),
       requireInt(p, "seed", "ScenarioStarted", Number.MIN_SAFE_INTEGER),
       requireFiniteNumber(p, "tickPerSimSecond", "ScenarioStarted"),
       requireInt(p, "totalTicks", "ScenarioStarted", 1),
       requireArray(p, "districts", "ScenarioStarted"),
-    ),
+    );
+    if (base) return base;
+    return validateStringArray(p["districts"], "ScenarioStarted.districts", 1);
+  },
   TrueIncidentOccurred: (p) =>
     firstError(
       requireNonEmptyString(p, "incidentId", "TrueIncidentOccurred"),
@@ -243,13 +321,22 @@ const TRUTH_KIND_VALIDATORS: Record<string, (payload: Record<string, unknown>) =
   ObservationCorrupted: (p) =>
     firstError(
       requireNonEmptyString(p, "observationId", "ObservationCorrupted"),
-      requireNonEmptyString(p, "corruptionType", "ObservationCorrupted"),
+      requireEnum(p, "corruptionType", "ObservationCorrupted", [
+        "exaggerated",
+        "understated",
+        "mistaken_identity",
+        "wrong_location",
+        "attribution_error",
+      ]),
       requireString(p, "original", "ObservationCorrupted"),
       requireString(p, "corrupted", "ObservationCorrupted"),
       requireBoolean(p, "false", "ObservationCorrupted"),
     ),
   ObservationLost: (p) =>
-    firstError(requireNonEmptyString(p, "observationId", "ObservationLost"), requireNonEmptyString(p, "reason", "ObservationLost")),
+    firstError(
+      requireNonEmptyString(p, "observationId", "ObservationLost"),
+      requireEnum(p, "reason", "ObservationLost", ["transmission_lost", "outdated_by_timeout"]),
+    ),
   ObservationDelivered: (p) =>
     firstError(requireNonEmptyString(p, "observationId", "ObservationDelivered"), requireInt(p, "deliveredTick", "ObservationDelivered", 0)),
   CommandIssued: (p) =>
@@ -271,9 +358,7 @@ const TRUTH_KIND_VALIDATORS: Record<string, (payload: Record<string, unknown>) =
     firstError(
       requireNonEmptyString(p, "commandId", "CommandAccepted"),
       requireNonEmptyString(p, "idempotencyKey", "CommandAccepted"),
-      p["etaTick"] !== null && (typeof p["etaTick"] !== "number" || !Number.isInteger(p["etaTick"] as number))
-        ? "CommandAccepted.etaTick: expected integer|null"
-        : null,
+      validateNullableTick(p["etaTick"], "CommandAccepted.etaTick"),
     ),
   TeamDispatched: (p) =>
     firstError(
@@ -308,6 +393,14 @@ const TRUTH_KIND_VALIDATORS: Record<string, (payload: Record<string, unknown>) =
     if (base) return base;
     for (const [id, district] of Object.entries(p["districts"] as Record<string, unknown>)) {
       const err = validateDistrictState(district, `SystemStateChanged.districts.${id}`);
+      if (err) return err;
+    }
+    for (const [index, team] of (p["teams"] as unknown[]).entries()) {
+      const err = validateTruthTeam(team, `SystemStateChanged.teams[${index}]`);
+      if (err) return err;
+    }
+    for (const [id, route] of Object.entries(p["routes"] as Record<string, unknown>)) {
+      const err = validateTruthRoute(route, `SystemStateChanged.routes.${id}`);
       if (err) return err;
     }
     const resources = p["resources"] as Record<string, unknown>;
@@ -396,9 +489,7 @@ const PLAYER_KIND_VALIDATORS: Record<string, (payload: Record<string, unknown>) 
       requireEnum(p, "state", "CommandResult", ["accepted", "rejected"]),
       p["errorCode"] !== null && typeof p["errorCode"] !== "string" ? "CommandResult.errorCode: expected string|null" : null,
       p["detail"] !== null && typeof p["detail"] !== "string" ? "CommandResult.detail: expected string|null" : null,
-      p["etaTick"] !== null && (typeof p["etaTick"] !== "number" || !Number.isInteger(p["etaTick"] as number))
-        ? "CommandResult.etaTick: expected integer|null"
-        : null,
+      validateNullableTick(p["etaTick"], "CommandResult.etaTick"),
       requireString(p, "target", "CommandResult"),
     ),
   OwnTeamUpdated: (p) => {

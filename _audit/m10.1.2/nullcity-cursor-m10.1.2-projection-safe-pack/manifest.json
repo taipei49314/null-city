@@ -1,0 +1,56 @@
+{
+  "name": "nullcity-cursor-m10.1.2-projection-safe-pack",
+  "purpose": "Narrow browser artifact parser/projector closure",
+  "files": [
+    {
+      "path": "01_CURSOR_M10_1_2_KICKOFF.md",
+      "bytes": 6540,
+      "sha256": "2e9945c75295b7fbdbddc97e55568b6047c8db401c4fda15c19d928d09e4301a"
+    },
+    {
+      "path": "02_FINDING_AND_REPRO.md",
+      "bytes": 790,
+      "sha256": "ba6ff4f0caf041673143ac9b1b680461dfe857a3e90ee4e6edeaf04598a78755"
+    },
+    {
+      "path": "03_ACCEPTANCE_GATES.md",
+      "bytes": 1486,
+      "sha256": "4c2cac025ff3e9db46cb419d2be05416e2e4dc4162cfe94dd3befbbfa2201d4a"
+    },
+    {
+      "path": "04_FULL_AUDIT_REPORT.md",
+      "bytes": 8442,
+      "sha256": "803544c30738e3f8945a9543fa6a55a78f4a37f7f35d8fb5a9614048ff87cf74"
+    },
+    {
+      "path": "README_FIRST.md",
+      "bytes": 703,
+      "sha256": "9cd8af18808f947eb59b29b5f9156a2522a6de307466bc1db19172a84d7c22f2"
+    },
+    {
+      "path": "evidence/after-candidate-patch-repro.log",
+      "bytes": 1031,
+      "sha256": "d2bfa6906efa35573bd8d5ca212ef2850dd9ace05a9551bb7d9738202e092d34"
+    },
+    {
+      "path": "evidence/before-projection-repro.log",
+      "bytes": 1388,
+      "sha256": "708405153a5344cc46d62bda4e5753052298c894c95bd1513a42ab9aa7eed7d8"
+    },
+    {
+      "path": "evidence/final-audit-evidence.log",
+      "bytes": 5185,
+      "sha256": "7d1f211a7fb20ada01e5af8d616d6f9bff1616568388c16f93b9fc002a5970b3"
+    },
+    {
+      "path": "evidence/freshclone-static.log",
+      "bytes": 417,
+      "sha256": "8383ec398cfa7674073ac4eba0b48b4781978a795d210a0b5dfbb85460da0d9e"
+    },
+    {
+      "path": "patches/nullcity-m10.1.2-projection-safe.patch",
+      "bytes": 17015,
+      "sha256": "c50eac09c4d4d24f2a367b319c379f98842c5310aba4ea919b373f87d2d54426"
+    }
+  ]
+}
