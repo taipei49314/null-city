@@ -26,13 +26,15 @@
 | Minimal forgery fixture (`_audit/m10.1/reproduction/…`) | rejected (parse or verify FAIL) |
 | UI / Markdown report | PARTIAL badge; Integrity / Semantic bindings lines; no unqualified full PASS |
 
-## Exact commit (filled after initial commit)
+## Exact commit
 
 | Field | Value |
 |---|---|
-| `git rev-parse HEAD` | _pending commit_ |
-| `git rev-parse 'HEAD^{tree}'` | _pending commit_ |
-| `git status --short` | _pending commit_ |
+| `git rev-parse HEAD` | `ce9a013522107880b735e896eaf4a3ac69a8cba2` |
+| `git rev-parse 'HEAD^{tree}'` | `ce6c0611091d6f5edb3c84613cae64de87b134ef` |
+| `git status --short` (at evidence freeze) | clean (empty) |
+
+Note: this EVIDENCE SHA table documents the initial product commit above. A follow-up commit may only refresh this evidence file.
 
 ## Not executed / BLOCKED
 

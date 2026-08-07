@@ -4,7 +4,7 @@
 
 Status: IMPLEMENTED (local gates)  
 Release decision: **NOT READY TO TAG / NOT READY TO PUSH** until remote exists and CI/Docker are green  
-Honesty: Remote CI / Docker daemon / fresh-clone-from-remote remain **BLOCKED** (no push). Exact-commit is filled after the initial commit in this milestone.
+Honesty: Remote CI / Docker daemon / fresh-clone-from-remote remain **BLOCKED** (no push). Exact-commit recorded in `EVIDENCE.md` (`ce9a013…` / tree `ce6c061…`).
 
 Prior: M0–M10 Integrity Closure
 
