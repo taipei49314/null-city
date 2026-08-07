@@ -4,6 +4,9 @@
 
 > What you know is not what happened.
 
+[![CI](https://github.com/taipei49314/null-city/actions/workflows/ci.yml/badge.svg)](https://github.com/taipei49314/null-city/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 [MIT License](LICENSE) · [Architecture](docs/architecture.md) · [Protocol](docs/protocol.md) · [Benchmark](docs/benchmark.md) · [Threat model](docs/threat-model.md) · [Contributing](CONTRIBUTING.md)
 
 ![NullCity launch screen: scenario picker with a seed field and "same seed and scenario reproduce the same event sequence" note](data/evidence/m3-command-center-launch.png)
