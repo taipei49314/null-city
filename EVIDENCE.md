@@ -49,6 +49,15 @@ Note: this EVIDENCE SHA table documents the initial product commit above. A foll
 
 Release allowlist now ships selected public `data/` assets (`data/evidence/**`, benchmark-smoke reports, `data/m4-run-*.artifact.json`) and root governance files (`02_MILESTONE_ROADMAP.md`, `CODE_OF_CONDUCT.md`, `CITATION.cff`). `data/release/**` remains denied.
 
+### Desktop / local allowlist zip (not pushed)
+
+| Field | Value |
+|---|---|
+| Archive | `null-city-m10.1-prepush-closure.zip` |
+| Desktop copy | `C:\Users\G713RW\Desktop\null-city-m10.1-prepush-closure.zip` |
+| SHA-256 | `e758fbf87f99ca929e3db73d5c9642d396e5b3b1920030fff76bff7224c2c41e` |
+| Selection | 378 files via git allowlist (includes evidence PNGs + governance roots; excludes `data/release/**`) |
+
 ## Prior ADR / matrix
 
 - `docs/decisions/2026-08-07-m10-integrity-closure.md`
