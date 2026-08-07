@@ -1,6 +1,6 @@
 # M10 external audit reproduction
 
-Generated: 2026-08-07T11:12:28.407Z
+Generated: 2026-08-07T12:15:18.604Z
 
 - P0-01 public resume: PASS (forbidden)
 - artifact v2 export: PASS (actions=9)

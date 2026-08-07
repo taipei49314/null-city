@@ -2,9 +2,12 @@
 
 ## Overall
 
-Status: IMPLEMENTED (local + fresh-clone pending fill)  
+Status: IMPLEMENTED (local + fresh-clone green)  
 Release decision: **HOLD for public main/tags** until remote CI + Docker smoke are green  
-Honesty: Remote CI / Docker / push remain **BLOCKED** while no git remote is configured.
+Honesty: Remote CI / Docker / push remain **BLOCKED** (no git remote).
+
+Verified source commit: `30a1aec04b0847c343bd79aacb9a5d7cca54611b`  
+Tree: `88f73e13dc0f6d1d790017224649e6b280c53420`
 
 Prior: M0–M10.1.1
 
@@ -12,21 +15,14 @@ Prior: M0–M10.1.1
 
 | Workstream | Status | Notes |
 |---|---|---|
-| Nested `SystemStateChanged` teams/routes validation | PASS | Clean-room parity with contracts truth schemas; rejected at parse |
-| Adjacent nested schema parity | PASS | districts, evidenceIds, score raw/breakdown, enums, nullable ticks, [0,1] assessments |
-| Visible projection fatal | PASS | Projector exceptions route to “Artifact rejected during projection” + Load another run |
-| Fully resealed regressions | PASS | `replay-verify-m10.1.1.test.ts` covers teams/routes/districts/breakdown/evidenceIds |
-| Exact-tree evidence | IN PROGRESS | See `EVIDENCE.md` |
+| Nested `SystemStateChanged` teams/routes validation | PASS | Rejected at `parseReplayArtifact` before verify/projection |
+| Adjacent nested schema parity | PASS | districts, evidenceIds, score raw/breakdown, enums, ticks, [0,1] |
+| Visible projection fatal | PASS | No blank Replay Lab on projector throw |
+| Fully resealed regressions | PASS | See `EVIDENCE.md` mapping |
+| Exact-tree evidence | PASS (local/fresh-clone) | Remote still BLOCKED |
 
 ## Still blocked
 
 1. Configure git remote and push  
 2. GitHub Actions `verify` + required Docker smoke green  
 3. Tag / public main promotion  
-
-## How to demo
-
-```bash
-pnpm demo
-# Hostile nested SystemStateChanged teams/routes must fail at load, never blank Replay Lab
-```
