@@ -2,39 +2,46 @@
 
 ## Environment
 
-- OS: Microsoft Windows 11 (win32 10.0.26200)
-- pnpm 10.33.0
+- OS: Microsoft Windows 11 (win32 10.0.26200) + GitHub Actions `ubuntu-latest`
+- pnpm 10.33.0 / Node 20 (CI)
 - Date: 2026-08-07
-- Audit pack: `_audit/m10.1.2/nullcity-cursor-m10.1.2-projection-safe-pack/`
+- Remote: https://github.com/taipei49314/null-city
+- PR: https://github.com/taipei49314/null-city/pull/1
 
-## Exact commit (verified source)
+## Exact commit (release/m10.1.2 tip; merge target)
 
 | Field | Value |
 |---|---|
-| `git rev-parse HEAD` | `30a1aec04b0847c343bd79aacb9a5d7cca54611b` |
-| `git rev-parse 'HEAD^{tree}'` | `88f73e13dc0f6d1d790017224649e6b280c53420` |
-| `git status --short` at gate time | clean before evidence/report refresh |
+| `git rev-parse HEAD` | `7c50413df69a16dc1b17b323a7424f57e294fc50` |
+| `git rev-parse 'HEAD^{tree}'` | _(filled after checkout of this commit)_ |
+| `git status --short` | clean |
 
-## Local gates (on `30a1aec`)
+## Local gates (pre-push)
 
 | # | Command | Exit | Result |
 |---:|---|---:|---|
 | 1 | `pnpm install --frozen-lockfile` | **0** | |
-| 2 | `pnpm verify` | **0** | Full suite green |
+| 2 | `pnpm verify` | **0** | |
 | 3 | `pnpm command-center:e2e` | **0** | |
 | 4 | `pnpm verify:markdown-links` | **0** | |
 | 5 | `pnpm verify:no-external-workpack` | **0** | |
 | 6 | `pnpm verify:release-archive` | **0** | |
 
-## Fresh clone (on `30a1aec`, `_audit/` deleted)
+## Fresh clone (pre-push, `_audit/` deleted)
 
 | # | Command | Exit | Result |
 |---:|---|---:|---|
-| 1 | clone + delete `_audit/` | **0** | `has_audit=False` |
-| 2 | `pnpm install --frozen-lockfile` | **0** | |
-| 3 | `pnpm verify` | **0** | |
-| 4 | `pnpm command-center:e2e` | **0** | |
-| 5 | `pnpm verify:release-archive` | **0** | |
+| 1–5 | install / verify / e2e / release-archive | **0** | Self-contained |
+
+## Remote CI (required checks)
+
+| Check | Conclusion | URL |
+|---|---|---|
+| Workflow run | **success** | https://github.com/taipei49314/null-city/actions/runs/31182059542 |
+| Lint, typecheck, build, tests, determinism, package/tarball smoke (`verify`) | **success** | https://github.com/taipei49314/null-city/actions/runs/31182059542/job/92877473625 |
+| Docker build + compose smoke (required) (`docker-smoke`) | **success** | https://github.com/taipei49314/null-city/actions/runs/31182059542/job/92878166312 |
+
+Branch protection on `main` requires both contexts above (`strict: true`, `enforce_admins: true`).
 
 ## Finding → test mapping
 
@@ -47,24 +54,17 @@
 | `ClaimUpdated.claim.evidenceIds = [{}]` | same |
 | Projector throw → blank page | `ReplayLabPage` unified `projectionFailure` fatal UI |
 
-## Diff summary (product)
-
-- `apps/command-center/src/replay/event-payloads.ts` — nested truth team/route validators + schema parity
-- `apps/command-center/src/routes/ReplayLabPage.tsx` — projector exceptions → visible fatal rejection
-- `apps/command-center/test/replay-verify-m10.1.1.test.ts` — fully resealed nested regressions
-
-## Release archive / Desktop zip
+## Tag
 
 | Field | Value |
 |---|---|
-| Archive | `null-city-m10.1.2-projection-safe.zip` |
-| Desktop | `C:\Users\G713RW\Desktop\null-city-m10.1.2-projection-safe.zip` |
-| SHA-256 | `b34910a8a5dcb7ed922d38c3e05e93076786e77483da19f0b2e67f8d85f7bf34` |
-| File count | 383 |
+| Tag | `v0.1.0-alpha.1` |
+| Points at | exact merged `main` tip after PR #1 |
+| Notes | filled after merge |
 
 ## Remote gates
 
 | Gate | Status |
 |---|---|
-| GitHub Actions verify | **BLOCKED** (no `git remote`) |
-| Docker smoke | **BLOCKED** (no `git remote`) |
+| GitHub Actions verify | **PASS** (run 31182059542) |
+| Docker smoke | **PASS** (run 31182059542) |
