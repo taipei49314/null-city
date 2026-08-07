@@ -1,0 +1,6 @@
+---
+description: NullCity public-release claims and repository hygiene
+alwaysApply: true
+---
+
+README, screenshots, benchmark numbers, badges, release notes, and integrity claims must be reproducible from the current commit. Distinguish tamper evidence from authenticity. Do not claim real-world emergency readiness. A public release requires a clean fresh-clone demo, full verification evidence, correct package exports, and no open P0/P1 defect against the stated claims.

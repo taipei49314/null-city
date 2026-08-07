@@ -1,0 +1,89 @@
+.teams-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.teams-resources {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--nc-line);
+}
+
+.resource-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  padding: 6px 8px;
+  background: var(--nc-steel-900);
+  border-radius: var(--nc-radius);
+  border: 1px solid var(--nc-line);
+}
+
+.resource-value {
+  font-family: var(--nc-font-display);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--nc-amber-400);
+}
+
+.resource-label {
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--nc-slate-300);
+}
+
+.teams-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.team-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 6px 8px;
+  border: 1px solid var(--nc-line);
+  border-radius: var(--nc-radius);
+  font-size: 12px;
+}
+
+.team-id {
+  font-family: var(--nc-font-mono);
+  font-weight: 600;
+}
+
+.team-type,
+.team-location,
+.team-eta,
+.team-task {
+  color: var(--nc-slate-300);
+  font-size: 11px;
+}
+
+.team-status-idle {
+  color: var(--nc-slate-300);
+  border-color: var(--nc-slate-300);
+}
+
+.team-status-transit {
+  color: var(--nc-amber-400);
+  border-color: var(--nc-amber-500);
+}
+
+.team-status-working {
+  color: var(--nc-green-500);
+  border-color: var(--nc-green-500);
+}

@@ -1,0 +1,73 @@
+{
+  "format": "null-city-run-artifact",
+  "version": 2,
+  "identity": {
+    "sessionId": "forged-browser-pass",
+    "scenarioId": "different-header-id",
+    "scenarioDigest": "not-a-sha256",
+    "engineProtocolVersion": 999,
+    "seed": -123,
+    "totalTicks": 0
+  },
+  "finalTick": 0,
+  "eventCount": 1,
+  "playerEventCount": 1,
+  "truthLogHash": "e77225d223e6c875b850b26b69cf31da6047a6440011856959aef669dac4765d",
+  "playerLogHash": "cee0ec2d3765148b1db19c235399eb007f5d56248be60b8d27d01e3f3095ad5a",
+  "stateDigest": "attacker-controlled",
+  "scoreDigest": "31f48ed33afe7e437efa2c30cbf97fbd62c2de5c0732504077377846fe64973f",
+  "scoreTotal": 0,
+  "handledIncidents": [
+    "invented"
+  ],
+  "activeIncidents": [
+    "also-invented"
+  ],
+  "commandTrace": [],
+  "assessmentTrace": [],
+  "publicActionLedger": [],
+  "truth": {
+    "events": [
+      {
+        "sessionId": "forged-browser-pass",
+        "sequence": 0,
+        "tick": 0,
+        "kind": "ScenarioCompleted",
+        "payload": {
+          "finalScore": {
+            "total": 0
+          },
+          "finalTick": 0
+        },
+        "previousHash": "",
+        "hash": "e77225d223e6c875b850b26b69cf31da6047a6440011856959aef669dac4765d"
+      }
+    ]
+  },
+  "player": {
+    "events": [
+      {
+        "stream": "player",
+        "sessionId": "forged-browser-pass",
+        "sequence": 0,
+        "tick": 0,
+        "kind": "SessionStarted",
+        "payload": {
+          "scenarioId": "forged",
+          "seed": 999,
+          "totalTicks": 0,
+          "teams": [],
+          "routes": [],
+          "resources": {
+            "backupGenerators": 0,
+            "advisoryUses": 0
+          }
+        },
+        "previousHash": "",
+        "hash": "cee0ec2d3765148b1db19c235399eb007f5d56248be60b8d27d01e3f3095ad5a"
+      }
+    ]
+  },
+  "signature": null,
+  "artifactHash": "0cfcae8a08a8af8e61e732ef2dd17015bd6e90eda24624cdad979d1b49691fcc"
+}

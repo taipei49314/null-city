@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "id": "glass-harbor",
+  "name": "GLASS HARBOR",
+  "description": "A hazmat release at a harbor terminal spreads uncertainty faster than the plume itself: contradictory plume readings, a false-attribution news report blaming the wrong facility, a single chokepoint route into the peninsula, and a hospital district whose capacity depends on containing the leak before it strains it.",
+  "metadata": {
+    "difficulty": "standard",
+    "tags": ["hazmat", "medical-pressure", "route-chokepoint", "false-attribution", "evacuation-tradeoff"],
+    "expectedDurationMinutes": 20,
+    "mechanics": [
+      "plume-uncertainty",
+      "chokepoint-topology",
+      "evacuation-vs-shelter-advisory",
+      "false-attribution-report",
+      "cross-attribute-cascade"
+    ]
+  },
+  "tickDurationSeconds": 10,
+  "totalTicks": 480,
+  "districts": [
+    { "id": "harborside", "power": 85, "communications": 78, "water": 80, "traffic": 65, "medicalCapacity": 55, "hazardLevel": 20, "populationRisk": 15 },
+    { "id": "ferry-district", "power": 88, "communications": 80, "water": 84, "traffic": 55, "medicalCapacity": 50, "hazardLevel": 10, "populationRisk": 18 },
+    { "id": "old-town", "power": 90, "communications": 85, "water": 88, "traffic": 60, "medicalCapacity": 65, "hazardLevel": 8, "populationRisk": 25 },
+    { "id": "uplands", "power": 92, "communications": 88, "water": 90, "traffic": 75, "medicalCapacity": 60, "hazardLevel": 5, "populationRisk": 12 },
+    { "id": "clinic-row", "power": 94, "communications": 90, "water": 90, "traffic": 70, "medicalCapacity": 90, "hazardLevel": 4, "populationRisk": 10 }
+  ],
+  "teams": [
+    { "teamId": "power-1", "type": "power", "startDistrict": "harborside", "reschedulable": true },
+    { "teamId": "fire-1", "type": "fire", "startDistrict": "harborside", "reschedulable": true },
+    { "teamId": "fire-2", "type": "fire", "startDistrict": "ferry-district", "reschedulable": true },
+    { "teamId": "med-1", "type": "medical", "startDistrict": "clinic-row", "reschedulable": true },
+    { "teamId": "med-2", "type": "medical", "startDistrict": "old-town", "reschedulable": true },
+    { "teamId": "comms-1", "type": "communications", "startDistrict": "uplands", "reschedulable": true },
+    { "teamId": "verify-1", "type": "verification", "startDistrict": "clinic-row", "reschedulable": true }
+  ],
+  "routes": [
+    { "id": "harborside-ferry", "from": "harborside", "to": "ferry-district", "travelTicks": 5 },
+    { "id": "ferry-oldtown", "from": "ferry-district", "to": "old-town", "travelTicks": 4 },
+    { "id": "ferry-clinic", "from": "ferry-district", "to": "clinic-row", "travelTicks": 6 },
+    { "id": "oldtown-uplands", "from": "old-town", "to": "uplands", "travelTicks": 5 },
+    { "id": "uplands-clinic", "from": "uplands", "to": "clinic-row", "travelTicks": 7 },
+    { "id": "harborside-oldtown", "from": "harborside", "to": "old-town", "travelTicks": 11 }
+  ],
+  "resources": {
+    "backupGenerators": 1,
+    "advisoryUses": 5
+  },
+  "incidents": [
+    {
+      "id": "hazmat_leak",
+      "kind": "hazmat_leak",
+      "district": "harborside",
+      "atTick": 10,
+      "severity": 55,
+      "effect": { "attribute": "hazardLevel", "delta": 3 },
+      "handledBy": ["hazard_control"]
+    },
+    {
+      "id": "plume_drift",
+      "kind": "plume_drift",
+      "district": "old-town",
+      "atTick": 99999,
+      "severity": 40,
+      "effect": { "attribute": "medicalCapacity", "delta": -3 },
+      "handledBy": ["hazard_control"],
+      "chainTrigger": {
+        "sourceIncidentId": "hazmat_leak",
+        "district": "harborside",
+        "attribute": "traffic",
+        "below": 40,
+        "forTicks": 8
+      }
+    },
+    {
+      "id": "clinic_overload",
+      "kind": "clinic_overload",
+      "district": "clinic-row",
+      "atTick": 99999,
+      "severity": 35,
+      "effect": { "attribute": "medicalCapacity", "delta": -4 },
+      "handledBy": ["medical_support"],
+      "chainTrigger": {
+        "sourceIncidentId": "plume_drift",
+        "district": "old-town",
+        "attribute": "medicalCapacity",
+        "below": 40,
+        "forTicks": 6
+      }
+    }
+  ],
+  "effects": [
+    { "atTick": 11, "target": "harborside", "attribute": "traffic", "delta": -3, "repeatEvery": 4, "label": "evacuation_congestion" },
+    { "atTick": 16, "target": "ferry-district", "attribute": "traffic", "delta": -2, "repeatEvery": 6 },
+    { "atTick": 20, "target": "harborside", "attribute": "communications", "delta": -1, "repeatEvery": 8 }
+  ],
+  "sources": [
+    { "id": "plume-sensor", "kind": "sensor", "reliability": 0.88 },
+    { "id": "harbor-dispatch", "kind": "dispatch", "reliability": 0.72 },
+    { "id": "clinic-staff", "kind": "medical", "reliability": 0.8 },
+    { "id": "citizen-4021", "kind": "public", "reliability": 0.3 },
+    { "id": "harbor-news", "kind": "news", "reliability": 0.4 }
+  ],
+  "observations": [
+    {
+      "id": "plume_sensor_1", "incidentId": "hazmat_leak", "sourceId": "plume-sensor",
+      "atTick": 10, "baseDelayTicks": 2, "lossProbability": 0.05, "staleAfterTicks": 60,
+      "content": "Harbor terminal gas sensor array: concentration rising above safe threshold", "category": "telemetry"
+    },
+    {
+      "id": "harbor_citizen_smell", "incidentId": "hazmat_leak", "sourceId": "citizen-4021",
+      "atTick": 11, "baseDelayTicks": 7, "lossProbability": 0.15,
+      "content": "Strong chemical smell near the harbor terminal", "category": "witness",
+      "corruption": [
+        { "probability": 0.3, "type": "exaggerated", "text": "Toxic gas cloud rolling off the harbor terminal, people are collapsing!", "false": false }
+      ]
+    },
+    {
+      "id": "harbor_news_blame", "incidentId": "hazmat_leak", "sourceId": "harbor-news",
+      "atTick": 13, "baseDelayTicks": 12, "lossProbability": 0.3,
+      "content": "Sources say the leak originated at the harbor terminal", "category": "news",
+      "corruption": [
+        { "probability": 0.65, "type": "attribution_error", "text": "Sources now say the leak came from Clinic Row's backup generator, not the harbor terminal", "false": true }
+      ]
+    },
+    {
+      "id": "harbor_dispatch_confirm", "incidentId": "hazmat_leak", "sourceId": "harbor-dispatch",
+      "atTick": 14, "baseDelayTicks": 3, "lossProbability": 0.1, "staleAfterTicks": 80,
+      "content": "Confirmed: release point is the harbor terminal storage tank, not Clinic Row", "category": "dispatch"
+    },
+    {
+      "id": "ferry_congestion_report", "incidentId": "hazmat_leak", "sourceId": "harbor-dispatch",
+      "atTick": 18, "baseDelayTicks": 4, "lossProbability": 0.1,
+      "content": "Ferry District route is the only way off the peninsula and traffic is backing up", "category": "dispatch"
+    },
+    {
+      "id": "plume_sensor_2", "incidentId": "plume_drift", "sourceId": "plume-sensor",
+      "atTick": 2, "baseDelayTicks": 3, "lossProbability": 0.08, "relativeToIncidentStart": true,
+      "content": "Old Town air monitor: particulate levels climbing", "category": "telemetry"
+    },
+    {
+      "id": "oldtown_citizen_cough", "incidentId": "plume_drift", "sourceId": "citizen-4021",
+      "atTick": 5, "baseDelayTicks": 8, "lossProbability": 0.2, "relativeToIncidentStart": true,
+      "content": "People in Old Town are coughing and asking for masks", "category": "witness",
+      "corruption": [
+        { "probability": 0.4, "type": "exaggerated", "text": "Old Town streets are filling with toxic smoke, mass evacuation needed now!", "false": true }
+      ]
+    },
+    {
+      "id": "clinic_staff_strain", "incidentId": "clinic_overload", "sourceId": "clinic-staff",
+      "atTick": 1, "baseDelayTicks": 4, "lossProbability": 0.1, "relativeToIncidentStart": true,
+      "content": "Clinic Row is seeing a surge of respiratory patients from Old Town", "category": "report"
+    },
+    {
+      "id": "clinic_staff_capacity", "incidentId": "clinic_overload", "sourceId": "clinic-staff",
+      "atTick": 5, "baseDelayTicks": 5, "lossProbability": 0.12, "relativeToIncidentStart": true,
+      "content": "Clinic Row beds are nearly full; requesting backup medical support", "category": "report",
+      "corruption": [
+        { "probability": 0.25, "type": "exaggerated", "text": "Clinic Row hospital has no beds left and is turning patients away", "false": true }
+      ]
+    }
+  ]
+}

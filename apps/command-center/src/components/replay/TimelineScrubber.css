@@ -1,0 +1,77 @@
+.timeline-scrubber {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: sticky;
+  top: 8px;
+  z-index: 5;
+}
+
+.timeline-scrubber-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeline-range {
+  flex: 1;
+  accent-color: var(--nc-amber-500);
+}
+
+.timeline-tick-readout {
+  font-family: var(--nc-font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 96px;
+  text-align: right;
+}
+
+.timeline-tick-max {
+  color: var(--nc-slate-300);
+  font-weight: 400;
+}
+
+.timeline-marks-track {
+  position: relative;
+  height: 14px;
+  border-top: 1px solid var(--nc-line);
+}
+
+.timeline-mark {
+  position: absolute;
+  top: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.timeline-mark-score {
+  background: var(--nc-amber-500);
+}
+
+.timeline-mark-evidence {
+  background: var(--nc-green-500);
+}
+
+.timeline-mark-command {
+  background: var(--nc-slate-300);
+}
+
+.timeline-mark-incident {
+  background: var(--nc-red-500);
+}
+
+.timeline-cursor {
+  position: absolute;
+  top: -6px;
+  width: 2px;
+  height: 20px;
+  background: var(--nc-amber-400);
+  transform: translateX(-50%);
+  pointer-events: none;
+}

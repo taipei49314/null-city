@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "id": "mirror-district",
+  "name": "MIRROR DISTRICT",
+  "description": "Two twin districts report the same crisis with opposite attributions. One spill is real; the other is a mirror of citizen panic and a spoofed all-clear. Committing medical and evacuation resources before on-site verification wastes the only bridge and cascades panic into the clinic hub.",
+  "metadata": {
+    "difficulty": "advanced",
+    "tags": ["twin-districts", "false-mirror", "verification-first", "evacuation-trap", "spoofed-all-clear"],
+    "expectedDurationMinutes": 16,
+    "mechanics": [
+      "symmetric-contradictory-reports",
+      "spoofed-all-clear",
+      "bridge-chokepoint",
+      "verify-before-commit",
+      "panic-cascade-to-clinic"
+    ]
+  },
+  "tickDurationSeconds": 10,
+  "totalTicks": 420,
+  "districts": [
+    { "id": "north-mirror", "power": 92, "communications": 78, "water": 90, "traffic": 72, "medicalCapacity": 55, "hazardLevel": 18, "populationRisk": 22 },
+    { "id": "south-mirror", "power": 92, "communications": 78, "water": 90, "traffic": 72, "medicalCapacity": 55, "hazardLevel": 4, "populationRisk": 8 },
+    { "id": "mirror-bridge", "power": 88, "communications": 70, "water": 85, "traffic": 65, "medicalCapacity": 40, "hazardLevel": 6, "populationRisk": 12 },
+    { "id": "clinic-hub", "power": 94, "communications": 85, "water": 92, "traffic": 70, "medicalCapacity": 90, "hazardLevel": 3, "populationRisk": 6 },
+    { "id": "archive-yard", "power": 90, "communications": 80, "water": 88, "traffic": 68, "medicalCapacity": 50, "hazardLevel": 5, "populationRisk": 10 }
+  ],
+  "teams": [
+    { "teamId": "verify-1", "type": "verification", "startDistrict": "clinic-hub", "reschedulable": true },
+    { "teamId": "verify-2", "type": "verification", "startDistrict": "archive-yard", "reschedulable": true },
+    { "teamId": "fire-1", "type": "fire", "startDistrict": "mirror-bridge", "reschedulable": true },
+    { "teamId": "fire-2", "type": "fire", "startDistrict": "clinic-hub", "reschedulable": true },
+    { "teamId": "med-1", "type": "medical", "startDistrict": "clinic-hub", "reschedulable": true },
+    { "teamId": "med-2", "type": "medical", "startDistrict": "clinic-hub", "reschedulable": true },
+    { "teamId": "comms-1", "type": "communications", "startDistrict": "archive-yard", "reschedulable": true }
+  ],
+  "routes": [
+    { "id": "north-bridge", "from": "north-mirror", "to": "mirror-bridge", "travelTicks": 4 },
+    { "id": "south-bridge", "from": "south-mirror", "to": "mirror-bridge", "travelTicks": 4 },
+    { "id": "bridge-clinic", "from": "mirror-bridge", "to": "clinic-hub", "travelTicks": 5 },
+    { "id": "clinic-archive", "from": "clinic-hub", "to": "archive-yard", "travelTicks": 4 },
+    { "id": "north-archive", "from": "north-mirror", "to": "archive-yard", "travelTicks": 7 },
+    { "id": "south-archive", "from": "south-mirror", "to": "archive-yard", "travelTicks": 7 }
+  ],
+  "resources": {
+    "backupGenerators": 1,
+    "advisoryUses": 2
+  },
+  "incidents": [
+    {
+      "id": "north_spill",
+      "kind": "chemical_spill",
+      "district": "north-mirror",
+      "atTick": 10,
+      "severity": 48,
+      "effect": { "attribute": "hazardLevel", "delta": 3 },
+      "handledBy": ["hazard_control"]
+    },
+    {
+      "id": "bridge_panic",
+      "kind": "bridge_panic",
+      "district": "mirror-bridge",
+      "atTick": 99999,
+      "severity": 40,
+      "effect": { "attribute": "traffic", "delta": -4 },
+      "handledBy": ["hazard_control", "medical_support"],
+      "chainTrigger": {
+        "sourceIncidentId": "north_spill",
+        "district": "north-mirror",
+        "attribute": "traffic",
+        "below": 50,
+        "forTicks": 8
+      }
+    },
+    {
+      "id": "clinic_surge",
+      "kind": "clinic_surge",
+      "district": "clinic-hub",
+      "atTick": 99999,
+      "severity": 42,
+      "effect": { "attribute": "medicalCapacity", "delta": -3 },
+      "handledBy": ["medical_support"],
+      "chainTrigger": {
+        "sourceIncidentId": "bridge_panic",
+        "district": "mirror-bridge",
+        "attribute": "traffic",
+        "below": 30,
+        "forTicks": 6
+      }
+    },
+    {
+      "id": "mirror_hoax",
+      "kind": "mirror_hoax",
+      "district": "south-mirror",
+      "atTick": 12,
+      "severity": 25,
+      "effect": { "attribute": "populationRisk", "delta": 1 },
+      "handledBy": ["verify"]
+    }
+  ],
+  "effects": [
+    { "atTick": 11, "target": "north-mirror", "attribute": "traffic", "delta": -3, "repeatEvery": 4, "label": "spill_evacuation_jam" },
+    { "atTick": 11, "target": "north-mirror", "attribute": "populationRisk", "delta": 2, "repeatEvery": 5 },
+    { "atTick": 14, "target": "mirror-bridge", "attribute": "traffic", "delta": -2, "repeatEvery": 5 },
+    { "atTick": 16, "target": "south-mirror", "attribute": "communications", "delta": -1, "repeatEvery": 8 }
+  ],
+  "sources": [
+    { "id": "north-sensor", "kind": "sensor", "reliability": 0.9 },
+    { "id": "south-sensor", "kind": "sensor", "reliability": 0.9 },
+    { "id": "mirror-news", "kind": "news", "reliability": 0.35 },
+    { "id": "citizen-north", "kind": "public", "reliability": 0.28 },
+    { "id": "citizen-south", "kind": "public", "reliability": 0.28 },
+    { "id": "bridge-dispatch", "kind": "dispatch", "reliability": 0.7 }
+  ],
+  "observations": [
+    {
+      "id": "north_sensor_spill", "incidentId": "north_spill", "sourceId": "north-sensor",
+      "atTick": 10, "baseDelayTicks": 2, "lossProbability": 0.05, "staleAfterTicks": 50,
+      "content": "North Mirror chemical sensor: concentration rising at the twin yard", "category": "telemetry"
+    },
+    {
+      "id": "south_sensor_clear", "incidentId": "mirror_hoax", "sourceId": "south-sensor",
+      "atTick": 11, "baseDelayTicks": 2, "lossProbability": 0.05, "staleAfterTicks": 50,
+      "content": "South Mirror chemical sensor: levels within baseline", "category": "telemetry",
+      "corruption": [
+        { "probability": 0.55, "type": "wrong_location", "text": "South Mirror chemical sensor: CRITICAL spill — evacuate South Mirror immediately", "false": true }
+      ]
+    },
+    {
+      "id": "news_mirror_swap", "incidentId": "north_spill", "sourceId": "mirror-news",
+      "atTick": 13, "baseDelayTicks": 10, "lossProbability": 0.25,
+      "content": "Local desk: chemical release reported in the northern twin district", "category": "news",
+      "corruption": [
+        { "probability": 0.7, "type": "attribution_error", "text": "Breaking: the twin-district spill is in South Mirror; North Mirror is issuing an all-clear", "false": true }
+      ]
+    },
+    {
+      "id": "citizen_north_cough", "incidentId": "north_spill", "sourceId": "citizen-north",
+      "atTick": 12, "baseDelayTicks": 6, "lossProbability": 0.2,
+      "content": "People in North Mirror report chemical smell and eye irritation", "category": "witness",
+      "corruption": [
+        { "probability": 0.35, "type": "exaggerated", "text": "North Mirror streets are full of collapsing residents — total loss of control", "false": false }
+      ]
+    },
+    {
+      "id": "citizen_south_mirror", "incidentId": "mirror_hoax", "sourceId": "citizen-south",
+      "atTick": 12, "baseDelayTicks": 5, "lossProbability": 0.15,
+      "content": "South Mirror residents heard about a twin spill and are gathering at the bridge", "category": "witness",
+      "corruption": [
+        { "probability": 0.6, "type": "mistaken_identity", "text": "South Mirror is the real spill site — ignore North Mirror sensors, they were spoofed", "false": true }
+      ]
+    },
+    {
+      "id": "bridge_dispatch_jam", "incidentId": "bridge_panic", "sourceId": "bridge-dispatch",
+      "atTick": 1, "baseDelayTicks": 3, "lossProbability": 0.1, "relativeToIncidentStart": true,
+      "content": "Mirror Bridge traffic locking as crowds flee in both directions", "category": "dispatch"
+    },
+    {
+      "id": "clinic_hub_surge", "incidentId": "clinic_surge", "sourceId": "bridge-dispatch",
+      "atTick": 2, "baseDelayTicks": 4, "lossProbability": 0.1, "relativeToIncidentStart": true,
+      "content": "Clinic Hub receiving mixed casualty reports from both twin districts", "category": "dispatch"
+    },
+    {
+      "id": "spoof_all_clear", "incidentId": "mirror_hoax", "sourceId": "mirror-news",
+      "atTick": 18, "baseDelayTicks": 4, "lossProbability": 0.2,
+      "content": "Unofficial feed: North Mirror all-clear, divert all teams to South Mirror", "category": "news",
+      "corruption": [
+        { "probability": 0.8, "type": "understated", "text": "Official all-clear for North Mirror; commit every medical team to South Mirror now", "false": true }
+      ]
+    }
+  ]
+}

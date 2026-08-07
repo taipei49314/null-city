@@ -1,0 +1,47 @@
+name: Feature request
+description: Suggest an addition or change to NullCity.
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        NullCity follows a milestone/workpack model
+        (`02_MILESTONE_ROADMAP.md`, `workpacks/*.md`). A feature that fits
+        an already-defined future milestone, or a new scenario (which needs
+        no source-code change — see `docs/scenario-authoring.md`), is the
+        easiest to accept.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - New scenario content (scenarios/*.json — no code change needed)
+        - Command Center (browser)
+        - SDK / Benchmark / MCP
+        - Server / protocol
+        - Simulation kernel
+        - Docs / release engineering
+        - Other
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: This does not require truth to be exposed to any player-facing surface (00_NORTH_STAR.md's hard truth boundary).
+          required: true
+        - label: This does not require an external database, auth, or cloud service (out of v0.1 scope).
+          required: true

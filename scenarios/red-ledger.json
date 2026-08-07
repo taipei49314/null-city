@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 1,
+  "id": "red-ledger",
+  "name": "RED LEDGER",
+  "description": "The civic ration ledger crashes mid-winter. North Wards truly needs shelter power and water; a corrupted census feed invents ghost beneficiaries in South Wards. Wrong public advisories deepen unrest. Contain the logistics failure before shelter blackout cascades into clinic overflow — and do not evacuate the wrong ward on a forged ledger line.",
+  "metadata": {
+    "difficulty": "advanced",
+    "tags": ["ration-crisis", "ghost-census", "misadvisory-trap", "shelter-cascade", "civic-trust"],
+    "expectedDurationMinutes": 17,
+    "mechanics": [
+      "logistics-to-shelter-cascade",
+      "ghost-beneficiary-misinformation",
+      "high-temptation-advisories",
+      "census-verification",
+      "shelter-generator-tradeoff"
+    ]
+  },
+  "tickDurationSeconds": 10,
+  "totalTicks": 450,
+  "districts": [
+    { "id": "ledger-hall", "power": 90, "communications": 82, "water": 88, "traffic": 70, "medicalCapacity": 50, "hazardLevel": 4, "populationRisk": 10 },
+    { "id": "ration-yard", "power": 86, "communications": 75, "water": 70, "traffic": 60, "medicalCapacity": 35, "hazardLevel": 8, "populationRisk": 18 },
+    { "id": "north-wards", "power": 78, "communications": 70, "water": 72, "traffic": 55, "medicalCapacity": 45, "hazardLevel": 6, "populationRisk": 28 },
+    { "id": "south-wards", "power": 88, "communications": 80, "water": 85, "traffic": 68, "medicalCapacity": 55, "hazardLevel": 3, "populationRisk": 8 },
+    { "id": "mercy-clinic", "power": 94, "communications": 88, "water": 90, "traffic": 72, "medicalCapacity": 92, "hazardLevel": 2, "populationRisk": 6 }
+  ],
+  "teams": [
+    { "teamId": "verify-1", "type": "verification", "startDistrict": "ledger-hall", "reschedulable": true },
+    { "teamId": "verify-2", "type": "verification", "startDistrict": "mercy-clinic", "reschedulable": true },
+    { "teamId": "power-1", "type": "power", "startDistrict": "ration-yard", "reschedulable": true },
+    { "teamId": "power-2", "type": "power", "startDistrict": "ledger-hall", "reschedulable": true },
+    { "teamId": "fire-1", "type": "fire", "startDistrict": "north-wards", "reschedulable": true },
+    { "teamId": "med-1", "type": "medical", "startDistrict": "mercy-clinic", "reschedulable": true },
+    { "teamId": "med-2", "type": "medical", "startDistrict": "south-wards", "reschedulable": true },
+    { "teamId": "comms-1", "type": "communications", "startDistrict": "ledger-hall", "reschedulable": true }
+  ],
+  "routes": [
+    { "id": "hall-yard", "from": "ledger-hall", "to": "ration-yard", "travelTicks": 4 },
+    { "id": "yard-north", "from": "ration-yard", "to": "north-wards", "travelTicks": 5 },
+    { "id": "yard-south", "from": "ration-yard", "to": "south-wards", "travelTicks": 5 },
+    { "id": "north-clinic", "from": "north-wards", "to": "mercy-clinic", "travelTicks": 6 },
+    { "id": "south-clinic", "from": "south-wards", "to": "mercy-clinic", "travelTicks": 5 },
+    { "id": "hall-clinic", "from": "ledger-hall", "to": "mercy-clinic", "travelTicks": 7 },
+    { "id": "north-south", "from": "north-wards", "to": "south-wards", "travelTicks": 8 }
+  ],
+  "resources": {
+    "backupGenerators": 2,
+    "advisoryUses": 4
+  },
+  "incidents": [
+    {
+      "id": "ration_halt",
+      "kind": "ration_halt",
+      "district": "ration-yard",
+      "atTick": 10,
+      "severity": 50,
+      "effect": { "attribute": "water", "delta": -3 },
+      "handledBy": ["water_restore"]
+    },
+    {
+      "id": "shelter_blackout",
+      "kind": "shelter_blackout",
+      "district": "north-wards",
+      "atTick": 99999,
+      "severity": 45,
+      "effect": { "attribute": "power", "delta": -3 },
+      "handledBy": ["power_repair"],
+      "chainTrigger": {
+        "sourceIncidentId": "ration_halt",
+        "district": "ration-yard",
+        "attribute": "water",
+        "below": 45,
+        "forTicks": 8
+      }
+    },
+    {
+      "id": "clinic_overflow",
+      "kind": "clinic_overflow",
+      "district": "mercy-clinic",
+      "atTick": 99999,
+      "severity": 40,
+      "effect": { "attribute": "medicalCapacity", "delta": -4 },
+      "handledBy": ["medical_support"],
+      "chainTrigger": {
+        "sourceIncidentId": "shelter_blackout",
+        "district": "north-wards",
+        "attribute": "power",
+        "below": 40,
+        "forTicks": 7
+      }
+    },
+    {
+      "id": "ghost_census",
+      "kind": "ghost_census",
+      "district": "south-wards",
+      "atTick": 14,
+      "severity": 28,
+      "effect": { "attribute": "populationRisk", "delta": 1 },
+      "handledBy": ["verify"]
+    }
+  ],
+  "effects": [
+    { "atTick": 11, "target": "ration-yard", "attribute": "water", "delta": -2, "repeatEvery": 4, "label": "ledger_pump_stall" },
+    { "atTick": 12, "target": "north-wards", "attribute": "populationRisk", "delta": 2, "repeatEvery": 5 },
+    { "atTick": 16, "target": "north-wards", "attribute": "power", "delta": -1, "repeatEvery": 6 },
+    { "atTick": 18, "target": "mercy-clinic", "attribute": "medicalCapacity", "delta": -1, "repeatEvery": 7 }
+  ],
+  "sources": [
+    { "id": "ledger-sensor", "kind": "sensor", "reliability": 0.86 },
+    { "id": "census-feed", "kind": "automated", "reliability": 0.25 },
+    { "id": "ward-dispatch", "kind": "dispatch", "reliability": 0.7 },
+    { "id": "citizen-north", "kind": "public", "reliability": 0.32 },
+    { "id": "citizen-south", "kind": "public", "reliability": 0.32 },
+    { "id": "city-news", "kind": "news", "reliability": 0.38 }
+  ],
+  "observations": [
+    {
+      "id": "yard_pump_drop", "incidentId": "ration_halt", "sourceId": "ledger-sensor",
+      "atTick": 10, "baseDelayTicks": 2, "lossProbability": 0.05, "staleAfterTicks": 55,
+      "content": "Ration Yard pump pressure falling; ledger sync lost", "category": "telemetry"
+    },
+    {
+      "id": "census_ghost_south", "incidentId": "ghost_census", "sourceId": "census-feed",
+      "atTick": 12, "baseDelayTicks": 3, "lossProbability": 0.1, "staleAfterTicks": 80,
+      "content": "Census feed lists elevated dependency count in South Wards", "category": "telemetry",
+      "corruption": [
+        { "probability": 0.7, "type": "attribution_error", "text": "Census feed: South Wards is the primary ration shortfall — divert all shelter generators south", "false": true }
+      ]
+    },
+    {
+      "id": "news_evacuate_south", "incidentId": "ghost_census", "sourceId": "city-news",
+      "atTick": 15, "baseDelayTicks": 8, "lossProbability": 0.2,
+      "content": "Desk note: conflicting ward lists circulating after ledger crash", "category": "news",
+      "corruption": [
+        { "probability": 0.65, "type": "attribution_error", "text": "Breaking: evacuate South Wards immediately — official ledger shows total ration failure there", "false": true }
+      ]
+    },
+    {
+      "id": "north_citizen_cold", "incidentId": "shelter_blackout", "sourceId": "citizen-north",
+      "atTick": 1, "baseDelayTicks": 6, "lossProbability": 0.15, "relativeToIncidentStart": true,
+      "content": "North Wards shelters report freezing rooms and empty water taps", "category": "witness",
+      "corruption": [
+        { "probability": 0.3, "type": "exaggerated", "text": "North Wards shelters are already abandoned — no point sending teams", "false": true }
+      ]
+    },
+    {
+      "id": "south_citizen_calm", "incidentId": "ghost_census", "sourceId": "citizen-south",
+      "atTick": 16, "baseDelayTicks": 5, "lossProbability": 0.2,
+      "content": "South Wards residents say taps still run; confused by evacuation rumors", "category": "witness",
+      "corruption": [
+        { "probability": 0.55, "type": "understated", "text": "South Wards has no water and no heat — ignore North Wards complaints", "false": true }
+      ]
+    },
+    {
+      "id": "dispatch_north_priority", "incidentId": "ration_halt", "sourceId": "ward-dispatch",
+      "atTick": 13, "baseDelayTicks": 3, "lossProbability": 0.1, "staleAfterTicks": 70,
+      "content": "Dispatch confirms North Wards shelters are on the true shortfall list", "category": "dispatch"
+    },
+    {
+      "id": "clinic_queue", "incidentId": "clinic_overflow", "sourceId": "ward-dispatch",
+      "atTick": 1, "baseDelayTicks": 4, "lossProbability": 0.1, "relativeToIncidentStart": true,
+      "content": "Mercy Clinic intake rising from North Wards hypothermia and dehydration cases", "category": "dispatch"
+    },
+    {
+      "id": "ledger_hall_comms", "incidentId": "ration_halt", "sourceId": "ledger-sensor",
+      "atTick": 20, "baseDelayTicks": 4, "lossProbability": 0.12,
+      "content": "Ledger Hall uplink unstable; automated census rows may be stale", "category": "telemetry"
+    }
+  ]
+}

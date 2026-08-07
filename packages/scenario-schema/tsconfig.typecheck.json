@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "../..",
+    "baseUrl": "../..",
+    "paths": {
+      "@null-city/contracts": ["packages/contracts/src/index.ts"]
+    }
+  },
+  "include": ["src", "test"]
+}

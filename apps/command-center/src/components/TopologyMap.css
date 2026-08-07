@@ -1,0 +1,131 @@
+.topology-map-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.topology-svg {
+  flex: 1;
+  min-height: 260px;
+  width: 100%;
+  background: radial-gradient(circle at 50% 40%, #171c22 0%, var(--nc-bg-1) 70%);
+}
+
+.topology-route {
+  stroke: var(--nc-steel-500);
+  stroke-width: 0.6;
+}
+
+.topology-route-closed {
+  stroke: var(--nc-red-500);
+  stroke-width: 0.7;
+}
+
+.topology-district-group {
+  cursor: pointer;
+  outline: none;
+}
+
+.topology-district-group:focus-visible .topology-node,
+.topology-district-group:focus-visible .topology-node-selected {
+  stroke: var(--nc-amber-500);
+  stroke-width: 1.4;
+}
+
+.topology-node {
+  fill: var(--nc-steel-700);
+  stroke: var(--nc-slate-300);
+  stroke-width: 0.6;
+}
+
+.topology-node-selected {
+  fill: var(--nc-amber-500);
+  stroke: var(--nc-amber-400);
+  stroke-width: 0.8;
+}
+
+.topology-claim-badge {
+  fill: var(--nc-amber-500);
+}
+
+.topology-claim-badge-text {
+  font-size: 3px;
+  font-family: var(--nc-font-mono);
+  fill: #1a1305;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
+
+.topology-label {
+  font-size: 3.6px;
+  font-family: var(--nc-font-display);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  fill: var(--nc-slate-100);
+  text-anchor: middle;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.topology-team {
+  stroke: var(--nc-bg-0);
+  stroke-width: 0.3;
+}
+
+.topology-team-idle {
+  fill: var(--nc-slate-300);
+}
+
+.topology-team-transit {
+  fill: var(--nc-amber-500);
+}
+
+.topology-team-working {
+  fill: var(--nc-green-500);
+}
+
+.topology-team-text {
+  font-size: 2.1px;
+  fill: var(--nc-bg-0);
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+  font-weight: 700;
+}
+
+.topology-legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  border-top: 1px solid var(--nc-line);
+  font-size: 10px;
+  color: var(--nc-slate-300);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.topology-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.topology-legend-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.topology-legend-line {
+  width: 12px;
+  height: 2px;
+  display: inline-block;
+}
+
+.topology-legend-closed {
+  background: var(--nc-red-500);
+}

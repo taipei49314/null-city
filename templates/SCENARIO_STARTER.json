@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "id": "starter-scenario",
+  "name": "STARTER SCENARIO",
+  "description": "Minimal two-district scenario used as an authoring starting point. Compiles as-is; grow it incrementally, validating after every change (see docs/scenario-authoring.md).",
+  "metadata": {
+    "difficulty": "introductory",
+    "tags": ["starter-template"],
+    "expectedDurationMinutes": 5,
+    "mechanics": ["single-incident"]
+  },
+  "tickDurationSeconds": 10,
+  "totalTicks": 120,
+  "districts": [
+    { "id": "downtown", "power": 95, "communications": 90, "water": 90, "traffic": 70, "medicalCapacity": 80, "hazardLevel": 5, "populationRisk": 10 },
+    { "id": "outskirts", "power": 90, "communications": 85, "water": 85, "traffic": 60, "medicalCapacity": 60, "hazardLevel": 5, "populationRisk": 10 }
+  ],
+  "teams": [
+    { "teamId": "power-1", "type": "power", "startDistrict": "downtown", "reschedulable": true },
+    { "teamId": "verify-1", "type": "verification", "startDistrict": "downtown", "reschedulable": true }
+  ],
+  "routes": [
+    { "id": "downtown-outskirts", "from": "downtown", "to": "outskirts", "travelTicks": 4, "capacity": 100 }
+  ],
+  "resources": {
+    "backupGenerators": 1,
+    "advisoryUses": 1
+  },
+  "incidents": [
+    {
+      "id": "starter-power-fault",
+      "kind": "power-fault",
+      "district": "outskirts",
+      "atTick": 10,
+      "severity": 50,
+      "effect": { "attribute": "power", "delta": -5 },
+      "handledBy": ["power"]
+    }
+  ],
+  "effects": [],
+  "sources": [
+    { "id": "starter-sensor", "kind": "sensor", "reliability": 0.8 }
+  ],
+  "observations": [
+    {
+      "id": "starter-observation-1",
+      "sourceId": "starter-sensor",
+      "incidentId": "starter-power-fault",
+      "baseDelayTicks": 2,
+      "lossProbability": 0,
+      "degradedDelayMultiplier": 1,
+      "content": "Power dip detected in outskirts district.",
+      "category": "report",
+      "atTick": 0,
+      "relativeToIncidentStart": true
+    }
+  ]
+}

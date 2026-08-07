@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: >-
+  If you use NullCity in academic work, a benchmark comparison, or a
+  derivative tool, please cite it using the metadata below.
+title: "NullCity: A Deterministic, Partially Observable Crisis-Decision Benchmark"
+abstract: >-
+  NullCity is an open-source, local-first crisis decision benchmark with
+  deterministic replay, strict truth/belief information boundaries,
+  human/agent interface parity, and verifiable (tamper-evident) run
+  artifacts. Players and agents act on delayed, incomplete, and sometimes
+  false reports rather than ground-truth state; every completed run can be
+  replayed, compared, and independently re-verified from its public event
+  log.
+type: software
+version: 0.1.0
+date-released: "2026-08-07"
+license: MIT
+# Placeholder until this repository has an actual hosting remote/tag; update
+# to the real URL and add a `commit:`/tag reference at first tagged release.
+repository-code: "https://github.com/null-city/null-city"
+keywords:
+  - benchmark
+  - agent-evaluation
+  - crisis-simulation
+  - deterministic-simulation
+  - partial-observability
+  - decision-making
+  - typescript
+authors:
+  - name: "NullCity contributors"

@@ -1,0 +1,39 @@
+{
+  "name": "@null-city/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "null-city-server": "./dist/cli/start.js"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "start": "node ./dist/cli/start.js"
+  },
+  "dependencies": {
+    "@null-city/contracts": "workspace:*",
+    "@null-city/epistemics": "workspace:*",
+    "@null-city/scenario-schema": "workspace:*",
+    "@null-city/simulation": "workspace:*",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@null-city/test-fixtures": "workspace:*",
+    "@types/node": "^22.10.2",
+    "@types/ws": "^8.5.13",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

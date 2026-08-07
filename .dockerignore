@@ -1,0 +1,14 @@
+node_modules
+**/node_modules
+dist
+**/dist
+build
+**/build
+**/*.tsbuildinfo
+.data
+data
+.git
+.github
+docs
+workpacks
+*.md

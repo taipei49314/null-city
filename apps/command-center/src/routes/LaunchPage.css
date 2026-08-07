@@ -1,0 +1,200 @@
+.launch {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: radial-gradient(circle at 20% 10%, #1c222b 0%, var(--nc-bg-0) 55%),
+    radial-gradient(circle at 85% 85%, #201a10 0%, var(--nc-bg-0) 50%), var(--nc-bg-0);
+}
+
+.launch::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(var(--nc-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--nc-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: 0.35;
+  mask-image: radial-gradient(circle at 50% 40%, black 0%, transparent 75%);
+  pointer-events: none;
+}
+
+.launch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    100deg,
+    transparent 0px,
+    transparent 120px,
+    rgba(232, 163, 61, 0.035) 121px,
+    transparent 122px
+  );
+  pointer-events: none;
+}
+
+.launch-locale-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 2;
+  font-family: var(--nc-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.launch-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding: 48px 32px;
+  max-width: 720px;
+  text-align: center;
+}
+
+.launch-kicker {
+  font-family: var(--nc-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--nc-amber-400);
+}
+
+.launch-title {
+  font-family: var(--nc-font-display);
+  font-weight: 800;
+  font-size: clamp(56px, 11vw, 132px);
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  color: var(--nc-slate-100);
+  text-shadow: 0 0 40px var(--nc-amber-glow);
+  margin: 0;
+}
+
+.launch-subtitle {
+  font-family: var(--nc-font-display);
+  font-weight: 500;
+  font-size: clamp(16px, 2.4vw, 22px);
+  color: var(--nc-slate-300);
+  max-width: 520px;
+  line-height: 1.4;
+}
+
+.launch-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 24px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.launch-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.launch-field label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nc-slate-300);
+}
+
+.launch-scenario-static {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--nc-steel-900);
+  border: 1px solid var(--nc-line-strong);
+  border-radius: var(--nc-radius);
+}
+
+.launch-scenario-name {
+  font-family: var(--nc-font-display);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.launch-scenario-picker {
+  border: none;
+  margin: 0;
+  padding: 0;
+  gap: 8px;
+}
+
+.launch-scenario-picker legend {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nc-slate-300);
+  padding: 0;
+  margin-bottom: 4px;
+}
+
+.launch-scenario-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--nc-steel-900);
+  border: 1px solid var(--nc-line-strong);
+  border-radius: var(--nc-radius);
+  cursor: pointer;
+}
+
+.launch-scenario-option:has(input:checked) {
+  border-color: var(--nc-amber-400);
+}
+
+.launch-scenario-option input[type="radio"] {
+  margin-top: 3px;
+  accent-color: var(--nc-amber-400);
+}
+
+.launch-scenario-option-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.launch-scenario-option-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.launch-scenario-option-summary {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--nc-slate-300);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.launch-error {
+  color: var(--nc-red-500);
+  font-size: 12px;
+}
+
+.launch-start-btn {
+  margin-top: 4px;
+  padding: 12px 18px;
+  font-size: 13px;
+}
+
+.launch-footnote {
+  font-size: 11px;
+  color: var(--nc-slate-300);
+  opacity: 0.75;
+  max-width: 480px;
+}

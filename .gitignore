@@ -1,0 +1,17 @@
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+.data/
+data/*.session
+data/*.session.tmp
+data/release/
+
+# Release hygiene
+.env
+.env.*
+*.log
+.DS_Store
+Thumbs.db
+coverage/
+*.tgz

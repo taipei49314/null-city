@@ -1,0 +1,6 @@
+---
+description: NullCity deterministic kernel and information-boundary invariants
+alwaysApply: true
+---
+
+The deterministic simulation core must not depend on wall clock, network, filesystem, environment, UI, MCP, or LLM providers. Player-facing code must never receive or import truth state, raw truth events, internal queues, future schedules, or truth snapshots. Player state must be rebuildable from player events alone. Snapshots are detached, versioned, complete, identity-bound values. Completed runs reject all mutation and preserve terminal hashes, score, state, and event count.

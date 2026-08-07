@@ -1,0 +1,63 @@
+name: Bug report
+description: Something in NullCity behaves incorrectly.
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Because every run is deterministic given a
+        scenario id, seed, and command trace, most bugs here are exactly
+        reproducible — please include those three things.
+  - type: input
+    id: version
+    attributes:
+      label: NullCity version / commit
+      description: From `package.json`'s `version`, or the commit hash if known.
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where did this happen?
+      options:
+        - Command Center (browser)
+        - SDK (@null-city/sdk)
+        - Benchmark (@null-city/benchmark)
+        - MCP adapter (@null-city/mcp-server)
+        - Server / REST / WS
+        - Simulation kernel
+        - Scenario compiler / CLI
+        - Docs
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Exact command(s), scenario id, seed, and session id if applicable.
+      placeholder: |
+        pnpm demo
+        # then: create session scenarioId=black-river seed=49314, dispatch team power-1 to industrial, advance 60...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs. actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant output/logs
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: This is not a security/information-boundary issue (if it is, see SECURITY.md instead).
+          required: true
+        - label: I ran `pnpm verify` and it did not already flag this.
+          required: false

@@ -1,0 +1,114 @@
+.clock-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 16px;
+  flex-wrap: wrap;
+}
+
+.clock-bar-identity {
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+}
+
+.clock-bar-scenario {
+  font-family: var(--nc-font-display);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 14px;
+}
+
+.clock-bar-session {
+  font-size: 10px;
+  color: var(--nc-slate-300);
+}
+
+.clock-bar-tick {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.clock-bar-tick-value {
+  font-family: var(--nc-font-mono);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--nc-amber-400);
+  min-width: 90px;
+}
+
+.clock-bar-progress {
+  flex: 1;
+  max-width: 220px;
+  height: 6px;
+  background: var(--nc-steel-900);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid var(--nc-line);
+}
+
+.clock-bar-progress-fill {
+  height: 100%;
+  background: var(--nc-amber-500);
+  transition: width 200ms ease;
+}
+
+.clock-bar-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clock-bar-step-input {
+  width: 56px;
+  text-align: center;
+}
+
+.clock-bar-connection {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--nc-slate-300);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.connection-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.connection-open {
+  background: var(--nc-green-500);
+  box-shadow: 0 0 6px var(--nc-green-500);
+}
+
+.connection-connecting,
+.connection-idle {
+  background: var(--nc-amber-500);
+}
+
+.connection-reconnecting {
+  background: var(--nc-amber-500);
+  animation: nc-pulse 1s infinite;
+}
+
+.connection-closed {
+  background: var(--nc-red-500);
+}
+
+@keyframes nc-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}

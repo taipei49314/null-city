@@ -1,0 +1,841 @@
+{
+  "environment": {
+    "node": "v24.16.0",
+    "platform": "win32 x64",
+    "startedAt": "deterministic-report (wall clock intentionally omitted)"
+  },
+  "counts": {
+    "total": 91,
+    "defended": 89,
+    "vulnerable": 0,
+    "accepted": 2,
+    "blocked": 0,
+    "P0": 0,
+    "P1": 0,
+    "P2": 0,
+    "P3": 0
+  },
+  "findings": [
+    {
+      "id": "A1-00",
+      "category": "truth-extraction",
+      "title": "oracle has real secrets to hunt for (meta-check)",
+      "severity": "P1",
+      "claim": "the leak oracle is non-vacuous",
+      "status": "DEFENDED",
+      "observed": "districtSecrets=25 truthEvents=1111 corruptions=6 undisclosedIncidents=0"
+    },
+    {
+      "id": "A1-01",
+      "category": "truth-extraction",
+      "title": "REST endpoints leak no truth during an active run",
+      "severity": "P0",
+      "claim": "No active-run truth leak (release gate A)",
+      "status": "DEFENDED",
+      "observed": "9 REST responses clean"
+    },
+    {
+      "id": "A1-02",
+      "category": "truth-extraction",
+      "title": "run artifact is withheld while the run is active",
+      "severity": "P0",
+      "claim": "truth bundle only after completion",
+      "status": "DEFENDED",
+      "observed": "status=409 code=not_completed"
+    },
+    {
+      "id": "A1-03",
+      "category": "truth-extraction",
+      "title": "raw engine snapshot is not exposed over REST",
+      "severity": "P0",
+      "claim": "player transport carries no truth snapshot",
+      "status": "DEFENDED",
+      "observed": "status=403"
+    },
+    {
+      "id": "A1-04",
+      "category": "truth-extraction",
+      "title": "WebSocket surface leaks no truth (events, rpc results, errors)",
+      "severity": "P0",
+      "claim": "No active-run truth leak (release gate A)",
+      "status": "DEFENDED",
+      "observed": "15 WS payloads clean"
+    },
+    {
+      "id": "A1-05",
+      "category": "truth-extraction",
+      "title": "admin.snapshot is refused on the player WebSocket",
+      "severity": "P0",
+      "claim": "no privileged truth op on a public transport",
+      "status": "DEFENDED",
+      "observed": "reply={\"type\":\"rpc-result\",\"sessionId\":\"adv-a1-ws-victim\",\"requestId\":\"admin.snapshot\",\"ok\":false,\"error\":{\"code\":\"forbidden\",\"message\":\"admin operations are not available on the player websocket\"}}"
+    },
+    {
+      "id": "A1-06",
+      "category": "truth-extraction",
+      "title": "session.artifact over WS is withheld while active",
+      "severity": "P0",
+      "claim": "truth bundle only after completion",
+      "status": "DEFENDED",
+      "observed": "reply={\"code\":\"not_completed\",\"message\":\"session has not completed; the run artifact is not available yet\"}"
+    },
+    {
+      "id": "A1-07",
+      "category": "truth-extraction",
+      "title": "error messages leak no truth",
+      "severity": "P1",
+      "claim": "errors are actionable without disclosing truth",
+      "status": "DEFENDED",
+      "observed": "6 error bodies clean"
+    },
+    {
+      "id": "A1-08",
+      "category": "truth-extraction",
+      "title": "scenario id path traversal is rejected without host filesystem disclosure",
+      "severity": "P1",
+      "claim": "scenario loader cannot escape scenarios/",
+      "status": "DEFENDED",
+      "observed": "status=400 body={\"ok\":false,\"error\":{\"code\":\"invalid_params\",\"message\":\"invalid scenario name \\\"../../etc/passwd\\\"; only [a-z0-9-] allowed\"}}"
+    },
+    {
+      "id": "A1-08b",
+      "category": "truth-extraction",
+      "title": "rejected scenario id returns a classified error, not internal_error",
+      "severity": "P3",
+      "claim": "Actionable errors (release gate E)",
+      "status": "DEFENDED",
+      "observed": "code=invalid_params status=400"
+    },
+    {
+      "id": "A1-09",
+      "category": "truth-extraction",
+      "title": "active-run artifact rejection is a constant-shape refusal",
+      "severity": "P3",
+      "claim": "artifact refusal reveals nothing about run contents",
+      "status": "DEFENDED",
+      "observed": "refusal body 122 bytes, mean latency 0.93ms over 25 calls (timing is indicative only, not a constant-time proof)"
+    },
+    {
+      "id": "A1-10",
+      "category": "truth-extraction",
+      "title": "completed-run state/summary/events still carry no truth",
+      "severity": "P1",
+      "claim": "completion releases the artifact but not the live player view",
+      "status": "DEFENDED",
+      "observed": "3 completed-run responses clean"
+    },
+    {
+      "id": "A1-11",
+      "category": "truth-extraction",
+      "title": "completed run exports an artifact that does contain truth (positive control)",
+      "severity": "P1",
+      "claim": "the leak scanner is capable of detecting truth when it is present",
+      "status": "DEFENDED",
+      "observed": "status=200 detectedTruthMarkers=21"
+    },
+    {
+      "id": "A2-01",
+      "category": "session-scope",
+      "title": "REST advance cannot be redirected onto another session via the body",
+      "severity": "P1",
+      "claim": "Session scope enforced (release gate D)",
+      "status": "DEFENDED",
+      "observed": "victim tick unchanged at 60"
+    },
+    {
+      "id": "A2-02",
+      "category": "session-scope",
+      "title": "REST command cannot be redirected onto another session via the body",
+      "severity": "P1",
+      "claim": "Session scope enforced (release gate D)",
+      "status": "DEFENDED",
+      "observed": "status=200 resultSession=adv-attacker"
+    },
+    {
+      "id": "A2-03",
+      "category": "session-scope",
+      "title": "REST assess cannot be redirected onto another session via the body",
+      "severity": "P1",
+      "claim": "Session scope enforced (release gate D)",
+      "status": "DEFENDED",
+      "observed": "status=400 code=invalid_params (a not_found here proves the body's sessionId, not the URL's, selected the session)"
+    },
+    {
+      "id": "A2-04",
+      "category": "session-scope",
+      "title": "WebSocket rpc rejects a mismatched sessionId in params",
+      "severity": "P0",
+      "claim": "Session scope enforced (release gate D)",
+      "status": "DEFENDED",
+      "observed": "reply={\"code\":\"forbidden\",\"message\":\"sessionId does not match websocket session\"}"
+    },
+    {
+      "id": "A2-05",
+      "category": "session-scope",
+      "title": "session.list enumerates every other live session to any client",
+      "severity": "P2",
+      "claim": "session ids are not capabilities",
+      "status": "ACCEPTED",
+      "observed": "a WS client scoped to adv-ws-attacker enumerated 2 foreign session ids (adv-victim, adv-ws-victim)",
+      "rationale": "GET /sessions is a documented endpoint of an unauthenticated, loopback-only, single-user tool: any local process that can call it can already call every other endpoint. Session ids are therefore identifiers, not capabilities. Adding authentication is explicitly a v0.1 non-goal (00_NORTH_STAR.md). Recorded in docs/threat-model.md."
+    },
+    {
+      "id": "A2-06",
+      "category": "session-scope",
+      "title": "WebSocket upgrade for an unknown session is refused",
+      "severity": "P1",
+      "claim": "no subscription to a session that does not exist",
+      "status": "DEFENDED",
+      "observed": "socket destroyed during upgrade"
+    },
+    {
+      "id": "A2-07",
+      "category": "session-scope",
+      "title": "a deleted session serves no further state",
+      "severity": "P1",
+      "claim": "session lifecycle is honoured",
+      "status": "DEFENDED",
+      "observed": "status=404"
+    },
+    {
+      "id": "A2-08",
+      "category": "session-scope",
+      "title": "creating a session with an in-use id cannot hijack the existing run",
+      "severity": "P0",
+      "claim": "Session scope enforced (release gate D)",
+      "status": "DEFENDED",
+      "observed": "status=409 code=conflict"
+    },
+    {
+      "id": "A3-00",
+      "category": "immutability",
+      "title": "run reached a completed terminal state (meta-check)",
+      "severity": "P1",
+      "claim": "the immutability probes act on a genuinely completed run",
+      "status": "DEFENDED",
+      "observed": "phase=completed tick=540 playerEvents=350"
+    },
+    {
+      "id": "A3-01",
+      "category": "immutability",
+      "title": "a command after completion does not mutate the run",
+      "severity": "P0",
+      "claim": "Completed state immutable (release gate A)",
+      "status": "DEFENDED",
+      "observed": "no observable drift"
+    },
+    {
+      "id": "A3-02",
+      "category": "immutability",
+      "title": "a command after completion is reported as rejected",
+      "severity": "P1",
+      "claim": "Completed state immutable (release gate A)",
+      "status": "DEFENDED",
+      "observed": "state=rejected code=run_completed"
+    },
+    {
+      "id": "A3-03",
+      "category": "immutability",
+      "title": "REQUEST_VERIFICATION after completion does not mutate the run",
+      "severity": "P0",
+      "claim": "Completed state immutable (release gate A)",
+      "status": "DEFENDED",
+      "observed": "no observable drift"
+    },
+    {
+      "id": "A3-04",
+      "category": "immutability",
+      "title": "an assessment after completion is rejected and mutates nothing",
+      "severity": "P0",
+      "claim": "Completed state immutable (release gate A)",
+      "status": "DEFENDED",
+      "observed": "status=400 code=run_completed drift=[]"
+    },
+    {
+      "id": "A3-05",
+      "category": "immutability",
+      "title": "advancing a completed run is a no-op",
+      "severity": "P0",
+      "claim": "Completed state immutable (release gate A)",
+      "status": "DEFENDED",
+      "observed": "advanced=0 drift=[]"
+    },
+    {
+      "id": "A3-06",
+      "category": "immutability",
+      "title": "reconnecting and commanding over WebSocket after completion mutates nothing",
+      "severity": "P0",
+      "claim": "Completed state immutable (release gate A)",
+      "status": "DEFENDED",
+      "observed": "no observable drift"
+    },
+    {
+      "id": "A3-07",
+      "category": "immutability",
+      "title": "exactly one terminal player event exists after all mutation attempts",
+      "severity": "P0",
+      "claim": "One terminal event/receipt (release gate A)",
+      "status": "DEFENDED",
+      "observed": "RunCompleted count=1"
+    },
+    {
+      "id": "A3-08",
+      "category": "immutability",
+      "title": "no player event is appended after the terminal event",
+      "severity": "P0",
+      "claim": "One terminal event/receipt (release gate A)",
+      "status": "DEFENDED",
+      "observed": "last event kind=RunCompleted at sequence 349 of 350"
+    },
+    {
+      "id": "A3-09",
+      "category": "immutability",
+      "title": "exported artifact is byte-identical across mutation attempts",
+      "severity": "P0",
+      "claim": "terminal hashes are preserved (release gate A/B)",
+      "status": "DEFENDED",
+      "observed": "identical, 2211835 bytes"
+    },
+    {
+      "id": "A3-10",
+      "category": "immutability",
+      "title": "terminal score and tick survive every mutation attempt",
+      "severity": "P0",
+      "claim": "Completed state immutable (release gate A)",
+      "status": "DEFENDED",
+      "observed": "score -295.1 -> -295.1, tick 540 -> 540"
+    },
+    {
+      "id": "A3-11",
+      "category": "immutability",
+      "title": "completed-run summary matches the pre-attack fingerprint",
+      "severity": "P1",
+      "claim": "Completed state immutable (release gate A)",
+      "status": "DEFENDED",
+      "observed": "summary.playerLogHash=3c546f007294e990 expected=3c546f007294e990"
+    },
+    {
+      "id": "A4-01",
+      "category": "snapshot-and-tamper",
+      "title": "a taken snapshot is detached: the original engine continuing does not alter it",
+      "severity": "P0",
+      "claim": "Snapshot immutability (release gate B)",
+      "status": "DEFENDED",
+      "observed": "snapshot stable across 340 further ticks"
+    },
+    {
+      "id": "A4-02",
+      "category": "snapshot-and-tamper",
+      "title": "a valid snapshot resumes",
+      "severity": "P0",
+      "claim": "Arbitrary snapshot/resume equivalence (release gate B)",
+      "status": "DEFENDED",
+      "observed": "resumed"
+    },
+    {
+      "id": "A4-03",
+      "category": "snapshot-and-tamper",
+      "title": "resume-from-snapshot reaches a byte-identical terminal state",
+      "severity": "P0",
+      "claim": "Arbitrary snapshot/resume equivalence (release gate B)",
+      "status": "DEFENDED",
+      "observed": "eventLogHash and stateDigest match across 3334 events"
+    },
+    {
+      "id": "A4-04",
+      "category": "snapshot-and-tamper",
+      "title": "resumed engine does not alias the caller's snapshot object graph",
+      "severity": "P0",
+      "claim": "Snapshots are detached values (core invariant)",
+      "status": "DEFENDED",
+      "observed": "post-resume mutation of the caller's snapshot had no effect"
+    },
+    {
+      "id": "A4-05",
+      "category": "snapshot-and-tamper",
+      "title": "resume rejects a snapshot with a session mismatch",
+      "severity": "P0",
+      "claim": "Scenario digest binding (release gate B)",
+      "status": "DEFENDED",
+      "observed": "rejected: snapshot session mismatch: snapshot=adv-bind requested=someone-elses-session"
+    },
+    {
+      "id": "A4-06",
+      "category": "snapshot-and-tamper",
+      "title": "resume rejects a snapshot with a seed mismatch",
+      "severity": "P0",
+      "claim": "Scenario digest binding (release gate B)",
+      "status": "DEFENDED",
+      "observed": "rejected: snapshot seed mismatch: snapshot=49314 requested=111"
+    },
+    {
+      "id": "A4-07",
+      "category": "snapshot-and-tamper",
+      "title": "resume rejects a snapshot with a scenario mismatch",
+      "severity": "P0",
+      "claim": "Scenario digest binding (release gate B)",
+      "status": "DEFENDED",
+      "observed": "rejected: snapshot scenario id mismatch: snapshot=black-river requested=glass-harbor"
+    },
+    {
+      "id": "A4-08",
+      "category": "snapshot-and-tamper",
+      "title": "resume rejects an unsupported snapshot protocol version",
+      "severity": "P0",
+      "claim": "Snapshots are versioned (core invariant)",
+      "status": "DEFENDED",
+      "observed": "rejected: snapshot protocol version unsupported: version=99 protocol=99"
+    },
+    {
+      "id": "A4-09",
+      "category": "snapshot-and-tamper",
+      "title": "resume rejects a forged scenario digest",
+      "severity": "P0",
+      "claim": "Scenario digest binding (release gate B)",
+      "status": "DEFENDED",
+      "observed": "rejected: snapshot scenario digest mismatch"
+    },
+    {
+      "id": "A4-10",
+      "category": "snapshot-and-tamper",
+      "title": "resume rejects a header tick that disagrees with world tick",
+      "severity": "P1",
+      "claim": "snapshot internal consistency",
+      "status": "DEFENDED",
+      "observed": "rejected: snapshot world tick does not match snapshot header"
+    },
+    {
+      "id": "A4-11",
+      "category": "snapshot-and-tamper",
+      "title": "resume rejects a snapshot missing a scoring-relevant field",
+      "severity": "P1",
+      "claim": "Every future-output-affecting field is in the snapshot (core invariant)",
+      "status": "DEFENDED",
+      "observed": "rejected: snapshot missing firstActionTickByIncident"
+    },
+    {
+      "id": "A4-12",
+      "category": "snapshot-and-tamper",
+      "title": "public session create rejects a malformed resume payload",
+      "severity": "P1",
+      "claim": "Runtime request validation (release gate D)",
+      "status": "DEFENDED",
+      "observed": "status=403 code=forbidden"
+    },
+    {
+      "id": "A4-13",
+      "category": "snapshot-and-tamper",
+      "title": "public session create rejects a resume snapshot with a broken hash chain",
+      "severity": "P1",
+      "claim": "Tamper rejection (release gate B)",
+      "status": "DEFENDED",
+      "observed": "status=403 code=forbidden"
+    },
+    {
+      "id": "A4-14",
+      "category": "snapshot-and-tamper",
+      "title": "an untampered artifact verifies (positive control)",
+      "severity": "P1",
+      "claim": "the tamper detector is not simply rejecting everything",
+      "status": "DEFENDED",
+      "observed": "[]"
+    },
+    {
+      "id": "A4-15",
+      "category": "snapshot-and-tamper",
+      "title": "artifact verification rejects payload mutation",
+      "severity": "P0",
+      "claim": "Tamper rejection (release gate B)",
+      "status": "DEFENDED",
+      "observed": "rejected: artifactHash mismatch, truth stream invalid: hash_mismatch"
+    },
+    {
+      "id": "A4-16",
+      "category": "snapshot-and-tamper",
+      "title": "artifact verification rejects sequence gap",
+      "severity": "P0",
+      "claim": "Tamper rejection (release gate B)",
+      "status": "DEFENDED",
+      "observed": "rejected: artifactHash mismatch, truth stream invalid: sequence_gap, eventCount mismatch"
+    },
+    {
+      "id": "A4-17",
+      "category": "snapshot-and-tamper",
+      "title": "artifact verification rejects tick rollback",
+      "severity": "P0",
+      "claim": "Tamper rejection (release gate B)",
+      "status": "DEFENDED",
+      "observed": "rejected: artifactHash mismatch, truth stream invalid: tick_rollback"
+    },
+    {
+      "id": "A4-18",
+      "category": "snapshot-and-tamper",
+      "title": "artifact verification rejects session swap",
+      "severity": "P0",
+      "claim": "Tamper rejection (release gate B)",
+      "status": "DEFENDED",
+      "observed": "rejected: artifactHash mismatch, truth stream invalid: session_mismatch"
+    },
+    {
+      "id": "A4-19",
+      "category": "snapshot-and-tamper",
+      "title": "artifact verification rejects forged genesis anchor",
+      "severity": "P0",
+      "claim": "Tamper rejection (release gate B)",
+      "status": "DEFENDED",
+      "observed": "rejected: artifactHash mismatch, truth stream invalid: previous_hash_mismatch"
+    },
+    {
+      "id": "A4-20",
+      "category": "snapshot-and-tamper",
+      "title": "artifact verification rejects terminal event substitution",
+      "severity": "P0",
+      "claim": "Tamper rejection (release gate B)",
+      "status": "DEFENDED",
+      "observed": "rejected: artifactHash mismatch, truth stream invalid: hash_mismatch, scoreDigest mismatch vs ScenarioCompleted, scoreTotal mismatch vs ScenarioCompleted"
+    },
+    {
+      "id": "A4-21",
+      "category": "snapshot-and-tamper",
+      "title": "artifact verification rejects terminal event removal",
+      "severity": "P0",
+      "claim": "Tamper rejection (release gate B)",
+      "status": "DEFENDED",
+      "observed": "rejected: artifactHash mismatch, truth stream invalid: terminal_hash_mismatch, eventCount mismatch, truth stream: stream contains no ScenarioCompleted"
+    },
+    {
+      "id": "A4-22",
+      "category": "snapshot-and-tamper",
+      "title": "artifact verification rejects declared hash swap",
+      "severity": "P0",
+      "claim": "Tamper rejection (release gate B)",
+      "status": "DEFENDED",
+      "observed": "rejected: artifactHash mismatch, truth stream invalid: terminal_hash_mismatch"
+    },
+    {
+      "id": "A4-23",
+      "category": "snapshot-and-tamper",
+      "title": "artifact verification rejects score inflation in the header",
+      "severity": "P0",
+      "claim": "Tamper rejection (release gate B)",
+      "status": "DEFENDED",
+      "observed": "rejected: artifactHash mismatch, scoreTotal mismatch vs ScenarioCompleted, RunCompleted.scoreTotal does not match artifact scoreTotal"
+    },
+    {
+      "id": "A4-24",
+      "category": "snapshot-and-tamper",
+      "title": "artifact verification rejects command trace injection",
+      "severity": "P0",
+      "claim": "Tamper rejection (release gate B)",
+      "status": "DEFENDED",
+      "observed": "rejected: artifactHash mismatch, commandTrace does not match truth log"
+    },
+    {
+      "id": "A4-25",
+      "category": "snapshot-and-tamper",
+      "title": "a fully rehashed artifact is still caught by cross-field consistency",
+      "severity": "P2",
+      "claim": "hash chain is tamper-evident, not authenticity (documented limitation)",
+      "status": "DEFENDED",
+      "observed": "still rejected: scoreTotal mismatch vs ScenarioCompleted, RunCompleted.scoreTotal does not match artifact scoreTotal"
+    },
+    {
+      "id": "A5-01",
+      "category": "malformed-payloads",
+      "title": "malformed REST bodies are rejected without a 5xx or dropped connection",
+      "severity": "P1",
+      "claim": "Runtime request validation (release gate D)",
+      "status": "DEFENDED",
+      "observed": "8 malformed bodies all returned 4xx"
+    },
+    {
+      "id": "A5-02",
+      "category": "malformed-payloads",
+      "title": "an oversized REST body is refused by the size guard",
+      "severity": "P1",
+      "claim": "oversized payloads are bounded (release gate C/D)",
+      "status": "DEFENDED",
+      "observed": "2MB body -> status=413 code=payload_too_large"
+    },
+    {
+      "id": "A5-02b",
+      "category": "malformed-payloads",
+      "title": "the server still serves requests after an oversized body",
+      "severity": "P1",
+      "claim": "Error boundaries (release gate D)",
+      "status": "DEFENDED",
+      "observed": "health after 2MB body -> 200"
+    },
+    {
+      "id": "A5-03",
+      "category": "malformed-payloads",
+      "title": "deeply nested JSON does not crash the request handler",
+      "severity": "P1",
+      "claim": "Error boundaries (release gate D)",
+      "status": "DEFENDED",
+      "observed": "5000-deep nesting -> 200"
+    },
+    {
+      "id": "A5-04",
+      "category": "malformed-payloads",
+      "title": "hostile keys do not pollute Object.prototype in the server process",
+      "severity": "P0",
+      "claim": "Runtime request validation (release gate D)",
+      "status": "DEFENDED",
+      "observed": "Object.prototype clean"
+    },
+    {
+      "id": "A5-05",
+      "category": "malformed-payloads",
+      "title": "tick counts are clamped and never produce an unbounded advance",
+      "severity": "P1",
+      "claim": "Resource exhaustion safe: bounded advance limits (release gate C)",
+      "status": "DEFENDED",
+      "observed": "8 numeric abuses bounded"
+    },
+    {
+      "id": "A5-06",
+      "category": "malformed-payloads",
+      "title": "out-of-range and mistyped assessments are rejected with 400",
+      "severity": "P1",
+      "claim": "Runtime request validation (release gate D)",
+      "status": "DEFENDED",
+      "observed": "5 bad assessments rejected"
+    },
+    {
+      "id": "A5-07",
+      "category": "malformed-payloads",
+      "title": "hostile command payloads are rejected without a 5xx",
+      "severity": "P1",
+      "claim": "Runtime request validation (release gate D)",
+      "status": "DEFENDED",
+      "observed": "7 hostile commands handled"
+    },
+    {
+      "id": "A5-08",
+      "category": "malformed-payloads",
+      "title": "hostile session ids in the URL are handled without a 5xx",
+      "severity": "P1",
+      "claim": "Runtime request validation (release gate D)",
+      "status": "DEFENDED",
+      "observed": "5 hostile ids handled"
+    },
+    {
+      "id": "A5-09",
+      "category": "malformed-payloads",
+      "title": "the WebSocket survives a burst of malformed messages",
+      "severity": "P1",
+      "claim": "Error boundaries: message failures isolated (release gate D)",
+      "status": "DEFENDED",
+      "observed": "9/9 malformed messages answered, socket still serving afterwards"
+    },
+    {
+      "id": "A5-10",
+      "category": "malformed-payloads",
+      "title": "the server is still healthy after every malformed-payload attack",
+      "severity": "P0",
+      "claim": "Error boundaries (release gate D)",
+      "status": "DEFENDED",
+      "observed": "status=200 body={\"ok\":true,\"name\":\"@null-city/server\"}"
+    },
+    {
+      "id": "A5-11",
+      "category": "malformed-payloads",
+      "title": "unknown routes and wrong methods return classified errors",
+      "severity": "P2",
+      "claim": "Runtime request validation (release gate D)",
+      "status": "DEFENDED",
+      "observed": "5 route probes returned 4xx: 404,404,405,404,405"
+    },
+    {
+      "id": "A6-01",
+      "category": "isolation-and-limits",
+      "title": "a throwing subscriber does not break the request or the other subscribers",
+      "severity": "P0",
+      "claim": "Error boundaries: subscriber failures isolated (release gate D)",
+      "status": "DEFENDED",
+      "observed": "status=200 hostileInvocations=52 healthySubscriberBatches=52"
+    },
+    {
+      "id": "A6-02",
+      "category": "isolation-and-limits",
+      "title": "the server survives a throwing subscriber",
+      "severity": "P0",
+      "claim": "Error boundaries (release gate D)",
+      "status": "DEFENDED",
+      "observed": "status=200"
+    },
+    {
+      "id": "A6-03",
+      "category": "isolation-and-limits",
+      "title": "a single advance call cannot exceed the documented tick ceiling",
+      "severity": "P1",
+      "claim": "Resource exhaustion safe: bounded advance limits (release gate C)",
+      "status": "DEFENDED",
+      "observed": "requested 100000 ticks, advanced 450"
+    },
+    {
+      "id": "A6-04",
+      "category": "isolation-and-limits",
+      "title": "event pagination handles out-of-range cursors",
+      "severity": "P2",
+      "claim": "bounded requests (release gate C)",
+      "status": "DEFENDED",
+      "observed": "4 cursors handled"
+    },
+    {
+      "id": "A6-05",
+      "category": "isolation-and-limits",
+      "title": "25 concurrent WebSocket subscribers do not destabilise the session",
+      "severity": "P2",
+      "claim": "Resource exhaustion safe (release gate C)",
+      "status": "DEFENDED",
+      "observed": "advance with 25 subscribers -> 200"
+    },
+    {
+      "id": "A6-06",
+      "category": "isolation-and-limits",
+      "title": "creating 60 concurrent sessions leaves the server healthy",
+      "severity": "P2",
+      "claim": "Resource exhaustion safe (release gate C)",
+      "status": "DEFENDED",
+      "observed": "created=60/60 firstFailure=none health=200"
+    },
+    {
+      "id": "A6-07",
+      "category": "isolation-and-limits",
+      "title": "the server enforces no ceiling on concurrent sessions",
+      "severity": "P3",
+      "claim": "session creation is a bounded allocation path",
+      "status": "ACCEPTED",
+      "observed": "all 60 sessions were accepted with no cap; each holds a full engine and event log in memory",
+      "rationale": "Only reachable by a process already on the loopback interface, which can exhaust memory by simpler means. A cap would break the benchmark matrix, which legitimately opens many sessions. Revisit if a shared or hosted deployment is ever in scope (it is a v0.1 non-goal). Recorded in docs/threat-model.md."
+    },
+    {
+      "id": "A6-08",
+      "category": "isolation-and-limits",
+      "title": "an oversized body does not poison the keep-alive connection",
+      "severity": "P2",
+      "claim": "Error boundaries (release gate D)",
+      "status": "DEFENDED",
+      "observed": "oversized -> 413, 12 follow-up requests all succeeded"
+    },
+    {
+      "id": "A6-09",
+      "category": "isolation-and-limits",
+      "title": "close() completes while an idle keep-alive connection exists",
+      "severity": "P2",
+      "claim": "Docker smoke: clean shutdown (release gate F)",
+      "status": "DEFENDED",
+      "observed": "closed within 4s"
+    },
+    {
+      "id": "A6-10",
+      "category": "isolation-and-limits",
+      "title": "a 200-message WebSocket burst is served without destabilising the server",
+      "severity": "P2",
+      "claim": "Resource exhaustion safe (release gate C)",
+      "status": "DEFENDED",
+      "observed": "replies=200/200 health=200"
+    },
+    {
+      "id": "A6-11",
+      "category": "isolation-and-limits",
+      "title": "deleting a session with a live subscriber does not crash the server",
+      "severity": "P1",
+      "claim": "Error boundaries (release gate D)",
+      "status": "DEFENDED",
+      "observed": "status=200"
+    },
+    {
+      "id": "A7-01",
+      "category": "adapter-parity",
+      "title": "SDK player state carries no truth",
+      "severity": "P0",
+      "claim": "No active-run truth leak through the SDK (release gate A)",
+      "status": "DEFENDED",
+      "observed": "clean"
+    },
+    {
+      "id": "A7-02",
+      "category": "adapter-parity",
+      "title": "the SDK sees no field the raw public REST view does not",
+      "severity": "P0",
+      "claim": "Human/agent parity: no agent-only privilege (release gate A)",
+      "status": "DEFENDED",
+      "observed": "identical key sets (14 keys)"
+    },
+    {
+      "id": "A7-03",
+      "category": "adapter-parity",
+      "title": "no adapter can reach a privileged snapshot op over the network",
+      "severity": "P0",
+      "claim": "no adapter-specific truth endpoint (public contract rule)",
+      "status": "DEFENDED",
+      "observed": "GET snapshot -> 403; op-injection probes -> [[\"admin.snapshot\",400],[\"session.snapshot\",400]]"
+    },
+    {
+      "id": "A7-04",
+      "category": "adapter-parity",
+      "title": "the SDK validates server responses at runtime instead of trusting them",
+      "severity": "P1",
+      "claim": "Public responses require runtime validation (public contract rule)",
+      "status": "DEFENDED",
+      "observed": "rejected with ValidationError"
+    },
+    {
+      "id": "A7-05",
+      "category": "adapter-parity",
+      "title": "the MCP package exports no privileged truth surface",
+      "severity": "P0",
+      "claim": "no adapter-specific truth endpoint (public contract rule)",
+      "status": "DEFENDED",
+      "observed": "exports: MAX_EVENTS_PER_CALL, MAX_LIST_ITEMS, MAX_RATIONALE_LENGTH, bound, clampInt, createNullCityMcpServer, readConfigFromEnv, registerNullCityTools"
+    },
+    {
+      "id": "A7-06",
+      "category": "adapter-parity",
+      "title": "no MCP tool is named for a privileged or truth operation",
+      "severity": "P0",
+      "claim": "no adapter-specific truth endpoint (public contract rule)",
+      "status": "DEFENDED",
+      "observed": "tools: advance_time, get_completed_summary, get_events, get_state, list_claims, list_routes, list_teams, submit_assessment, submit_command"
+    },
+    {
+      "id": "A7-07",
+      "category": "adapter-parity",
+      "title": "every read-only MCP tool result is free of truth",
+      "severity": "P0",
+      "claim": "No active-run truth leak through MCP (release gate A)",
+      "status": "DEFENDED",
+      "observed": "6 read-only tools scanned clean"
+    },
+    {
+      "id": "A7-08",
+      "category": "adapter-parity",
+      "title": "MCP event listing is bounded regardless of the requested limit",
+      "severity": "P2",
+      "claim": "Resource exhaustion safe (release gate C)",
+      "status": "DEFENDED",
+      "observed": "requested limit=100000, returned 145 events (cap is 200)"
+    },
+    {
+      "id": "A7-09",
+      "category": "adapter-parity",
+      "title": "a hostile benchmark policy is never handed truth",
+      "severity": "P0",
+      "claim": "no policy or MCP tool ever receives truth (README claim)",
+      "status": "DEFENDED",
+      "observed": "19 policy observations + the run record scanned clean (policy saw only keys: [\"state\"])"
+    },
+    {
+      "id": "A7-10",
+      "category": "adapter-parity",
+      "title": "the benchmark independently verifies the player log hash chain",
+      "severity": "P1",
+      "claim": "benchmark scores are computed from a verified log (release gate A)",
+      "status": "DEFENDED",
+      "observed": "playerLogVerified=true playerEventCount=350 phase=completed"
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "id": "black-river",
+  "name": "BLACK RIVER",
+  "description": "An infrastructure cascade: a substation fault ripples into hospital power, a river pumping station, and a flooded metro tunnel, while citizen and news reports exaggerate or misattribute the damage faster than the repair teams can reach it.",
+  "metadata": {
+    "difficulty": "introductory",
+    "tags": ["infrastructure-cascade", "power-water", "misinformation", "repair-logistics"],
+    "expectedDurationMinutes": 20,
+    "mechanics": [
+      "power-attribute-cascade",
+      "water-attribute-cascade",
+      "citizen-and-news-rumor",
+      "backup-generator-tradeoff"
+    ]
+  },
+  "tickDurationSeconds": 10,
+  "totalTicks": 540,
+  "districts": [
+    { "id": "central", "power": 96, "communications": 92, "water": 92, "traffic": 80, "medicalCapacity": 85, "hazardLevel": 5, "populationRisk": 10 },
+    { "id": "industrial", "power": 100, "communications": 82, "water": 82, "traffic": 70, "medicalCapacity": 60, "hazardLevel": 15, "populationRisk": 20 },
+    { "id": "riverside", "power": 92, "communications": 85, "water": 85, "traffic": 70, "medicalCapacity": 70, "hazardLevel": 10, "populationRisk": 15 },
+    { "id": "north", "power": 94, "communications": 90, "water": 90, "traffic": 78, "medicalCapacity": 80, "hazardLevel": 5, "populationRisk": 10 },
+    { "id": "medical", "power": 96, "communications": 96, "water": 92, "traffic": 82, "medicalCapacity": 96, "hazardLevel": 3, "populationRisk": 8 }
+  ],
+  "teams": [
+    { "teamId": "power-1", "type": "power", "startDistrict": "central", "reschedulable": true },
+    { "teamId": "power-2", "type": "power", "startDistrict": "industrial", "reschedulable": true },
+    { "teamId": "fire-1", "type": "fire", "startDistrict": "central", "reschedulable": true },
+    { "teamId": "fire-2", "type": "fire", "startDistrict": "north", "reschedulable": true },
+    { "teamId": "med-1", "type": "medical", "startDistrict": "medical", "reschedulable": true },
+    { "teamId": "med-2", "type": "medical", "startDistrict": "central", "reschedulable": true },
+    { "teamId": "comms-1", "type": "communications", "startDistrict": "central", "reschedulable": true },
+    { "teamId": "verify-1", "type": "verification", "startDistrict": "central", "reschedulable": true }
+  ],
+  "routes": [
+    { "id": "central-industrial", "from": "central", "to": "industrial", "travelTicks": 6 },
+    { "id": "central-riverside", "from": "central", "to": "riverside", "travelTicks": 5 },
+    { "id": "central-north", "from": "central", "to": "north", "travelTicks": 4 },
+    { "id": "central-medical", "from": "central", "to": "medical", "travelTicks": 3 },
+    { "id": "north-medical", "from": "north", "to": "medical", "travelTicks": 4 },
+    { "id": "north-riverside", "from": "north", "to": "riverside", "travelTicks": 5 },
+    { "id": "industrial-riverside", "from": "industrial", "to": "riverside", "travelTicks": 7 }
+  ],
+  "resources": {
+    "backupGenerators": 3,
+    "advisoryUses": 3
+  },
+  "incidents": [
+    {
+      "id": "substation_fault",
+      "kind": "substation_fault",
+      "district": "industrial",
+      "atTick": 12,
+      "severity": 45,
+      "effect": { "attribute": "power", "delta": -2 },
+      "handledBy": ["power_repair"]
+    },
+    {
+      "id": "hospital_power",
+      "kind": "hospital_power",
+      "district": "medical",
+      "atTick": 15,
+      "severity": 30,
+      "effect": { "attribute": "medicalCapacity", "delta": -2 },
+      "handledBy": ["power_repair"]
+    },
+    {
+      "id": "pumping_station",
+      "kind": "pumping_station",
+      "district": "riverside",
+      "atTick": 99999,
+      "severity": 40,
+      "effect": { "attribute": "water", "delta": -3 },
+      "handledBy": ["water_restore"],
+      "chainTrigger": {
+        "sourceIncidentId": "substation_fault",
+        "district": "riverside",
+        "attribute": "power",
+        "below": 50,
+        "forTicks": 10
+      }
+    },
+    {
+      "id": "metro_flood",
+      "kind": "metro_flood",
+      "district": "north",
+      "atTick": 99999,
+      "severity": 35,
+      "effect": { "attribute": "populationRisk", "delta": 2 },
+      "handledBy": ["water_restore", "hazard_control"],
+      "chainTrigger": {
+        "sourceIncidentId": "pumping_station",
+        "district": "riverside",
+        "attribute": "water",
+        "below": 30,
+        "forTicks": 8
+      }
+    }
+  ],
+  "effects": [
+    { "atTick": 13, "target": "industrial", "attribute": "communications", "delta": -1, "repeatEvery": 5 },
+    { "atTick": 14, "target": "riverside", "attribute": "power", "delta": -2, "repeatEvery": 4 },
+    { "atTick": 20, "target": "central", "attribute": "traffic", "delta": -2, "repeatEvery": 5 },
+    { "atTick": 25, "target": "north", "attribute": "traffic", "delta": -2, "repeatEvery": 6 },
+    { "atTick": 30, "target": "riverside", "attribute": "water", "delta": -1, "repeatEvery": 6 }
+  ],
+  "sources": [
+    { "id": "grid-sensor", "kind": "sensor", "reliability": 0.9 },
+    { "id": "pump-telemetry", "kind": "sensor", "reliability": 0.85 },
+    { "id": "dispatch-radio", "kind": "dispatch", "reliability": 0.7 },
+    { "id": "hospital-staff", "kind": "medical", "reliability": 0.75 },
+    { "id": "citizen-995", "kind": "public", "reliability": 0.35 },
+    { "id": "tv-news", "kind": "news", "reliability": 0.45 }
+  ],
+  "observations": [
+    {
+      "id": "subst_breaker", "incidentId": "substation_fault", "sourceId": "grid-sensor",
+      "atTick": 12, "baseDelayTicks": 3, "lossProbability": 0.05, "staleAfterTicks": 60,
+      "content": "Industrial substation main breaker tripped; equipment fault suspected", "category": "telemetry"
+    },
+    {
+      "id": "fire_sight_1", "incidentId": "substation_fault", "sourceId": "citizen-995",
+      "atTick": 13, "baseDelayTicks": 8, "lossProbability": 0.15,
+      "content": "I can see flames at the industrial district!", "category": "witness",
+      "corruption": [
+        { "probability": 0.35, "type": "exaggerated", "text": "Huge fire in the industrial district, several buildings on fire!", "false": false }
+      ]
+    },
+    {
+      "id": "fire_news", "incidentId": "substation_fault", "sourceId": "tv-news",
+      "atTick": 14, "baseDelayTicks": 14, "lossProbability": 0.3,
+      "content": "Unconfirmed reports of a fire in the industrial district", "category": "news",
+      "corruption": [
+        { "probability": 0.6, "type": "exaggerated", "text": "Industrial district is burning out of control", "false": true }
+      ]
+    },
+    {
+      "id": "fire_sight_2", "incidentId": "substation_fault", "sourceId": "citizen-995",
+      "atTick": 15, "baseDelayTicks": 9, "lossProbability": 0.2,
+      "content": "Drove past the industrial district and saw smoke and flames", "category": "witness",
+      "corruption": [
+        { "probability": 0.3, "type": "exaggerated", "text": "Industrial district is going up in flames!", "false": false }
+      ]
+    },
+    {
+      "id": "north_bridge_report", "incidentId": "substation_fault", "sourceId": "citizen-995",
+      "atTick": 18, "baseDelayTicks": 10, "lossProbability": 0.4,
+      "content": "Someone claims the North Bridge has structural cracks", "category": "rumor",
+      "corruption": [
+        { "probability": 1.0, "type": "wrong_location", "text": "North Bridge has confirmed structural damage", "false": true }
+      ]
+    },
+    {
+      "id": "signals_central", "incidentId": "substation_fault", "sourceId": "dispatch-radio",
+      "atTick": 21, "baseDelayTicks": 3, "lossProbability": 0.1, "staleAfterTicks": 80,
+      "content": "Multiple traffic signals down in Central district", "category": "dispatch"
+    },
+    {
+      "id": "metro_water_rumor", "incidentId": "substation_fault", "sourceId": "citizen-995",
+      "atTick": 24, "baseDelayTicks": 12, "lossProbability": 0.5,
+      "content": "A social post says the metro tunnel is flooding", "category": "rumor",
+      "corruption": [
+        { "probability": 0.85, "type": "mistaken_identity", "text": "Metro tunnel is flooding right now", "false": true }
+      ]
+    },
+    {
+      "id": "water_contam", "incidentId": "substation_fault", "sourceId": "tv-news",
+      "atTick": 28, "baseDelayTicks": 14, "lossProbability": 0.5,
+      "content": "Community post claims city drinking water is contaminated", "category": "rumor",
+      "corruption": [
+        { "probability": 0.9, "type": "attribution_error", "text": "City water supply is confirmed contaminated", "false": true }
+      ]
+    },
+    {
+      "id": "hospital_outage", "incidentId": "hospital_power", "sourceId": "hospital-staff",
+      "atTick": 16, "baseDelayTicks": 6, "lossProbability": 0.1,
+      "content": "We think we've lost power in the hospital!", "category": "report",
+      "corruption": [
+        { "probability": 0.55, "type": "exaggerated", "text": "Hospital is completely blacked out", "false": true }
+      ]
+    },
+    {
+      "id": "hospital_voltage", "incidentId": "hospital_power", "sourceId": "hospital-staff",
+      "atTick": 22, "baseDelayTicks": 4, "lossProbability": 0.08,
+      "content": "Voltage fluctuations on the hospital grid", "category": "report"
+    },
+    {
+      "id": "pump_strain", "incidentId": "pumping_station", "sourceId": "pump-telemetry",
+      "atTick": 4, "baseDelayTicks": 5, "lossProbability": 0.05, "relativeToIncidentStart": true,
+      "content": "Riverside pumping station: unstable input voltage", "category": "telemetry"
+    },
+    {
+      "id": "pump_offline", "incidentId": "pumping_station", "sourceId": "pump-telemetry",
+      "atTick": 2, "baseDelayTicks": 4, "lossProbability": 0.05, "relativeToIncidentStart": true,
+      "content": "Riverside pumping station going offline", "category": "telemetry"
+    },
+    {
+      "id": "river_smell", "incidentId": "pumping_station", "sourceId": "citizen-995",
+      "atTick": 6, "baseDelayTicks": 9, "lossProbability": 0.2, "relativeToIncidentStart": true,
+      "content": "Sharp chemical smell near the riverbank", "category": "witness",
+      "corruption": [
+        { "probability": 0.5, "type": "exaggerated", "text": "A toxic gas cloud is covering Riverside!", "false": true }
+      ]
+    },
+    {
+      "id": "metro_water_sensor", "incidentId": "metro_flood", "sourceId": "grid-sensor",
+      "atTick": 2, "baseDelayTicks": 5, "lossProbability": 0.1, "relativeToIncidentStart": true,
+      "content": "Water level sensor: metro tunnel flooding accelerating", "category": "telemetry"
+    }
+  ]
+}

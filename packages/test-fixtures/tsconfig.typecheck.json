@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "../..",
+    "baseUrl": "../..",
+    "paths": {
+      "@null-city/contracts": ["packages/contracts/src/index.ts"],
+      "@null-city/scenario-schema": ["packages/scenario-schema/src/index.ts"]
+    }
+  },
+  "include": ["src", "test"]
+}

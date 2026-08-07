@@ -1,0 +1,6 @@
+---
+description: NullCity verification and evidence rules
+alwaysApply: true
+---
+
+For every fixed defect, add a regression that fails on the inherited behavior. Prefer black-box and reference-model tests over assertions that mirror implementation details. Record exact commands, exit codes, test counts, environment, and artifact paths in EVIDENCE.md. Do not weaken tests, use audit shims, skip critical checks, or infer runtime success from code inspection.

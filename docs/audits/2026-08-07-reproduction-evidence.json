@@ -1,0 +1,138 @@
+{
+  "shortestPath": {
+    "closed": [
+      "central-riverside",
+      "central-north"
+    ],
+    "returned": {
+      "routeIds": [
+        "central-industrial",
+        "industrial-riverside"
+      ],
+      "travelTicks": 13
+    },
+    "knownBetter": {
+      "routeIds": [
+        "central-medical",
+        "north-medical",
+        "north-riverside"
+      ],
+      "travelTicks": 12
+    }
+  },
+  "snapshotAliasing": {
+    "snapshotTickBeforeOriginalAdvanced": 1,
+    "snapshotTickAfterOriginalAdvanced": 2,
+    "mutatedWithoutTouchingSnapshot": true
+  },
+  "resumeAfterChain": {
+    "snapshotTick": 108,
+    "chainEventsAtSnapshot": 1,
+    "directScore": -95.1,
+    "resumedScore": -70.1,
+    "directHash": "68b00c0f6a0916fcc961231101211aad81f1d729a126bc8eee825457729dfe01",
+    "resumedHash": "3d0eff5aaf3c0895ac880e212e2d9818802b97277d7758f0fd30bcab15d25395",
+    "diverged": true
+  },
+  "commandAfterCompletion": {
+    "commandState": "accepted",
+    "accepted": true,
+    "before": {
+      "phase": "completed",
+      "tick": 540,
+      "score": -95.1,
+      "fromPower": 96,
+      "toPower": 96,
+      "eventCount": 3264,
+      "hash": "b1fcfecfe9b48be6f8d5c8798b913d6dab68b328dbe4ecd106e264475e10c3b4"
+    },
+    "after": {
+      "phase": "completed",
+      "tick": 540,
+      "score": -145.17,
+      "fromPower": 86,
+      "toPower": 100,
+      "eventCount": 3270,
+      "hash": "66d9ad9c5b96361d7c72158c875dd383e3c8ceadb0c41b0ed93767b70297bc50"
+    }
+  },
+  "advanceOffByOne": {
+    "tick": 540,
+    "advanced": 539,
+    "completed": true
+  },
+  "hashChainInvariants": {
+    "events": [
+      {
+        "sessionId": "session-A",
+        "sequence": 7,
+        "tick": 100,
+        "previousHash": "attacker-chosen-anchor"
+      },
+      {
+        "sessionId": "session-B",
+        "sequence": 99,
+        "tick": 2,
+        "previousHash": "acbdd513d8024b7c9260ec7b3bf42781d911c2346702e57a04dc0bc5145a65bf"
+      }
+    ],
+    "verification": {
+      "hash": "ad0888b9348ca3a032daed900b537cbb8e77ae8146f67c24796359642313d8a9",
+      "validChain": true,
+      "brokenAt": null
+    }
+  },
+  "resumeIdentityMismatch": {
+    "snapshotHeader": {
+      "sessionId": "original-session",
+      "seed": 123,
+      "scenarioId": "black-river"
+    },
+    "constructedEngine": {
+      "sessionId": "forged-session",
+      "seed": 999,
+      "scenarioId": "black-river"
+    },
+    "eventSessionIdsAfterStep": [
+      "original-session",
+      "forged-session"
+    ],
+    "chainVerification": {
+      "hash": "7c1e9835f86c18c0ed41ef98d0e6268222fa3cbbc7f91a1cabaccf5a479bbceb",
+      "validChain": true,
+      "brokenAt": null
+    }
+  },
+  "hiddenTruthLeak": {
+    "rawIncidentEvent": {
+      "tick": 12,
+      "payload": {
+        "incidentId": "substation_fault",
+        "kind": "substation_fault",
+        "district": "industrial",
+        "severity": 45
+      }
+    },
+    "rawSystemStateHasDistrictTruth": true,
+    "industrialTruthFromEvent": {
+      "id": "industrial",
+      "power": 98,
+      "communications": 82,
+      "water": 82,
+      "traffic": 70,
+      "medicalCapacity": 60,
+      "hazardLevel": 15,
+      "populationRisk": 20
+    },
+    "industrialTruthFromSnapshot": {
+      "id": "industrial",
+      "power": 98,
+      "communications": 82,
+      "water": 82,
+      "traffic": 70,
+      "medicalCapacity": 60,
+      "hazardLevel": 15,
+      "populationRisk": 20
+    }
+  }
+}

@@ -1,0 +1,42 @@
+# One-command local demo: `docker compose up --build`, then open
+# http://127.0.0.1:4173/ once both services report healthy.
+#
+# This is a demo/CI packaging path, not a production deployment manifest —
+# see docs/architecture.md and 00_NORTH_STAR.md's "not required for v0.1"
+# list (no cloud persistence, no auth, no multiplayer). Docker is optional;
+# `pnpm demo` from the repo root is the equivalent host-native path and is
+# what `pnpm verify` itself never depends on.
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: null-city-demo:latest
+    command: ["node", "packages/server/dist/cli/start.js"]
+    environment:
+      PORT: "8787"
+      HOST: "0.0.0.0"
+    # Published on the loopback interface only. The container itself still
+    # binds 0.0.0.0 so the sibling service can reach it over the compose
+    # network, but the demo is never exposed to the host's LAN: there is no
+    # auth, no rate limiting, and sessions are unauthenticated by design.
+    ports:
+      - "127.0.0.1:8787:8787"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8787/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+
+  command-center:
+    image: null-city-demo:latest
+    depends_on:
+      server:
+        condition: service_healthy
+    working_dir: /app/apps/command-center
+    command: ["node", "node_modules/vite/bin/vite.js", "preview", "--host", "0.0.0.0", "--port", "4173", "--strictPort"]
+    environment:
+      NULLCITY_SERVER_ORIGIN: "http://server:8787"
+    ports:
+      - "127.0.0.1:4173:4173"

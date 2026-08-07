@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "id": "signal-zero",
+  "name": "SIGNAL ZERO",
+  "description": "A relay jam degrades communications city-wide right as a spoofed telemetry feed starts contradicting the legitimate dispatch channel. Every report is a coin flip until it is verified on-site; teams that never prioritize communications or verification simply keep acting on stale, contradictory, or fabricated information.",
+  "metadata": {
+    "difficulty": "advanced",
+    "tags": ["comms-degradation", "spoofed-telemetry", "contradictory-reports", "verification-pressure"],
+    "expectedDurationMinutes": 18,
+    "mechanics": [
+      "baseline-degraded-delivery",
+      "spoofed-automated-source",
+      "contradictory-dual-source-reports",
+      "verify-handled-incident",
+      "communications-attribute-cascade"
+    ]
+  },
+  "tickDurationSeconds": 10,
+  "totalTicks": 450,
+  "districts": [
+    { "id": "civic-center", "power": 95, "communications": 70, "water": 92, "traffic": 75, "medicalCapacity": 80, "hazardLevel": 2, "populationRisk": 6 },
+    { "id": "uptown-grid", "power": 90, "communications": 55, "water": 88, "traffic": 70, "medicalCapacity": 75, "hazardLevel": 5, "populationRisk": 12 },
+    { "id": "lowline", "power": 85, "communications": 42, "water": 82, "traffic": 60, "medicalCapacity": 65, "hazardLevel": 8, "populationRisk": 18 },
+    { "id": "east-relay", "power": 88, "communications": 60, "water": 85, "traffic": 65, "medicalCapacity": 60, "hazardLevel": 6, "populationRisk": 10 },
+    { "id": "west-relay", "power": 86, "communications": 58, "water": 84, "traffic": 62, "medicalCapacity": 58, "hazardLevel": 7, "populationRisk": 11 }
+  ],
+  "teams": [
+    { "teamId": "comms-1", "type": "communications", "startDistrict": "east-relay", "reschedulable": true },
+    { "teamId": "comms-2", "type": "communications", "startDistrict": "west-relay", "reschedulable": true },
+    { "teamId": "power-1", "type": "power", "startDistrict": "civic-center", "reschedulable": true },
+    { "teamId": "fire-1", "type": "fire", "startDistrict": "uptown-grid", "reschedulable": true },
+    { "teamId": "med-1", "type": "medical", "startDistrict": "civic-center", "reschedulable": true },
+    { "teamId": "verify-1", "type": "verification", "startDistrict": "civic-center", "reschedulable": true },
+    { "teamId": "verify-2", "type": "verification", "startDistrict": "lowline", "reschedulable": true }
+  ],
+  "routes": [
+    { "id": "civic-uptown", "from": "civic-center", "to": "uptown-grid", "travelTicks": 4 },
+    { "id": "civic-lowline", "from": "civic-center", "to": "lowline", "travelTicks": 5 },
+    { "id": "civic-eastrelay", "from": "civic-center", "to": "east-relay", "travelTicks": 6 },
+    { "id": "eastrelay-westrelay", "from": "east-relay", "to": "west-relay", "travelTicks": 5 },
+    { "id": "uptown-eastrelay", "from": "uptown-grid", "to": "east-relay", "travelTicks": 4 },
+    { "id": "lowline-westrelay", "from": "lowline", "to": "west-relay", "travelTicks": 6 }
+  ],
+  "resources": {
+    "backupGenerators": 1,
+    "advisoryUses": 2
+  },
+  "incidents": [
+    {
+      "id": "comms_jam",
+      "kind": "comms_jam",
+      "district": "east-relay",
+      "atTick": 8,
+      "severity": 50,
+      "effect": { "attribute": "communications", "delta": -3 },
+      "handledBy": ["comms_repair"]
+    },
+    {
+      "id": "relay_failure",
+      "kind": "relay_failure",
+      "district": "west-relay",
+      "atTick": 99999,
+      "severity": 45,
+      "effect": { "attribute": "communications", "delta": -3 },
+      "handledBy": ["comms_repair"],
+      "chainTrigger": {
+        "sourceIncidentId": "comms_jam",
+        "district": "east-relay",
+        "attribute": "communications",
+        "below": 25,
+        "forTicks": 9
+      }
+    },
+    {
+      "id": "spoof_alert",
+      "kind": "spoof_alert",
+      "district": "lowline",
+      "atTick": 20,
+      "severity": 30,
+      "effect": { "attribute": "populationRisk", "delta": 2 },
+      "handledBy": ["verify"]
+    }
+  ],
+  "effects": [
+    { "atTick": 9, "target": "east-relay", "attribute": "traffic", "delta": -2, "repeatEvery": 6 },
+    { "atTick": 15, "target": "lowline", "attribute": "communications", "delta": -1, "repeatEvery": 7 }
+  ],
+  "sources": [
+    { "id": "relay-telemetry", "kind": "sensor", "reliability": 0.85 },
+    { "id": "relay-telemetry-spoofed", "kind": "automated", "reliability": 0.15 },
+    { "id": "dispatch-east", "kind": "dispatch", "reliability": 0.65 },
+    { "id": "dispatch-west", "kind": "dispatch", "reliability": 0.6 },
+    { "id": "citizen-7710", "kind": "public", "reliability": 0.3 }
+  ],
+  "observations": [
+    {
+      "id": "relay_telemetry_jam", "incidentId": "comms_jam", "sourceId": "relay-telemetry",
+      "atTick": 8, "baseDelayTicks": 3, "lossProbability": 0.1, "staleAfterTicks": 60,
+      "content": "East Relay signal strength dropping; jamming pattern detected", "category": "telemetry"
+    },
+    {
+      "id": "relay_telemetry_spoofed_clear", "incidentId": "comms_jam", "sourceId": "relay-telemetry-spoofed",
+      "atTick": 9, "baseDelayTicks": 4, "lossProbability": 0.05, "degradedDelayMultiplier": 2.5,
+      "content": "East Relay: all systems nominal, no anomalies detected", "category": "telemetry",
+      "corruption": [
+        { "probability": 0.9, "type": "understated", "text": "East Relay: all systems nominal, no anomalies detected", "false": true }
+      ]
+    },
+    {
+      "id": "dispatch_east_severity", "incidentId": "comms_jam", "sourceId": "dispatch-east",
+      "atTick": 10, "baseDelayTicks": 5, "lossProbability": 0.2, "degradedDelayMultiplier": 2,
+      "content": "East Relay dispatch: signal loss confirmed, requesting comms repair team", "category": "dispatch"
+    },
+    {
+      "id": "dispatch_west_contradict", "incidentId": "comms_jam", "sourceId": "dispatch-west",
+      "atTick": 13, "baseDelayTicks": 6, "lossProbability": 0.25, "degradedDelayMultiplier": 2,
+      "content": "West Relay dispatch: no signal issues on our end, East Relay report may be overstated", "category": "dispatch"
+    },
+    {
+      "id": "relay_telemetry_failure", "incidentId": "relay_failure", "sourceId": "relay-telemetry",
+      "atTick": 1, "baseDelayTicks": 4, "lossProbability": 0.1, "relativeToIncidentStart": true,
+      "content": "West Relay now showing the same jamming signature as East Relay", "category": "telemetry"
+    },
+    {
+      "id": "dispatch_west_failure", "incidentId": "relay_failure", "sourceId": "dispatch-west",
+      "atTick": 3, "baseDelayTicks": 6, "lossProbability": 0.2, "relativeToIncidentStart": true, "degradedDelayMultiplier": 2.5,
+      "content": "West Relay dispatch: correction, we are losing signal too", "category": "dispatch"
+    },
+    {
+      "id": "spoofed_gas_alarm", "incidentId": "spoof_alert", "sourceId": "relay-telemetry-spoofed",
+      "atTick": 20, "baseDelayTicks": 3, "lossProbability": 0.05, "degradedDelayMultiplier": 3,
+      "content": "Lowline sensors show a gas leak in progress", "category": "telemetry",
+      "corruption": [
+        { "probability": 0.95, "type": "attribution_error", "text": "Lowline sensors show a gas leak in progress", "false": true }
+      ]
+    },
+    {
+      "id": "citizen_lowline_normal", "incidentId": "spoof_alert", "sourceId": "citizen-7710",
+      "atTick": 22, "baseDelayTicks": 9, "lossProbability": 0.3,
+      "content": "Nothing unusual in Lowline, streets look normal", "category": "witness"
+    },
+    {
+      "id": "dispatch_west_debunk", "incidentId": "spoof_alert", "sourceId": "dispatch-west",
+      "atTick": 24, "baseDelayTicks": 6, "lossProbability": 0.25, "degradedDelayMultiplier": 2,
+      "content": "No gas alarm corroborated on any patrol channel near Lowline", "category": "dispatch"
+    }
+  ]
+}

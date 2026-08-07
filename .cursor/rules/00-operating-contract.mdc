@@ -1,0 +1,6 @@
+---
+description: NullCity operating contract and scope discipline
+alwaysApply: true
+---
+
+Read the active milestone workpack before changing code. Plan first, implement one milestone only, run real verification, inspect the full diff, preserve failing evidence, and stop at the milestone boundary. Never mark unexecuted work PASS. Do not add later-milestone features, cloud services, auth, external databases, provider integrations, or opportunistic refactors.

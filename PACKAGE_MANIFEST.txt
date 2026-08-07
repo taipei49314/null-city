@@ -1,0 +1,18 @@
+Package: null-city-m10-cursor-ready
+Created: 2026-08-07 Asia/Taipei
+Purpose: Cursor-ready NullCity M9 source + M10 Integrity Closure workpack
+
+Input archives:
+- null-city-m9-red-ledger.zip
+  SHA-256: ccdc9a111f1dcbf9ccf76d991e99461eb59956ac7e109b70e9006b99f4d606e1
+- nullcity-cursor-m10-integrity-closure-pack.zip
+  SHA-256: 8b7654bc886bb83e7379a008230c39520785d3743f7f1329d54badbdac5573ce
+
+Layout:
+- Repository source: package root
+- M10 audit/workpack: _audit/m10/
+- Cursor entry point: CURSOR_M10_START_HERE.md
+
+Counts before final ZIP creation:
+- Files: 395
+- Directories: 77

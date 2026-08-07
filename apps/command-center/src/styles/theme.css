@@ -1,0 +1,206 @@
+:root {
+  --nc-bg-0: #0b0d10;
+  --nc-bg-1: #12151a;
+  --nc-bg-2: #1a1f26;
+  --nc-bg-3: #232933;
+  --nc-steel-900: #171b21;
+  --nc-steel-700: #2c333d;
+  --nc-steel-500: #4a5462;
+  --nc-slate-300: #9aa5b1;
+  --nc-slate-100: #dfe4ea;
+  --nc-amber-500: #e8a33d;
+  --nc-amber-400: #f2b957;
+  --nc-amber-glow: rgba(232, 163, 61, 0.35);
+  --nc-red-500: #c85450;
+  --nc-green-500: #5aa876;
+  --nc-line: rgba(255, 255, 255, 0.08);
+  --nc-line-strong: rgba(255, 255, 255, 0.16);
+  --nc-font-display: "Syne", "Segoe UI", sans-serif;
+  --nc-font-mono: "IBM Plex Mono", "Consolas", monospace;
+  --nc-radius: 3px;
+  --nc-shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--nc-bg-0);
+  color: var(--nc-slate-100);
+  font-family: var(--nc-font-mono);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--nc-font-display);
+  letter-spacing: 0.01em;
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--nc-amber-400);
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--nc-amber-glow);
+}
+
+.nc-scanlines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.015) 0px,
+    rgba(255, 255, 255, 0.015) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+.nc-panel {
+  background: linear-gradient(180deg, var(--nc-bg-2), var(--nc-bg-1));
+  border: 1px solid var(--nc-line);
+  border-radius: var(--nc-radius);
+  box-shadow: var(--nc-shadow-panel);
+}
+
+.nc-panel-title {
+  font-family: var(--nc-font-display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nc-slate-300);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--nc-line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.nc-btn {
+  background: var(--nc-steel-700);
+  border: 1px solid var(--nc-line-strong);
+  color: var(--nc-slate-100);
+  border-radius: var(--nc-radius);
+  padding: 8px 14px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: background-color 120ms ease, border-color 120ms ease, transform 60ms ease;
+}
+
+.nc-btn:hover:not(:disabled) {
+  background: var(--nc-steel-500);
+  border-color: var(--nc-amber-500);
+}
+
+.nc-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.nc-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.nc-btn-primary {
+  background: var(--nc-amber-500);
+  border-color: var(--nc-amber-500);
+  color: #1a1305;
+}
+
+.nc-btn-primary:hover:not(:disabled) {
+  background: var(--nc-amber-400);
+  border-color: var(--nc-amber-400);
+}
+
+.nc-btn:focus-visible,
+.nc-select:focus-visible,
+.nc-input:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--nc-amber-500);
+  outline-offset: 2px;
+}
+
+.nc-input,
+.nc-select,
+.nc-textarea {
+  background: var(--nc-steel-900);
+  border: 1px solid var(--nc-line-strong);
+  color: var(--nc-slate-100);
+  border-radius: var(--nc-radius);
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.nc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  border: 1px solid var(--nc-line-strong);
+  color: var(--nc-slate-300);
+}
+
+.nc-tag-amber {
+  color: var(--nc-amber-400);
+  border-color: var(--nc-amber-500);
+}
+
+.nc-tag-green {
+  color: var(--nc-green-500);
+  border-color: var(--nc-green-500);
+}
+
+.nc-tag-red {
+  color: var(--nc-red-500);
+  border-color: var(--nc-red-500);
+}
+
+.panel-empty {
+  padding: 20px 14px;
+  color: var(--nc-slate-300);
+  font-size: 12px;
+  text-align: center;
+}
+
+.nc-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

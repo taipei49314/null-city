@@ -1,0 +1,127 @@
+{
+  "audit": {
+    "project": "NullCity",
+    "candidate": "M9 Red Ledger",
+    "date": "2026-08-07",
+    "verdict": "FAIL_STABLE_AND_RC_TAG",
+    "allowed_public_status": "alpha-development-branch",
+    "full_workspace_tests_rerun_by_auditor": false,
+    "reason_full_tests_not_rerun": "pnpm workspace dependencies were unavailable and network package retrieval failed"
+  },
+  "positive_checks": [
+    {
+      "id": "POS-01",
+      "name": "release archive allowlist canary",
+      "result": "PASS",
+      "output": "5 canary files planted; 349 archive entries checked; 3 candidates denied"
+    },
+    {
+      "id": "POS-02",
+      "name": "golden receipt internal integrity",
+      "result": "PASS",
+      "scenarios": {
+        "black-river": {"events": 1593, "score": 49.37},
+        "glass-harbor": {"events": 960, "score": 44.51},
+        "signal-zero": {"events": 779, "score": 39.38},
+        "mirror-district": {"events": 1022, "score": 34.64},
+        "red-ledger": {"events": 1217, "score": 40.12}
+      }
+    },
+    {
+      "id": "POS-03",
+      "name": "public caller-supplied snapshot resume",
+      "result": "MAIN_FIX_PRESENT",
+      "source": ["packages/server/src/rpc.ts", "packages/server/src/http.ts", "packages/server/src/ws.ts"]
+    }
+  ],
+  "findings": [
+    {
+      "id": "P0-01",
+      "severity": "P0",
+      "title": "verification-first does not bind verification work to a claim",
+      "source": [
+        "packages/benchmark/src/policies/verificationFirst.ts:97-107",
+        "packages/server/src/rpc.ts:259-281",
+        "data/benchmark-smoke/report.md"
+      ],
+      "evidence": {
+        "verification_first_runs": 4,
+        "verification_requests": 6,
+        "resolved_claims": 0,
+        "information_gain_values": 0
+      }
+    },
+    {
+      "id": "P0-02",
+      "severity": "P0",
+      "title": "truth replay does not reconstruct or cross-bind player history",
+      "source": ["packages/simulation/src/artifact.ts:669-718"],
+      "reproduction": "nullcity-m9-forged-player-history.artifact.json",
+      "forgery": {
+        "command_id": "cmd-1",
+        "truth_outcome": "CommandAccepted",
+        "forged_player_outcome": "rejected",
+        "truth_log_hash_unchanged": true,
+        "state_digest_unchanged": true,
+        "artifact_hash_resealed": true
+      }
+    },
+    {
+      "id": "P0-03",
+      "severity": "P0",
+      "title": "official run verify CLI reports PASS without scenario replay",
+      "source": [
+        "packages/simulation/src/cli/run.ts:29-45",
+        "packages/simulation/src/cli/run.ts:99-102",
+        "packages/simulation/src/artifact.ts:633-645"
+      ],
+      "reproduction": "nullcity-m9-forged-weak-cli.artifact.json",
+      "forgery": {
+        "scenario_digest_replaced": true,
+        "state_digest_replaced": true,
+        "artifact_hash_resealed": true
+      }
+    },
+    {
+      "id": "P1-01",
+      "severity": "P1",
+      "title": "legacy RunReceipt identity and terminal metadata are not replay-bound",
+      "source": ["packages/simulation/src/receipt.ts:114-164"],
+      "reproduction": "nullcity-m9-forged-run.receipt.json"
+    },
+    {
+      "id": "P1-02",
+      "severity": "P1",
+      "title": "audit reproduction rejects unresealed edits rather than adversarial reseals",
+      "source": ["scripts/verify-audit-repro.mjs:109-125"]
+    },
+    {
+      "id": "P1-03",
+      "severity": "P1",
+      "title": "embedded full-verify transcript does not correspond to final ZIP tree",
+      "evidence": {
+        "transcript_test_files": 62,
+        "final_source_test_files": 63,
+        "transcript_benchmark_scenarios": 4,
+        "current_script_benchmark_scenarios": 5,
+        "transcript_has_verify_audit_repro": false,
+        "current_package_has_verify_audit_repro": true,
+        "red_ledger_zip_timestamp_after_transcript": true
+      }
+    },
+    {
+      "id": "P1-04",
+      "severity": "P1",
+      "title": "README scenario count and benchmark table are stale and contradict the report",
+      "source": ["README.md:69-78", "README.md:148-175", "data/benchmark-smoke/report.md"]
+    },
+    {
+      "id": "P2-01",
+      "severity": "P2",
+      "title": "Command Center sample artifact retains pre-fix post-terminal event ordering",
+      "source": ["apps/command-center/test/fixtures/sample-run.artifact.json"],
+      "tail": ["PublicScoreChanged", "RunCompleted", "OwnTeamUpdated"]
+    }
+  ],
+  "required_next_milestone": "M10 Integrity Closure"
+}

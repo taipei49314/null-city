@@ -1,0 +1,26 @@
+=== node/tooling ===
+v22.16.0
+bash: line 6: pnpm: command not found
+=== simulation verify (audit shims) ===
+(node:1044) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("/opt/nvm/versions/node/v22.16.0/lib/node_modules/ts-node/esm.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1044) [DEP0180] DeprecationWarning: fs.Stats constructor is deprecated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+=== determinism verification ===
+PASS  A.same-seed-determinism  hash=41fb5327c05dba26 score=49.37
+PASS  B.different-seed-divergence  hashA=41fb5327c05dba26 hashB=e2a717832fab1b36
+PASS  C.replay-equivalence  replayHash=41fb5327c05dba26 originalHash=41fb5327c05dba26
+PASS  D.snapshot-resume  resumeTick=200 hash=5f5fb697869914a8
+PASS  E.forbidden-randomness  no forbidden temporal calls in packages/simulation
+=== server verify (audit shims) ===
+(node:1056) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("/opt/nvm/versions/node/v22.16.0/lib/node_modules/ts-node/esm.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1056) [DEP0180] DeprecationWarning: fs.Stats constructor is deprecated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+=== server verification ===
+PASS  A.rest-determinism  hash=6ed71f75cf89acd8 score=49.37 matches local run
+PASS  B.rest-repeatable  score=49.37 tick=540 identical across sessions
+PASS  C.rest-resume  resumeTick=200 hash=bf1be9de6ea853f9
+PASS  D.player-view-masking  known=[central,industrial,medical,north]; industrial visible, riverside masked

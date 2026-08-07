@@ -1,0 +1,6 @@
+---
+description: NullCity public API, UI, SDK, benchmark, and MCP parity
+alwaysApply: true
+---
+
+Browser, SDK, benchmark policies, and MCP must consume the same PlayerSession/public schemas. No adapter-specific truth endpoint or privileged state is allowed. Public responses require runtime validation and session scoping. UI must use live server data for required flows; fixture-only paths and hard-coded result displays do not satisfy acceptance.

@@ -1,0 +1,2383 @@
+{
+  "format": "nullcity-benchmark-report",
+  "version": 1,
+  "generatedAt": "2026-08-07T10:24:30.114Z",
+  "runCount": 15,
+  "runs": [
+    {
+      "scenarioId": "black-river",
+      "seed": 49314,
+      "policyId": "noop",
+      "sessionId": "bench-black-river-49314-noop",
+      "startedAt": "2026-08-07T10:24:26.927Z",
+      "finishedAt": "2026-08-07T10:24:27.246Z",
+      "finalTick": 540,
+      "phase": "completed",
+      "commands": [],
+      "assessments": [],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 350,
+      "playerLogVerified": true,
+      "playerLogHash": "f3125c75594aa90e1031741a010f8c5de4c35d997330caac66d05068e0520046",
+      "metrics": {
+        "finalTick": 540,
+        "phase": "completed",
+        "scoreTotal": -295.1,
+        "populationRiskScoreContribution": -18.359999999999992,
+        "infrastructureScoreContribution": 18.259999999999945,
+        "eventsHandledScoreContribution": 0,
+        "eventsMissedScoreContribution": -60,
+        "cascadeCount": 2,
+        "cascadePenalty": -50,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -200,
+        "resourceEfficiencyScore": 15,
+        "totalCommandsSubmitted": 0,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [],
+        "responseLatencies": [
+          {
+            "claimId": "claim:industrial:substation_fault:dispatch",
+            "districtId": "industrial",
+            "firstObservedTick": 21,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:industrial:substation_fault:rumor",
+            "districtId": "industrial",
+            "firstObservedTick": 24,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:industrial:substation_fault:witness",
+            "districtId": "industrial",
+            "firstObservedTick": 13,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:medical:hospital_power:report",
+            "districtId": "medical",
+            "firstObservedTick": 16,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:north:metro_flood:telemetry",
+            "districtId": "north",
+            "firstObservedTick": 131,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:riverside:pumping_station:telemetry",
+            "districtId": "riverside",
+            "firstObservedTick": 110,
+            "firstActionTick": null,
+            "latencyTicks": null
+          }
+        ],
+        "meanResponseLatencyTicks": null,
+        "assessmentCount": 0,
+        "resolvedClaimCount": 0,
+        "verifiedClaimCount": 0,
+        "refutedClaimCount": 0,
+        "brierScore": null,
+        "calibrationBins": [],
+        "verificationInfoGain": null
+      }
+    },
+    {
+      "scenarioId": "black-river",
+      "seed": 49314,
+      "policyId": "reactive-greedy",
+      "sessionId": "bench-black-river-49314-reactive-greedy",
+      "startedAt": "2026-08-07T10:24:27.249Z",
+      "finishedAt": "2026-08-07T10:24:27.498Z",
+      "finalTick": 540,
+      "phase": "completed",
+      "commands": [
+        {
+          "tick": 30,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "comms-1",
+            "target": "industrial",
+            "task": "comms_repair"
+          },
+          "outcome": "accepted",
+          "detail": "comms-1 dispatched to industrial (comms_repair)"
+        },
+        {
+          "tick": 30,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-1",
+            "target": "medical",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-1 dispatched to medical (hazard_control)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-2",
+            "target": "industrial",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-2 dispatched to industrial (hazard_control)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-1",
+            "target": "medical",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-1 dispatched to medical (medical_support)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-2",
+            "target": "industrial",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-2 dispatched to industrial (medical_support)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "power-1",
+            "target": "medical",
+            "task": "power_repair"
+          },
+          "outcome": "accepted",
+          "detail": "power-1 dispatched to medical (power_repair)"
+        },
+        {
+          "tick": 120,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "power-2",
+            "target": "industrial",
+            "task": "power_repair"
+          },
+          "outcome": "accepted",
+          "detail": "power-2 dispatched to industrial (power_repair)"
+        }
+      ],
+      "assessments": [],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 428,
+      "playerLogVerified": true,
+      "playerLogHash": "817f32873a5b6517eb868a79ea706f1f4a60e8dd1e60d2e08ec279d0bcb570bc",
+      "metrics": {
+        "finalTick": 540,
+        "phase": "completed",
+        "scoreTotal": -143.61,
+        "populationRiskScoreContribution": -15.000000000000005,
+        "infrastructureScoreContribution": 22.390000000000004,
+        "eventsHandledScoreContribution": 20,
+        "eventsMissedScoreContribution": -30,
+        "cascadeCount": 2,
+        "cascadePenalty": -50,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -106,
+        "resourceEfficiencyScore": 15,
+        "totalCommandsSubmitted": 7,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [
+          {
+            "commandName": "DISPATCH_TEAM",
+            "accepted": 7,
+            "rejected": 0
+          }
+        ],
+        "responseLatencies": [
+          {
+            "claimId": "claim:industrial:substation_fault:dispatch",
+            "districtId": "industrial",
+            "firstObservedTick": 21,
+            "firstActionTick": 30,
+            "latencyTicks": 9
+          },
+          {
+            "claimId": "claim:industrial:substation_fault:rumor",
+            "districtId": "industrial",
+            "firstObservedTick": 24,
+            "firstActionTick": 30,
+            "latencyTicks": 6
+          },
+          {
+            "claimId": "claim:industrial:substation_fault:witness",
+            "districtId": "industrial",
+            "firstObservedTick": 13,
+            "firstActionTick": 30,
+            "latencyTicks": 17
+          },
+          {
+            "claimId": "claim:medical:hospital_power:report",
+            "districtId": "medical",
+            "firstObservedTick": 16,
+            "firstActionTick": 30,
+            "latencyTicks": 14
+          },
+          {
+            "claimId": "claim:north:metro_flood:telemetry",
+            "districtId": "north",
+            "firstObservedTick": 131,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:riverside:pumping_station:telemetry",
+            "districtId": "riverside",
+            "firstObservedTick": 110,
+            "firstActionTick": null,
+            "latencyTicks": null
+          }
+        ],
+        "meanResponseLatencyTicks": 11.5,
+        "assessmentCount": 0,
+        "resolvedClaimCount": 0,
+        "verifiedClaimCount": 0,
+        "refutedClaimCount": 0,
+        "brierScore": null,
+        "calibrationBins": [],
+        "verificationInfoGain": null
+      }
+    },
+    {
+      "scenarioId": "black-river",
+      "seed": 49314,
+      "policyId": "verification-first",
+      "sessionId": "bench-black-river-49314-verification-first",
+      "startedAt": "2026-08-07T10:24:27.500Z",
+      "finishedAt": "2026-08-07T10:24:27.828Z",
+      "finalTick": 540,
+      "phase": "completed",
+      "commands": [
+        {
+          "tick": 30,
+          "commandName": "REQUEST_VERIFICATION",
+          "params": {
+            "teamId": "verify-1",
+            "claimId": "claim:industrial:substation_fault:witness"
+          },
+          "outcome": "accepted",
+          "detail": "verify-1 dispatched to industrial (verify)"
+        },
+        {
+          "tick": 30,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "comms-1",
+            "target": "medical",
+            "task": "comms_repair"
+          },
+          "outcome": "accepted",
+          "detail": "comms-1 dispatched to medical (comms_repair)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-1",
+            "target": "medical",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-1 dispatched to medical (hazard_control)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-2",
+            "target": "industrial",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-2 dispatched to industrial (hazard_control)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-1",
+            "target": "medical",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-1 dispatched to medical (medical_support)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-2",
+            "target": "industrial",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-2 dispatched to industrial (medical_support)"
+        },
+        {
+          "tick": 120,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "power-1",
+            "target": "medical",
+            "task": "power_repair"
+          },
+          "outcome": "accepted",
+          "detail": "power-1 dispatched to medical (power_repair)"
+        },
+        {
+          "tick": 120,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "power-2",
+            "target": "industrial",
+            "task": "power_repair"
+          },
+          "outcome": "accepted",
+          "detail": "power-2 dispatched to industrial (power_repair)"
+        }
+      ],
+      "assessments": [
+        {
+          "tick": 30,
+          "claimId": "claim:industrial:substation_fault:witness",
+          "probability": 0.35,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-71"
+        },
+        {
+          "tick": 30,
+          "claimId": "claim:industrial:substation_fault:dispatch",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-72"
+        },
+        {
+          "tick": 30,
+          "claimId": "claim:medical:hospital_power:report",
+          "probability": 0.35,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-73"
+        },
+        {
+          "tick": 60,
+          "claimId": "claim:industrial:substation_fault:rumor",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-144"
+        },
+        {
+          "tick": 120,
+          "claimId": "claim:riverside:pumping_station:telemetry",
+          "probability": 0.35,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-279"
+        },
+        {
+          "tick": 150,
+          "claimId": "claim:north:metro_flood:telemetry",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-363"
+        }
+      ],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 494,
+      "playerLogVerified": true,
+      "playerLogHash": "b557a7161c79f1d33894e1f6315176d2da40363bbb30daddb43aa400df187348",
+      "metrics": {
+        "finalTick": 540,
+        "phase": "completed",
+        "scoreTotal": -144.76,
+        "populationRiskScoreContribution": -15.000000000000005,
+        "infrastructureScoreContribution": 21.23999999999995,
+        "eventsHandledScoreContribution": 20,
+        "eventsMissedScoreContribution": -30,
+        "cascadeCount": 2,
+        "cascadePenalty": -50,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -106,
+        "resourceEfficiencyScore": 15,
+        "totalCommandsSubmitted": 8,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [
+          {
+            "commandName": "DISPATCH_TEAM",
+            "accepted": 7,
+            "rejected": 0
+          },
+          {
+            "commandName": "REQUEST_VERIFICATION",
+            "accepted": 1,
+            "rejected": 0
+          }
+        ],
+        "responseLatencies": [
+          {
+            "claimId": "claim:industrial:substation_fault:dispatch",
+            "districtId": "industrial",
+            "firstObservedTick": 21,
+            "firstActionTick": 30,
+            "latencyTicks": 9
+          },
+          {
+            "claimId": "claim:industrial:substation_fault:rumor",
+            "districtId": "industrial",
+            "firstObservedTick": 24,
+            "firstActionTick": 30,
+            "latencyTicks": 6
+          },
+          {
+            "claimId": "claim:industrial:substation_fault:witness",
+            "districtId": "industrial",
+            "firstObservedTick": 13,
+            "firstActionTick": 30,
+            "latencyTicks": 17
+          },
+          {
+            "claimId": "claim:medical:hospital_power:report",
+            "districtId": "medical",
+            "firstObservedTick": 16,
+            "firstActionTick": 30,
+            "latencyTicks": 14
+          },
+          {
+            "claimId": "claim:north:metro_flood:telemetry",
+            "districtId": "north",
+            "firstObservedTick": 131,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:riverside:pumping_station:telemetry",
+            "districtId": "riverside",
+            "firstObservedTick": 110,
+            "firstActionTick": null,
+            "latencyTicks": null
+          }
+        ],
+        "meanResponseLatencyTicks": 11.5,
+        "assessmentCount": 6,
+        "resolvedClaimCount": 1,
+        "verifiedClaimCount": 1,
+        "refutedClaimCount": 0,
+        "brierScore": 0.42250000000000004,
+        "calibrationBins": [
+          {
+            "rangeStart": 0.3,
+            "rangeEnd": 0.4,
+            "count": 1,
+            "meanPredicted": 0.35,
+            "empiricalFrequency": 1
+          }
+        ],
+        "verificationInfoGain": null
+      }
+    },
+    {
+      "scenarioId": "glass-harbor",
+      "seed": 49314,
+      "policyId": "noop",
+      "sessionId": "bench-glass-harbor-49314-noop",
+      "startedAt": "2026-08-07T10:24:27.830Z",
+      "finishedAt": "2026-08-07T10:24:27.990Z",
+      "finalTick": 480,
+      "phase": "completed",
+      "commands": [],
+      "assessments": [],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 205,
+      "playerLogVerified": true,
+      "playerLogHash": "90a0b94e7741ec543391c11f4bd1003e8bf95b08d65ecb8395fbd43cd78b7b70",
+      "metrics": {
+        "finalTick": 480,
+        "phase": "completed",
+        "scoreTotal": -218.23,
+        "populationRiskScoreContribution": -9.6,
+        "infrastructureScoreContribution": 19.369999999999944,
+        "eventsHandledScoreContribution": 0,
+        "eventsMissedScoreContribution": -45,
+        "cascadeCount": 2,
+        "cascadePenalty": -50,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -150,
+        "resourceEfficiencyScore": 17,
+        "totalCommandsSubmitted": 0,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [],
+        "responseLatencies": [
+          {
+            "claimId": "claim:clinic-row:clinic_overload:report",
+            "districtId": "clinic-row",
+            "firstObservedTick": 66,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:harborside:hazmat_leak:dispatch",
+            "districtId": "harborside",
+            "firstObservedTick": 14,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:harborside:hazmat_leak:witness",
+            "districtId": "harborside",
+            "firstObservedTick": 11,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:old-town:plume_drift:telemetry",
+            "districtId": "old-town",
+            "firstObservedTick": 53,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:old-town:plume_drift:witness",
+            "districtId": "old-town",
+            "firstObservedTick": 56,
+            "firstActionTick": null,
+            "latencyTicks": null
+          }
+        ],
+        "meanResponseLatencyTicks": null,
+        "assessmentCount": 0,
+        "resolvedClaimCount": 0,
+        "verifiedClaimCount": 0,
+        "refutedClaimCount": 0,
+        "brierScore": null,
+        "calibrationBins": [],
+        "verificationInfoGain": null
+      }
+    },
+    {
+      "scenarioId": "glass-harbor",
+      "seed": 49314,
+      "policyId": "reactive-greedy",
+      "sessionId": "bench-glass-harbor-49314-reactive-greedy",
+      "startedAt": "2026-08-07T10:24:27.992Z",
+      "finishedAt": "2026-08-07T10:24:28.194Z",
+      "finalTick": 480,
+      "phase": "completed",
+      "commands": [
+        {
+          "tick": 30,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "comms-1",
+            "target": "harborside",
+            "task": "comms_repair"
+          },
+          "outcome": "accepted",
+          "detail": "comms-1 dispatched to harborside (comms_repair)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-1",
+            "target": "harborside",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-1 dispatched to harborside (hazard_control)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-2",
+            "target": "old-town",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-2 dispatched to old-town (hazard_control)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-1",
+            "target": "harborside",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-1 dispatched to harborside (medical_support)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-2",
+            "target": "old-town",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-2 dispatched to old-town (medical_support)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "power-1",
+            "target": "clinic-row",
+            "task": "power_repair"
+          },
+          "outcome": "accepted",
+          "detail": "power-1 dispatched to clinic-row (power_repair)"
+        }
+      ],
+      "assessments": [],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 240,
+      "playerLogVerified": true,
+      "playerLogHash": "24190fe2db04d37cd612496c836ab07f4afc71310be96f92e248309b9abbdcc9",
+      "metrics": {
+        "finalTick": 480,
+        "phase": "completed",
+        "scoreTotal": -40.66,
+        "populationRiskScoreContribution": -4.799999999999999,
+        "infrastructureScoreContribution": 22.140000000000008,
+        "eventsHandledScoreContribution": 20,
+        "eventsMissedScoreContribution": -15,
+        "cascadeCount": 2,
+        "cascadePenalty": -50,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -30,
+        "resourceEfficiencyScore": 17,
+        "totalCommandsSubmitted": 6,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [
+          {
+            "commandName": "DISPATCH_TEAM",
+            "accepted": 6,
+            "rejected": 0
+          }
+        ],
+        "responseLatencies": [
+          {
+            "claimId": "claim:clinic-row:clinic_overload:report",
+            "districtId": "clinic-row",
+            "firstObservedTick": 66,
+            "firstActionTick": 90,
+            "latencyTicks": 24
+          },
+          {
+            "claimId": "claim:harborside:hazmat_leak:dispatch",
+            "districtId": "harborside",
+            "firstObservedTick": 14,
+            "firstActionTick": 30,
+            "latencyTicks": 16
+          },
+          {
+            "claimId": "claim:harborside:hazmat_leak:witness",
+            "districtId": "harborside",
+            "firstObservedTick": 11,
+            "firstActionTick": 30,
+            "latencyTicks": 19
+          },
+          {
+            "claimId": "claim:old-town:plume_drift:telemetry",
+            "districtId": "old-town",
+            "firstObservedTick": 53,
+            "firstActionTick": 60,
+            "latencyTicks": 7
+          },
+          {
+            "claimId": "claim:old-town:plume_drift:witness",
+            "districtId": "old-town",
+            "firstObservedTick": 56,
+            "firstActionTick": 60,
+            "latencyTicks": 4
+          }
+        ],
+        "meanResponseLatencyTicks": 14,
+        "assessmentCount": 0,
+        "resolvedClaimCount": 0,
+        "verifiedClaimCount": 0,
+        "refutedClaimCount": 0,
+        "brierScore": null,
+        "calibrationBins": [],
+        "verificationInfoGain": null
+      }
+    },
+    {
+      "scenarioId": "glass-harbor",
+      "seed": 49314,
+      "policyId": "verification-first",
+      "sessionId": "bench-glass-harbor-49314-verification-first",
+      "startedAt": "2026-08-07T10:24:28.196Z",
+      "finishedAt": "2026-08-07T10:24:28.413Z",
+      "finalTick": 480,
+      "phase": "completed",
+      "commands": [
+        {
+          "tick": 30,
+          "commandName": "REQUEST_VERIFICATION",
+          "params": {
+            "teamId": "verify-1",
+            "claimId": "claim:harborside:hazmat_leak:dispatch"
+          },
+          "outcome": "accepted",
+          "detail": "verify-1 dispatched to harborside (verify)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "comms-1",
+            "target": "harborside",
+            "task": "comms_repair"
+          },
+          "outcome": "accepted",
+          "detail": "comms-1 dispatched to harborside (comms_repair)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-1",
+            "target": "old-town",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-1 dispatched to old-town (hazard_control)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-2",
+            "target": "harborside",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-2 dispatched to harborside (hazard_control)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-1",
+            "target": "old-town",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-1 dispatched to old-town (medical_support)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-2",
+            "target": "clinic-row",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-2 dispatched to clinic-row (medical_support)"
+        },
+        {
+          "tick": 120,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "power-1",
+            "target": "harborside",
+            "task": "power_repair"
+          },
+          "outcome": "accepted",
+          "detail": "power-1 dispatched to harborside (power_repair)"
+        }
+      ],
+      "assessments": [
+        {
+          "tick": 30,
+          "claimId": "claim:harborside:hazmat_leak:witness",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-40"
+        },
+        {
+          "tick": 30,
+          "claimId": "claim:harborside:hazmat_leak:dispatch",
+          "probability": 0.35,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-41"
+        },
+        {
+          "tick": 60,
+          "claimId": "claim:old-town:plume_drift:telemetry",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-98"
+        },
+        {
+          "tick": 90,
+          "claimId": "claim:old-town:plume_drift:witness",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-188"
+        },
+        {
+          "tick": 90,
+          "claimId": "claim:clinic-row:clinic_overload:report",
+          "probability": 0.35,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-189"
+        }
+      ],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 257,
+      "playerLogVerified": true,
+      "playerLogHash": "22d5f62c5c612b4dbdfcfd6ec3c758c5ff7b29c46799787b43c1f90e2207c112",
+      "metrics": {
+        "finalTick": 480,
+        "phase": "completed",
+        "scoreTotal": -15.49,
+        "populationRiskScoreContribution": -5.399999999999998,
+        "infrastructureScoreContribution": 22.910000000000014,
+        "eventsHandledScoreContribution": 30,
+        "eventsMissedScoreContribution": 0,
+        "cascadeCount": 2,
+        "cascadePenalty": -50,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -30,
+        "resourceEfficiencyScore": 17,
+        "totalCommandsSubmitted": 7,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [
+          {
+            "commandName": "DISPATCH_TEAM",
+            "accepted": 6,
+            "rejected": 0
+          },
+          {
+            "commandName": "REQUEST_VERIFICATION",
+            "accepted": 1,
+            "rejected": 0
+          }
+        ],
+        "responseLatencies": [
+          {
+            "claimId": "claim:clinic-row:clinic_overload:report",
+            "districtId": "clinic-row",
+            "firstObservedTick": 66,
+            "firstActionTick": 90,
+            "latencyTicks": 24
+          },
+          {
+            "claimId": "claim:harborside:hazmat_leak:dispatch",
+            "districtId": "harborside",
+            "firstObservedTick": 14,
+            "firstActionTick": 30,
+            "latencyTicks": 16
+          },
+          {
+            "claimId": "claim:harborside:hazmat_leak:witness",
+            "districtId": "harborside",
+            "firstObservedTick": 11,
+            "firstActionTick": 30,
+            "latencyTicks": 19
+          },
+          {
+            "claimId": "claim:old-town:plume_drift:telemetry",
+            "districtId": "old-town",
+            "firstObservedTick": 53,
+            "firstActionTick": 60,
+            "latencyTicks": 7
+          },
+          {
+            "claimId": "claim:old-town:plume_drift:witness",
+            "districtId": "old-town",
+            "firstObservedTick": 56,
+            "firstActionTick": 60,
+            "latencyTicks": 4
+          }
+        ],
+        "meanResponseLatencyTicks": 14,
+        "assessmentCount": 5,
+        "resolvedClaimCount": 1,
+        "verifiedClaimCount": 1,
+        "refutedClaimCount": 0,
+        "brierScore": 0.42250000000000004,
+        "calibrationBins": [
+          {
+            "rangeStart": 0.3,
+            "rangeEnd": 0.4,
+            "count": 1,
+            "meanPredicted": 0.35,
+            "empiricalFrequency": 1
+          }
+        ],
+        "verificationInfoGain": null
+      }
+    },
+    {
+      "scenarioId": "signal-zero",
+      "seed": 49314,
+      "policyId": "noop",
+      "sessionId": "bench-signal-zero-49314-noop",
+      "startedAt": "2026-08-07T10:24:28.414Z",
+      "finishedAt": "2026-08-07T10:24:28.567Z",
+      "finalTick": 450,
+      "phase": "completed",
+      "commands": [],
+      "assessments": [],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 205,
+      "playerLogVerified": true,
+      "playerLogHash": "ad98237cf7847bc11d0197ac366152d01e5e85c8b4b95199326730388a735870",
+      "metrics": {
+        "finalTick": 450,
+        "phase": "completed",
+        "scoreTotal": -209.42,
+        "populationRiskScoreContribution": -16.680000000000003,
+        "infrastructureScoreContribution": 19.25999999999997,
+        "eventsHandledScoreContribution": 0,
+        "eventsMissedScoreContribution": -45,
+        "cascadeCount": 1,
+        "cascadePenalty": -25,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -150,
+        "resourceEfficiencyScore": 8,
+        "totalCommandsSubmitted": 0,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [],
+        "responseLatencies": [
+          {
+            "claimId": "claim:east-relay:comms_jam:dispatch",
+            "districtId": "east-relay",
+            "firstObservedTick": 10,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:east-relay:comms_jam:telemetry",
+            "districtId": "east-relay",
+            "firstObservedTick": 9,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:lowline:spoof_alert:dispatch",
+            "districtId": "lowline",
+            "firstObservedTick": 24,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:lowline:spoof_alert:telemetry",
+            "districtId": "lowline",
+            "firstObservedTick": 20,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:lowline:spoof_alert:witness",
+            "districtId": "lowline",
+            "firstObservedTick": 22,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:west-relay:relay_failure:dispatch",
+            "districtId": "west-relay",
+            "firstObservedTick": 30,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:west-relay:relay_failure:telemetry",
+            "districtId": "west-relay",
+            "firstObservedTick": 28,
+            "firstActionTick": null,
+            "latencyTicks": null
+          }
+        ],
+        "meanResponseLatencyTicks": null,
+        "assessmentCount": 0,
+        "resolvedClaimCount": 0,
+        "verifiedClaimCount": 0,
+        "refutedClaimCount": 0,
+        "brierScore": null,
+        "calibrationBins": [],
+        "verificationInfoGain": null
+      }
+    },
+    {
+      "scenarioId": "signal-zero",
+      "seed": 49314,
+      "policyId": "reactive-greedy",
+      "sessionId": "bench-signal-zero-49314-reactive-greedy",
+      "startedAt": "2026-08-07T10:24:28.573Z",
+      "finishedAt": "2026-08-07T10:24:28.826Z",
+      "finalTick": 450,
+      "phase": "completed",
+      "commands": [
+        {
+          "tick": 30,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "comms-1",
+            "target": "east-relay",
+            "task": "comms_repair"
+          },
+          "outcome": "accepted",
+          "detail": "comms-1 dispatched to east-relay (comms_repair)"
+        },
+        {
+          "tick": 30,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "comms-2",
+            "target": "lowline",
+            "task": "comms_repair"
+          },
+          "outcome": "accepted",
+          "detail": "comms-2 dispatched to lowline (comms_repair)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-1",
+            "target": "east-relay",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-1 dispatched to east-relay (hazard_control)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-1",
+            "target": "lowline",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-1 dispatched to lowline (medical_support)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "power-1",
+            "target": "west-relay",
+            "task": "power_repair"
+          },
+          "outcome": "accepted",
+          "detail": "power-1 dispatched to west-relay (power_repair)"
+        }
+      ],
+      "assessments": [],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 352,
+      "playerLogVerified": true,
+      "playerLogHash": "eb421a86576d8f99b0393c9c02f1a5e7c5e8db70ec163ca1070d11666345e814",
+      "metrics": {
+        "finalTick": 450,
+        "phase": "completed",
+        "scoreTotal": -69.43,
+        "populationRiskScoreContribution": -4.680000000000051,
+        "infrastructureScoreContribution": 22.249999999999996,
+        "eventsHandledScoreContribution": 10,
+        "eventsMissedScoreContribution": -30,
+        "cascadeCount": 1,
+        "cascadePenalty": -25,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -50,
+        "resourceEfficiencyScore": 8,
+        "totalCommandsSubmitted": 5,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [
+          {
+            "commandName": "DISPATCH_TEAM",
+            "accepted": 5,
+            "rejected": 0
+          }
+        ],
+        "responseLatencies": [
+          {
+            "claimId": "claim:east-relay:comms_jam:dispatch",
+            "districtId": "east-relay",
+            "firstObservedTick": 10,
+            "firstActionTick": 30,
+            "latencyTicks": 20
+          },
+          {
+            "claimId": "claim:east-relay:comms_jam:telemetry",
+            "districtId": "east-relay",
+            "firstObservedTick": 9,
+            "firstActionTick": 30,
+            "latencyTicks": 21
+          },
+          {
+            "claimId": "claim:lowline:spoof_alert:dispatch",
+            "districtId": "lowline",
+            "firstObservedTick": 24,
+            "firstActionTick": 30,
+            "latencyTicks": 6
+          },
+          {
+            "claimId": "claim:lowline:spoof_alert:telemetry",
+            "districtId": "lowline",
+            "firstObservedTick": 20,
+            "firstActionTick": 30,
+            "latencyTicks": 10
+          },
+          {
+            "claimId": "claim:lowline:spoof_alert:witness",
+            "districtId": "lowline",
+            "firstObservedTick": 22,
+            "firstActionTick": 30,
+            "latencyTicks": 8
+          },
+          {
+            "claimId": "claim:west-relay:relay_failure:dispatch",
+            "districtId": "west-relay",
+            "firstObservedTick": 30,
+            "firstActionTick": 60,
+            "latencyTicks": 30
+          },
+          {
+            "claimId": "claim:west-relay:relay_failure:telemetry",
+            "districtId": "west-relay",
+            "firstObservedTick": 28,
+            "firstActionTick": 60,
+            "latencyTicks": 32
+          }
+        ],
+        "meanResponseLatencyTicks": 18.142857142857142,
+        "assessmentCount": 0,
+        "resolvedClaimCount": 0,
+        "verifiedClaimCount": 0,
+        "refutedClaimCount": 0,
+        "brierScore": null,
+        "calibrationBins": [],
+        "verificationInfoGain": null
+      }
+    },
+    {
+      "scenarioId": "signal-zero",
+      "seed": 49314,
+      "policyId": "verification-first",
+      "sessionId": "bench-signal-zero-49314-verification-first",
+      "startedAt": "2026-08-07T10:24:28.828Z",
+      "finishedAt": "2026-08-07T10:24:29.088Z",
+      "finalTick": 450,
+      "phase": "completed",
+      "commands": [
+        {
+          "tick": 30,
+          "commandName": "REQUEST_VERIFICATION",
+          "params": {
+            "teamId": "verify-1",
+            "claimId": "claim:east-relay:comms_jam:telemetry"
+          },
+          "outcome": "accepted",
+          "detail": "verify-1 dispatched to east-relay (verify)"
+        },
+        {
+          "tick": 30,
+          "commandName": "REQUEST_VERIFICATION",
+          "params": {
+            "teamId": "verify-2",
+            "claimId": "claim:lowline:spoof_alert:telemetry"
+          },
+          "outcome": "accepted",
+          "detail": "verify-2 dispatched to lowline (verify)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "comms-1",
+            "target": "east-relay",
+            "task": "comms_repair"
+          },
+          "outcome": "accepted",
+          "detail": "comms-1 dispatched to east-relay (comms_repair)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "comms-2",
+            "target": "lowline",
+            "task": "comms_repair"
+          },
+          "outcome": "accepted",
+          "detail": "comms-2 dispatched to lowline (comms_repair)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-1",
+            "target": "west-relay",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-1 dispatched to west-relay (hazard_control)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-1",
+            "target": "east-relay",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-1 dispatched to east-relay (medical_support)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "power-1",
+            "target": "lowline",
+            "task": "power_repair"
+          },
+          "outcome": "accepted",
+          "detail": "power-1 dispatched to lowline (power_repair)"
+        }
+      ],
+      "assessments": [
+        {
+          "tick": 30,
+          "claimId": "claim:east-relay:comms_jam:telemetry",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-85"
+        },
+        {
+          "tick": 30,
+          "claimId": "claim:east-relay:comms_jam:dispatch",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-86"
+        },
+        {
+          "tick": 30,
+          "claimId": "claim:lowline:spoof_alert:telemetry",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-87"
+        },
+        {
+          "tick": 30,
+          "claimId": "claim:lowline:spoof_alert:dispatch",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-88"
+        },
+        {
+          "tick": 60,
+          "claimId": "claim:lowline:spoof_alert:witness",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-190"
+        },
+        {
+          "tick": 60,
+          "claimId": "claim:west-relay:relay_failure:telemetry",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-191"
+        },
+        {
+          "tick": 60,
+          "claimId": "claim:west-relay:relay_failure:dispatch",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-192"
+        }
+      ],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 291,
+      "playerLogVerified": true,
+      "playerLogHash": "94c7487d27c585f4ff1a44299a16018cc56aaac4db28a0e2b9bae3a49f657c83",
+      "metrics": {
+        "finalTick": 450,
+        "phase": "completed",
+        "scoreTotal": -49.16,
+        "populationRiskScoreContribution": -9.480000000000006,
+        "infrastructureScoreContribution": 22.320000000000007,
+        "eventsHandledScoreContribution": 20,
+        "eventsMissedScoreContribution": -15,
+        "cascadeCount": 1,
+        "cascadePenalty": -25,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -50,
+        "resourceEfficiencyScore": 8,
+        "totalCommandsSubmitted": 7,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [
+          {
+            "commandName": "DISPATCH_TEAM",
+            "accepted": 5,
+            "rejected": 0
+          },
+          {
+            "commandName": "REQUEST_VERIFICATION",
+            "accepted": 2,
+            "rejected": 0
+          }
+        ],
+        "responseLatencies": [
+          {
+            "claimId": "claim:east-relay:comms_jam:dispatch",
+            "districtId": "east-relay",
+            "firstObservedTick": 10,
+            "firstActionTick": 30,
+            "latencyTicks": 20
+          },
+          {
+            "claimId": "claim:east-relay:comms_jam:telemetry",
+            "districtId": "east-relay",
+            "firstObservedTick": 9,
+            "firstActionTick": 30,
+            "latencyTicks": 21
+          },
+          {
+            "claimId": "claim:lowline:spoof_alert:dispatch",
+            "districtId": "lowline",
+            "firstObservedTick": 24,
+            "firstActionTick": 30,
+            "latencyTicks": 6
+          },
+          {
+            "claimId": "claim:lowline:spoof_alert:telemetry",
+            "districtId": "lowline",
+            "firstObservedTick": 20,
+            "firstActionTick": 30,
+            "latencyTicks": 10
+          },
+          {
+            "claimId": "claim:lowline:spoof_alert:witness",
+            "districtId": "lowline",
+            "firstObservedTick": 22,
+            "firstActionTick": 30,
+            "latencyTicks": 8
+          },
+          {
+            "claimId": "claim:west-relay:relay_failure:dispatch",
+            "districtId": "west-relay",
+            "firstObservedTick": 30,
+            "firstActionTick": 60,
+            "latencyTicks": 30
+          },
+          {
+            "claimId": "claim:west-relay:relay_failure:telemetry",
+            "districtId": "west-relay",
+            "firstObservedTick": 28,
+            "firstActionTick": 60,
+            "latencyTicks": 32
+          }
+        ],
+        "meanResponseLatencyTicks": 18.142857142857142,
+        "assessmentCount": 7,
+        "resolvedClaimCount": 2,
+        "verifiedClaimCount": 0,
+        "refutedClaimCount": 2,
+        "brierScore": 0.25,
+        "calibrationBins": [
+          {
+            "rangeStart": 0.5,
+            "rangeEnd": 0.6,
+            "count": 2,
+            "meanPredicted": 0.5,
+            "empiricalFrequency": 0
+          }
+        ],
+        "verificationInfoGain": null
+      }
+    },
+    {
+      "scenarioId": "mirror-district",
+      "seed": 49314,
+      "policyId": "noop",
+      "sessionId": "bench-mirror-district-49314-noop",
+      "startedAt": "2026-08-07T10:24:29.090Z",
+      "finishedAt": "2026-08-07T10:24:29.221Z",
+      "finalTick": 420,
+      "phase": "completed",
+      "commands": [],
+      "assessments": [],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 297,
+      "playerLogVerified": true,
+      "playerLogHash": "ee870903237f2eb72408d3cf2582a36d7cc3b394547a06994438689aa1033526",
+      "metrics": {
+        "finalTick": 420,
+        "phase": "completed",
+        "scoreTotal": -309.55,
+        "populationRiskScoreContribution": -27.35999999999996,
+        "infrastructureScoreContribution": 19.80999999999996,
+        "eventsHandledScoreContribution": 0,
+        "eventsMissedScoreContribution": -60,
+        "cascadeCount": 2,
+        "cascadePenalty": -50,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -200,
+        "resourceEfficiencyScore": 8,
+        "totalCommandsSubmitted": 0,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [],
+        "responseLatencies": [
+          {
+            "claimId": "claim:clinic-hub:clinic_surge:dispatch",
+            "districtId": "clinic-hub",
+            "firstObservedTick": 59,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:mirror-bridge:bridge_panic:dispatch",
+            "districtId": "mirror-bridge",
+            "firstObservedTick": 48,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:north-mirror:north_spill:news",
+            "districtId": "north-mirror",
+            "firstObservedTick": 13,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:north-mirror:north_spill:witness",
+            "districtId": "north-mirror",
+            "firstObservedTick": 12,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:south-mirror:mirror_hoax:news",
+            "districtId": "south-mirror",
+            "firstObservedTick": 18,
+            "firstActionTick": null,
+            "latencyTicks": null
+          }
+        ],
+        "meanResponseLatencyTicks": null,
+        "assessmentCount": 0,
+        "resolvedClaimCount": 0,
+        "verifiedClaimCount": 0,
+        "refutedClaimCount": 0,
+        "brierScore": null,
+        "calibrationBins": [],
+        "verificationInfoGain": null
+      }
+    },
+    {
+      "scenarioId": "mirror-district",
+      "seed": 49314,
+      "policyId": "reactive-greedy",
+      "sessionId": "bench-mirror-district-49314-reactive-greedy",
+      "startedAt": "2026-08-07T10:24:29.222Z",
+      "finishedAt": "2026-08-07T10:24:29.401Z",
+      "finalTick": 420,
+      "phase": "completed",
+      "commands": [
+        {
+          "tick": 30,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "comms-1",
+            "target": "north-mirror",
+            "task": "comms_repair"
+          },
+          "outcome": "accepted",
+          "detail": "comms-1 dispatched to north-mirror (comms_repair)"
+        },
+        {
+          "tick": 30,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-1",
+            "target": "south-mirror",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-1 dispatched to south-mirror (hazard_control)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-2",
+            "target": "north-mirror",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-2 dispatched to north-mirror (hazard_control)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-1",
+            "target": "south-mirror",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-1 dispatched to south-mirror (medical_support)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-2",
+            "target": "mirror-bridge",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-2 dispatched to mirror-bridge (medical_support)"
+        }
+      ],
+      "assessments": [],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 342,
+      "playerLogVerified": true,
+      "playerLogHash": "dbea68fa7a16e6d596437e6557350a2a6d2ff15d78ef98a3d13eae29d1625dbd",
+      "metrics": {
+        "finalTick": 420,
+        "phase": "completed",
+        "scoreTotal": -110.58,
+        "populationRiskScoreContribution": -13.919999999999963,
+        "infrastructureScoreContribution": 21.339999999999954,
+        "eventsHandledScoreContribution": 20,
+        "eventsMissedScoreContribution": -30,
+        "cascadeCount": 2,
+        "cascadePenalty": -50,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -66,
+        "resourceEfficiencyScore": 8,
+        "totalCommandsSubmitted": 5,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [
+          {
+            "commandName": "DISPATCH_TEAM",
+            "accepted": 5,
+            "rejected": 0
+          }
+        ],
+        "responseLatencies": [
+          {
+            "claimId": "claim:clinic-hub:clinic_surge:dispatch",
+            "districtId": "clinic-hub",
+            "firstObservedTick": 59,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:mirror-bridge:bridge_panic:dispatch",
+            "districtId": "mirror-bridge",
+            "firstObservedTick": 48,
+            "firstActionTick": 60,
+            "latencyTicks": 12
+          },
+          {
+            "claimId": "claim:north-mirror:north_spill:news",
+            "districtId": "north-mirror",
+            "firstObservedTick": 13,
+            "firstActionTick": 30,
+            "latencyTicks": 17
+          },
+          {
+            "claimId": "claim:north-mirror:north_spill:witness",
+            "districtId": "north-mirror",
+            "firstObservedTick": 12,
+            "firstActionTick": 30,
+            "latencyTicks": 18
+          },
+          {
+            "claimId": "claim:south-mirror:mirror_hoax:news",
+            "districtId": "south-mirror",
+            "firstObservedTick": 18,
+            "firstActionTick": 30,
+            "latencyTicks": 12
+          }
+        ],
+        "meanResponseLatencyTicks": 14.75,
+        "assessmentCount": 0,
+        "resolvedClaimCount": 0,
+        "verifiedClaimCount": 0,
+        "refutedClaimCount": 0,
+        "brierScore": null,
+        "calibrationBins": [],
+        "verificationInfoGain": null
+      }
+    },
+    {
+      "scenarioId": "mirror-district",
+      "seed": 49314,
+      "policyId": "verification-first",
+      "sessionId": "bench-mirror-district-49314-verification-first",
+      "startedAt": "2026-08-07T10:24:29.403Z",
+      "finishedAt": "2026-08-07T10:24:29.581Z",
+      "finalTick": 420,
+      "phase": "completed",
+      "commands": [
+        {
+          "tick": 30,
+          "commandName": "REQUEST_VERIFICATION",
+          "params": {
+            "teamId": "verify-1",
+            "claimId": "claim:north-mirror:north_spill:witness"
+          },
+          "outcome": "accepted",
+          "detail": "verify-1 dispatched to north-mirror (verify)"
+        },
+        {
+          "tick": 30,
+          "commandName": "REQUEST_VERIFICATION",
+          "params": {
+            "teamId": "verify-2",
+            "claimId": "claim:south-mirror:mirror_hoax:news"
+          },
+          "outcome": "accepted",
+          "detail": "verify-2 dispatched to south-mirror (verify)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "comms-1",
+            "target": "north-mirror",
+            "task": "comms_repair"
+          },
+          "outcome": "accepted",
+          "detail": "comms-1 dispatched to north-mirror (comms_repair)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-1",
+            "target": "mirror-bridge",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-1 dispatched to mirror-bridge (hazard_control)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-2",
+            "target": "north-mirror",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-2 dispatched to north-mirror (hazard_control)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-1",
+            "target": "mirror-bridge",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-1 dispatched to mirror-bridge (medical_support)"
+        },
+        {
+          "tick": 90,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-2",
+            "target": "clinic-hub",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-2 dispatched to clinic-hub (medical_support)"
+        }
+      ],
+      "assessments": [
+        {
+          "tick": 30,
+          "claimId": "claim:north-mirror:north_spill:witness",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-75"
+        },
+        {
+          "tick": 30,
+          "claimId": "claim:south-mirror:mirror_hoax:news",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-76"
+        },
+        {
+          "tick": 30,
+          "claimId": "claim:north-mirror:north_spill:news",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-77"
+        },
+        {
+          "tick": 60,
+          "claimId": "claim:mirror-bridge:bridge_panic:dispatch",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-155"
+        },
+        {
+          "tick": 90,
+          "claimId": "claim:clinic-hub:clinic_surge:dispatch",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-258"
+        }
+      ],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 353,
+      "playerLogVerified": true,
+      "playerLogHash": "761c5b7203a17f6baadff6e1dfb90fab3db95bce393c9f9be03fb05d8c0c6ba6",
+      "metrics": {
+        "finalTick": 420,
+        "phase": "completed",
+        "scoreTotal": -49.76,
+        "populationRiskScoreContribution": -17.75999999999998,
+        "infrastructureScoreContribution": 21.999999999999957,
+        "eventsHandledScoreContribution": 40,
+        "eventsMissedScoreContribution": 0,
+        "cascadeCount": 2,
+        "cascadePenalty": -50,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -52,
+        "resourceEfficiencyScore": 8,
+        "totalCommandsSubmitted": 7,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [
+          {
+            "commandName": "DISPATCH_TEAM",
+            "accepted": 5,
+            "rejected": 0
+          },
+          {
+            "commandName": "REQUEST_VERIFICATION",
+            "accepted": 2,
+            "rejected": 0
+          }
+        ],
+        "responseLatencies": [
+          {
+            "claimId": "claim:clinic-hub:clinic_surge:dispatch",
+            "districtId": "clinic-hub",
+            "firstObservedTick": 59,
+            "firstActionTick": 90,
+            "latencyTicks": 31
+          },
+          {
+            "claimId": "claim:mirror-bridge:bridge_panic:dispatch",
+            "districtId": "mirror-bridge",
+            "firstObservedTick": 48,
+            "firstActionTick": 60,
+            "latencyTicks": 12
+          },
+          {
+            "claimId": "claim:north-mirror:north_spill:news",
+            "districtId": "north-mirror",
+            "firstObservedTick": 13,
+            "firstActionTick": 30,
+            "latencyTicks": 17
+          },
+          {
+            "claimId": "claim:north-mirror:north_spill:witness",
+            "districtId": "north-mirror",
+            "firstObservedTick": 12,
+            "firstActionTick": 30,
+            "latencyTicks": 18
+          },
+          {
+            "claimId": "claim:south-mirror:mirror_hoax:news",
+            "districtId": "south-mirror",
+            "firstObservedTick": 18,
+            "firstActionTick": 30,
+            "latencyTicks": 12
+          }
+        ],
+        "meanResponseLatencyTicks": 18,
+        "assessmentCount": 5,
+        "resolvedClaimCount": 2,
+        "verifiedClaimCount": 2,
+        "refutedClaimCount": 0,
+        "brierScore": 0.25,
+        "calibrationBins": [
+          {
+            "rangeStart": 0.5,
+            "rangeEnd": 0.6,
+            "count": 2,
+            "meanPredicted": 0.5,
+            "empiricalFrequency": 1
+          }
+        ],
+        "verificationInfoGain": null
+      }
+    },
+    {
+      "scenarioId": "red-ledger",
+      "seed": 49314,
+      "policyId": "noop",
+      "sessionId": "bench-red-ledger-49314-noop",
+      "startedAt": "2026-08-07T10:24:29.582Z",
+      "finishedAt": "2026-08-07T10:24:29.755Z",
+      "finalTick": 450,
+      "phase": "completed",
+      "commands": [],
+      "assessments": [],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 240,
+      "playerLogVerified": true,
+      "playerLogHash": "ee9d08155e2872002768116ac291c2827b728fea4b8556f518c9275311258fdc",
+      "metrics": {
+        "finalTick": 450,
+        "phase": "completed",
+        "scoreTotal": -302.9,
+        "populationRiskScoreContribution": -28.079999999999977,
+        "infrastructureScoreContribution": 19.180000000000007,
+        "eventsHandledScoreContribution": 0,
+        "eventsMissedScoreContribution": -60,
+        "cascadeCount": 2,
+        "cascadePenalty": -50,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -200,
+        "resourceEfficiencyScore": 16,
+        "totalCommandsSubmitted": 0,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [],
+        "responseLatencies": [
+          {
+            "claimId": "claim:mercy-clinic:clinic_overflow:dispatch",
+            "districtId": "mercy-clinic",
+            "firstObservedTick": 43,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:north-wards:shelter_blackout:witness",
+            "districtId": "north-wards",
+            "firstObservedTick": 25,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:ration-yard:ration_halt:dispatch",
+            "districtId": "ration-yard",
+            "firstObservedTick": 13,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:ration-yard:ration_halt:telemetry",
+            "districtId": "ration-yard",
+            "firstObservedTick": 20,
+            "firstActionTick": null,
+            "latencyTicks": null
+          },
+          {
+            "claimId": "claim:south-wards:ghost_census:news",
+            "districtId": "south-wards",
+            "firstObservedTick": 15,
+            "firstActionTick": null,
+            "latencyTicks": null
+          }
+        ],
+        "meanResponseLatencyTicks": null,
+        "assessmentCount": 0,
+        "resolvedClaimCount": 0,
+        "verifiedClaimCount": 0,
+        "refutedClaimCount": 0,
+        "brierScore": null,
+        "calibrationBins": [],
+        "verificationInfoGain": null
+      }
+    },
+    {
+      "scenarioId": "red-ledger",
+      "seed": 49314,
+      "policyId": "reactive-greedy",
+      "sessionId": "bench-red-ledger-49314-reactive-greedy",
+      "startedAt": "2026-08-07T10:24:29.757Z",
+      "finishedAt": "2026-08-07T10:24:29.932Z",
+      "finalTick": 450,
+      "phase": "completed",
+      "commands": [
+        {
+          "tick": 30,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "comms-1",
+            "target": "ration-yard",
+            "task": "comms_repair"
+          },
+          "outcome": "accepted",
+          "detail": "comms-1 dispatched to ration-yard (comms_repair)"
+        },
+        {
+          "tick": 30,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-1",
+            "target": "south-wards",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-1 dispatched to south-wards (hazard_control)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-1",
+            "target": "ration-yard",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-1 dispatched to ration-yard (medical_support)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-2",
+            "target": "south-wards",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-2 dispatched to south-wards (medical_support)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "power-1",
+            "target": "north-wards",
+            "task": "power_repair"
+          },
+          "outcome": "accepted",
+          "detail": "power-1 dispatched to north-wards (power_repair)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "power-2",
+            "target": "mercy-clinic",
+            "task": "power_repair"
+          },
+          "outcome": "accepted",
+          "detail": "power-2 dispatched to mercy-clinic (power_repair)"
+        }
+      ],
+      "assessments": [],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 329,
+      "playerLogVerified": true,
+      "playerLogHash": "96f3a727ead8803a9a56a7acff1cb4bfecea2b5361b2ce69ccc2106400f8528b",
+      "metrics": {
+        "finalTick": 450,
+        "phase": "completed",
+        "scoreTotal": -120.85,
+        "populationRiskScoreContribution": -13.919999999999979,
+        "infrastructureScoreContribution": 22.07000000000002,
+        "eventsHandledScoreContribution": 10,
+        "eventsMissedScoreContribution": -45,
+        "cascadeCount": 2,
+        "cascadePenalty": -50,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -60,
+        "resourceEfficiencyScore": 16,
+        "totalCommandsSubmitted": 6,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [
+          {
+            "commandName": "DISPATCH_TEAM",
+            "accepted": 6,
+            "rejected": 0
+          }
+        ],
+        "responseLatencies": [
+          {
+            "claimId": "claim:mercy-clinic:clinic_overflow:dispatch",
+            "districtId": "mercy-clinic",
+            "firstObservedTick": 43,
+            "firstActionTick": 60,
+            "latencyTicks": 17
+          },
+          {
+            "claimId": "claim:north-wards:shelter_blackout:witness",
+            "districtId": "north-wards",
+            "firstObservedTick": 25,
+            "firstActionTick": 60,
+            "latencyTicks": 35
+          },
+          {
+            "claimId": "claim:ration-yard:ration_halt:dispatch",
+            "districtId": "ration-yard",
+            "firstObservedTick": 13,
+            "firstActionTick": 30,
+            "latencyTicks": 17
+          },
+          {
+            "claimId": "claim:ration-yard:ration_halt:telemetry",
+            "districtId": "ration-yard",
+            "firstObservedTick": 20,
+            "firstActionTick": 30,
+            "latencyTicks": 10
+          },
+          {
+            "claimId": "claim:south-wards:ghost_census:news",
+            "districtId": "south-wards",
+            "firstObservedTick": 15,
+            "firstActionTick": 30,
+            "latencyTicks": 15
+          }
+        ],
+        "meanResponseLatencyTicks": 18.8,
+        "assessmentCount": 0,
+        "resolvedClaimCount": 0,
+        "verifiedClaimCount": 0,
+        "refutedClaimCount": 0,
+        "brierScore": null,
+        "calibrationBins": [],
+        "verificationInfoGain": null
+      }
+    },
+    {
+      "scenarioId": "red-ledger",
+      "seed": 49314,
+      "policyId": "verification-first",
+      "sessionId": "bench-red-ledger-49314-verification-first",
+      "startedAt": "2026-08-07T10:24:29.933Z",
+      "finishedAt": "2026-08-07T10:24:30.113Z",
+      "finalTick": 450,
+      "phase": "completed",
+      "commands": [
+        {
+          "tick": 30,
+          "commandName": "REQUEST_VERIFICATION",
+          "params": {
+            "teamId": "verify-1",
+            "claimId": "claim:ration-yard:ration_halt:dispatch"
+          },
+          "outcome": "accepted",
+          "detail": "verify-1 dispatched to ration-yard (verify)"
+        },
+        {
+          "tick": 30,
+          "commandName": "REQUEST_VERIFICATION",
+          "params": {
+            "teamId": "verify-2",
+            "claimId": "claim:south-wards:ghost_census:news"
+          },
+          "outcome": "accepted",
+          "detail": "verify-2 dispatched to south-wards (verify)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "comms-1",
+            "target": "ration-yard",
+            "task": "comms_repair"
+          },
+          "outcome": "accepted",
+          "detail": "comms-1 dispatched to ration-yard (comms_repair)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "fire-1",
+            "target": "north-wards",
+            "task": "hazard_control"
+          },
+          "outcome": "accepted",
+          "detail": "fire-1 dispatched to north-wards (hazard_control)"
+        },
+        {
+          "tick": 60,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-1",
+            "target": "mercy-clinic",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-1 dispatched to mercy-clinic (medical_support)"
+        },
+        {
+          "tick": 87,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "med-2",
+            "target": "ration-yard",
+            "task": "medical_support"
+          },
+          "outcome": "accepted",
+          "detail": "med-2 dispatched to ration-yard (medical_support)"
+        },
+        {
+          "tick": 87,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "power-1",
+            "target": "north-wards",
+            "task": "power_repair"
+          },
+          "outcome": "accepted",
+          "detail": "power-1 dispatched to north-wards (power_repair)"
+        },
+        {
+          "tick": 87,
+          "commandName": "DISPATCH_TEAM",
+          "params": {
+            "teamId": "power-2",
+            "target": "mercy-clinic",
+            "task": "power_repair"
+          },
+          "outcome": "accepted",
+          "detail": "power-2 dispatched to mercy-clinic (power_repair)"
+        }
+      ],
+      "assessments": [
+        {
+          "tick": 30,
+          "claimId": "claim:ration-yard:ration_halt:dispatch",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-90"
+        },
+        {
+          "tick": 30,
+          "claimId": "claim:south-wards:ghost_census:news",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-91"
+        },
+        {
+          "tick": 30,
+          "claimId": "claim:ration-yard:ration_halt:telemetry",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-92"
+        },
+        {
+          "tick": 60,
+          "claimId": "claim:north-wards:shelter_blackout:witness",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-220"
+        },
+        {
+          "tick": 60,
+          "claimId": "claim:mercy-clinic:clinic_overflow:dispatch",
+          "probability": 0.5,
+          "confidence": 0.5,
+          "outcome": "accepted",
+          "detail": "assess-221"
+        }
+      ],
+      "errors": [],
+      "boundedOutputTruncations": 0,
+      "decisionTimeouts": 0,
+      "playerEventCount": 370,
+      "playerLogVerified": true,
+      "playerLogHash": "ce0b8f3f62f1f80d9661739e0f397de019140535c81dba8155c4f5901e111815",
+      "metrics": {
+        "finalTick": 450,
+        "phase": "completed",
+        "scoreTotal": -73.55,
+        "populationRiskScoreContribution": -17.279999999999983,
+        "infrastructureScoreContribution": 22.73,
+        "eventsHandledScoreContribution": 30,
+        "eventsMissedScoreContribution": -15,
+        "cascadeCount": 2,
+        "cascadePenalty": -50,
+        "wastedDispatchPenalty": 0,
+        "falseAdvisoryCost": 0,
+        "decisionDelayPenalty": -60,
+        "resourceEfficiencyScore": 16,
+        "totalCommandsSubmitted": 8,
+        "invalidCommandCount": 0,
+        "invalidCommandRate": 0,
+        "commandsByName": [
+          {
+            "commandName": "DISPATCH_TEAM",
+            "accepted": 6,
+            "rejected": 0
+          },
+          {
+            "commandName": "REQUEST_VERIFICATION",
+            "accepted": 2,
+            "rejected": 0
+          }
+        ],
+        "responseLatencies": [
+          {
+            "claimId": "claim:mercy-clinic:clinic_overflow:dispatch",
+            "districtId": "mercy-clinic",
+            "firstObservedTick": 43,
+            "firstActionTick": 60,
+            "latencyTicks": 17
+          },
+          {
+            "claimId": "claim:north-wards:shelter_blackout:witness",
+            "districtId": "north-wards",
+            "firstObservedTick": 25,
+            "firstActionTick": 60,
+            "latencyTicks": 35
+          },
+          {
+            "claimId": "claim:ration-yard:ration_halt:dispatch",
+            "districtId": "ration-yard",
+            "firstObservedTick": 13,
+            "firstActionTick": 30,
+            "latencyTicks": 17
+          },
+          {
+            "claimId": "claim:ration-yard:ration_halt:telemetry",
+            "districtId": "ration-yard",
+            "firstObservedTick": 20,
+            "firstActionTick": 30,
+            "latencyTicks": 10
+          },
+          {
+            "claimId": "claim:south-wards:ghost_census:news",
+            "districtId": "south-wards",
+            "firstObservedTick": 15,
+            "firstActionTick": 30,
+            "latencyTicks": 15
+          }
+        ],
+        "meanResponseLatencyTicks": 18.8,
+        "assessmentCount": 5,
+        "resolvedClaimCount": 2,
+        "verifiedClaimCount": 2,
+        "refutedClaimCount": 0,
+        "brierScore": 0.25,
+        "calibrationBins": [
+          {
+            "rangeStart": 0.5,
+            "rangeEnd": 0.6,
+            "count": 2,
+            "meanPredicted": 0.5,
+            "empiricalFrequency": 1
+          }
+        ],
+        "verificationInfoGain": null
+      }
+    }
+  ]
+}
