@@ -113,7 +113,7 @@
       "severity": "P3",
       "claim": "artifact refusal reveals nothing about run contents",
       "status": "DEFENDED",
-      "observed": "refusal body 122 bytes, mean latency 0.56ms over 25 calls (timing is indicative only, not a constant-time proof)"
+      "observed": "refusal body 122 bytes, mean latency 0.53ms over 25 calls (timing is indicative only, not a constant-time proof)"
     },
     {
       "id": "A1-10",
