@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@null-city/contracts": "workspace:*",
-    "ws": "^8.18.0",
+    "ws": "^8.21.3",
     "zod": "^3.24.1"
   },
   "devDependencies": {

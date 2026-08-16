@@ -27,7 +27,7 @@
     "@null-city/epistemics": "workspace:*",
     "@null-city/scenario-schema": "workspace:*",
     "@null-city/simulation": "workspace:*",
-    "ws": "^8.18.0"
+    "ws": "^8.21.3"
   },
   "devDependencies": {
     "@null-city/test-fixtures": "workspace:*",
