@@ -21,8 +21,8 @@
   },
   "dependencies": {
     "@null-city/contracts": "workspace:*",
-    "ws": "^8.18.0",
-    "zod": "^3.24.1"
+    "ws": "^8.21.3",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@null-city/epistemics": "workspace:*",
@@ -33,6 +33,6 @@
     "@types/node": "^22.10.2",
     "@types/ws": "^8.5.13",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "vitest": "^4.1.10"
   }
 }
