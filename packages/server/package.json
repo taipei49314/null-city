@@ -27,13 +27,13 @@
     "@null-city/epistemics": "workspace:*",
     "@null-city/scenario-schema": "workspace:*",
     "@null-city/simulation": "workspace:*",
-    "ws": "^8.18.0"
+    "ws": "^8.21.3"
   },
   "devDependencies": {
     "@null-city/test-fixtures": "workspace:*",
     "@types/node": "^22.10.2",
     "@types/ws": "^8.5.13",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "vitest": "^4.1.10"
   }
 }

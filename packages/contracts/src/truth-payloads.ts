@@ -163,7 +163,7 @@ const TRUTH_PAYLOAD_SCHEMAS: Record<EventKindName, z.ZodTypeAny> = {
     result: finiteNumber,
   }),
   SystemStateChanged: z.object({
-    districts: z.record(districtStateSchema),
+    districts: z.record(z.string(), districtStateSchema),
     teams: z.array(
       z.object({
         teamId: nonEmptyString,
@@ -173,7 +173,7 @@ const TRUTH_PAYLOAD_SCHEMAS: Record<EventKindName, z.ZodTypeAny> = {
         order: plainObject.nullable(),
       }),
     ),
-    routes: z.record(z.object({ closed: z.boolean() })),
+    routes: z.record(z.string(), z.object({ closed: z.boolean() })),
     resources: z.object({
       backupGenerators: z.number().int().min(0),
       advisoryUses: z.number().int().min(0),
